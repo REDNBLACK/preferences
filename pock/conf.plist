@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSTouchBarConfig: PockTouchBar</key>
+	<dict>
+		<key>CurrentItems</key>
+		<array>
+			<string>Esc</string>
+			<string>Dock</string>
+			<string>Status</string>
+			<string>ControlCenter</string>
+		</array>
+		<key>DefaultItems</key>
+		<array>
+			<string>Esc</string>
+			<string>Dock</string>
+		</array>
+	</dict>
+	<key>animateIconWhilePlaying</key>
+	<true/>
+	<key>hideControlStrip</key>
+	<true/>
+	<key>hideFinder</key>
+	<true/>
+	<key>hideNowPlayingIfNoMedia</key>
+	<true/>
+	<key>hidePersistentItems</key>
+	<false/>
+	<key>isEnabledDoNotDisturb</key>
+	<false/>
+	<key>isVolumeMute</key>
+	<false/>
+	<key>itemSpacing</key>
+	<integer>8</integer>
+	<key>nowPlayingWidgetStyle</key>
+	<string>"default"</string>
+	<key>openFinderInsidePock</key>
+	<false/>
+	<key>shouldShowBatteryIcon</key>
+	<false/>
+	<key>shouldShowBatteryPercentage</key>
+	<false/>
+	<key>shouldShowBrightnessDownItem</key>
+	<false/>
+	<key>shouldShowBrightnessItem</key>
+	<true/>
+	<key>shouldShowBrightnessToggleItem</key>
+	<true/>
+	<key>shouldShowBrightnessUpItem</key>
+	<false/>
+	<key>shouldShowDateItem</key>
+	<false/>
+	<key>shouldShowDoNotDisturbItem</key>
+	<false/>
+	<key>shouldShowLockItem</key>
+	<false/>
+	<key>shouldShowPowerItem</key>
+	<false/>
+	<key>shouldShowScreensaverItem</key>
+	<false/>
+	<key>shouldShowSleepItem</key>
+	<false/>
+	<key>shouldShowVolumeDownItem</key>
+	<false/>
+	<key>shouldShowVolumeItem</key>
+	<true/>
+	<key>shouldShowVolumeMuteItem</key>
+	<true/>
+	<key>shouldShowVolumeToggleItem</key>
+	<true/>
+	<key>shouldShowVolumeUpItem</key>
+	<false/>
+	<key>shouldShowWifiItem</key>
+	<false/>
+	<key>showOnlyRunningApps</key>
+	<false/>
+	<key>timeFormatTextField</key>
+	<string>EE d MMM (M) HH:mm:ss</string>
+</dict>
+</plist>

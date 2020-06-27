@@ -1,0 +1,183 @@
+#!/usr/bin/env bash
+
+# ==========================================
+#     .functions 
+# 
+#  - jdk
+#  - manpdf
+#  - mkd = mkdir + cd
+#  - cdf = cd + finder
+#  - targz = -> .tar.gz
+#  - extract
+#  - fs = du [with options]
+#  - json
+#  - tre
+# ==========================================
+
+
+# Docker images start/stop
+# Usage start_docker_image $name $volume_dir $image $port[]
+# function start_docker_image() {
+#   name=$1
+#   volume_dir=$2
+#   image=$3
+#   args=("$@")
+#   args_num=${#args[@]}
+#   if [ "$(docker ps -q -f name=$name)" ]; then
+#     docker rm -f $name
+#   else
+#     docker run -d for ((i=2;i<$args_num;i++)); do echo -p ${args[${i}]} done -v $HOME/.docker/$name:$volume_dir --name $name $image
+#   fi
+# }
+
+function rabbitmq() {
+  # start_docker_image rabbitmq /var/lib/rabbitmq rednblack/rabbitmq "5672:5672" "15672:15672"
+  if [ "$(docker ps -q -f name=rabbitmq)" ]; then
+    docker rm -f rabbitmq
+  else
+    docker run -d -p 5672:5672 -p 15672:15672 -v $HOME/.docker/rabbitmq:/var/lib/rabbitmq --hostname rabbitmq --name rabbitmq rednblack/rabbitmq
+  fi
+}
+
+function kafka() {
+  if [ "$(docker ps -q -f name=kafka)" ]; then
+    docker rm -f kafka
+  else
+    docker run -d --name kafka -p 3030:3030 -p 9092:9092 -p 2181:2181 -p 8081:8081 -p 9581:9581 -p 9582:9582 -p 9584:9584 -p 9585:9585 -e ADV_HOST=192.168.1.102 -v $HOME/.docker/kafka/logs:/var/log -v $HOME/.docker/kafka/data:/tmp -e SAMPLEDATA=0 -e RUNNING_SAMPLEDATA=0 -e LICENSE_URL="https://dl.lenses.stream/d/?id=89d3f6d9-0140-4791-a1f0-01ca47c7418f" landoop/kafka-lenses-dev
+  fi
+}
+
+function postgres() {
+  if [ "$(docker ps -q -f name=postgres)" ]; then
+    docker rm -f postgres
+  else
+    docker run -d -p 5432:5432 -v $HOME/.docker/postgres:/var/lib/postgresql/data --name postgres healthcheck/postgres:alpine
+  fi
+}
+
+function cassandra() {
+  if [ "$(docker ps -q -f name=cassandra)" ]; then
+    docker rm -f cassandra
+  else
+    docker run -d -p 7000:7000 -p 7001:7001 -p 9042:9042 -p 7199:7199 -p 9160:9160 -v $HOME/.docker/cassandra:/var/lib/cassandra --name cassandra cassandra:latest
+  fi
+}
+
+function elastic() {
+  if [ "$(docker ps -q -f name=elastic)" ]; then
+    docker rm -f elastic
+  else
+    docker run -d -p 5601:80 -p 9300:9300 -p 9200:9200 -v $HOME/.docker/elastic:/usr/share/elasticsearch/data --name elastic blacktop/elastic-stack:geoip
+  fi
+}
+
+function redis() {
+  if [ "$(docker ps -q -f name=redis)" ]; then
+    docker rm -f redis
+  else
+    docker run -d -p 6379:6379 -v $HOME/.docker/redis:/data --name redis healthcheck/redis:alpine
+  fi
+}
+
+# Set Java JDK version (https://github.com/AdoptOpenJDK/homebrew-openjdk)
+function jdk() {
+  local version=$1
+
+  if [[ $version == "graal" ]]
+  then
+    version=$(/usr/libexec/java_home -V 2>&1 | grep -Eo '([0-9\.]+),.+graalvm-..-java[0-9\.-]+-' | awk '{gsub(/,/,""); print $1}')
+  fi
+
+  export JAVA_HOME=$(/usr/libexec/java_home -v"$version")
+  java -version
+}
+
+# Update sbt version to latest in current project
+function sbt-latest() {
+  local latestsbt=$(curl -s https://repo1.maven.org/maven2/org/scala-sbt/sbt/maven-metadata.xml | xmllint --xpath '/metadata/versioning/latest/text()' -)
+  # local latestscala=$(curl -s https://repo1.maven.org/maven2/org/scala-lang/scala-compiler/maven-metadata.xml | xmllint --xpath '/metadata/versioning/latest/text()' -)
+
+  echo "sbt.version = $latestsbt" > project/build.properties
+}
+
+# Open man page as PDF
+function manpdf() {
+  man -t "${1}" | open -f -a /Applications/Preview.app/
+}
+
+# Create a new directory and enter it
+function mkd() {
+  mkdir -p "$@" && cd "$_";
+}
+
+# Change working directory to the top-most Finder window location
+function cdf() { # short for `cdfinder`
+  cd "$(osascript -e 'tell app "Finder" to POSIX path of (insertion location as alias)')";
+}
+
+# Create a .tar.gz archive, using `zopfli`, `pigz` or `gzip` for compression
+function targz() {
+  local tmpFile="${@%/}.tar";
+  tar -cvf "${tmpFile}" --exclude=".DS_Store" "${@}" || return 1;
+
+  size=$(
+    stat -f"%z" "${tmpFile}" 2> /dev/null; # macOS `stat`
+    stat -c"%s" "${tmpFile}" 2> /dev/null;  # GNU `stat`
+  );
+
+  local cmd="";
+  if (( size < 52428800 )) && hash zopfli 2> /dev/null; then
+    # the .tar file is smaller than 50 MB and Zopfli is available; use it
+    cmd="zopfli";
+  else
+    if hash pigz 2> /dev/null; then
+      cmd="pigz";
+    else
+      cmd="gzip";
+    fi;
+  fi;
+
+  echo "Compressing .tar ($((size / 1000)) kB) using \`${cmd}\`…";
+  "${cmd}" -v "${tmpFile}" || return 1;
+  [ -f "${tmpFile}" ] && rm "${tmpFile}";
+
+  zippedSize=$(
+    stat -f"%z" "${tmpFile}.gz" 2> /dev/null; # macOS `stat`
+    stat -c"%s" "${tmpFile}.gz" 2> /dev/null; # GNU `stat`
+  );
+
+  echo "${tmpFile}.gz ($((zippedSize / 1000)) kB) created successfully.";
+}
+
+# Determine size of a file or total size of a directory
+function fs() {
+  if du -b /dev/null > /dev/null 2>&1; then
+    local arg=-sbh;
+  else
+    local arg=-sh;
+  fi
+  if [[ -n "$@" ]]; then
+    du $arg -- "$@";
+  else
+    du $arg .[^.]* ./*;
+  fi;
+}
+
+# Syntax-highlight JSON strings or files
+# Usage: `json '{"foo":42}'` or `echo '{"foo":42}' | json`
+function json() {
+  if [ -t 0 ]; then # argument
+    python -mjson.tool <<< "$*" | pygmentize -l javascript;
+  else # pipe
+    python -mjson.tool | pygmentize -l javascript;
+  fi;
+}
+
+
+# `tre` is a shorthand for `tree` with hidden files and color enabled, ignoring
+# the `.git` directory, listing directories first. The output gets piped into
+# `less` with options to preserve color and line numbers, unless the output is
+# small enough for one screen.
+function tre() {
+  tree -aC -I '.git|.Trash|.DS_Store|.idea|.ipynb_checkpoints|.RData|.Rhistory' --dirsfirst "$@" | less -FRNX;
+}

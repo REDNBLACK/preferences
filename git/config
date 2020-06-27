@@ -1,0 +1,15 @@
+[user]
+	name = REDNBLACK
+	email = boris@f0w.org
+[core]
+	autocrlf = input
+[credential]
+	helper = osxkeychain
+[push]
+	default = simple
+[color]
+	ui = true
+[alias]
+	tags = tag -l
+	branches = branch -a
+	remotes = remote -v
