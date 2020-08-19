@@ -126,7 +126,9 @@ My shell and programms settings
 
     ```bash
     brew cask install pock
-    defaults import com.pigigaldi.pock pock/conf.plist
+    defaults import com.pigigaldi.pock $DOTPREFSDIR/pock/conf.plist
+
+    # Hide Dock completely
     defaults write com.apple.dock autohide -bool true
     defaults write com.apple.dock autohide-delay -float 1000.0
     defaults write com.apple.dock no-bouncing -bool true
@@ -202,6 +204,12 @@ My shell and programms settings
 
     ```bash
     brew cask install google-chrome
+
+    # Disable auto update
+    rm -rf /Applications/Google\ Chrome.app/Contents/Frameworks/Google\ Chrome\ Framework.framework/Versions/Current/Frameworks/KeystoneRegistration.framework
+    rm -rf ~/Library/LaunchAgents/com.google.*.plist
+    rm -rf ~/Library/Preferences/com.google.Keystone.*.plist
+    rm -rf ~/Library/Google/
     ```
 4. Setup [Tor](https://github.com/TheTorProject)
 
