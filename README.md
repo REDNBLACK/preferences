@@ -5,19 +5,19 @@ My shell and programms settings
 ### Installation
 
 ##### Essentials
-1. Setup [Homebrew](https://brew.sh)
+1. Download this repo
+
+    ```bash
+    git clone --depth=1 --shallow-submodules --recurse-submodules --remote-submodules https://github.com/REDNBLACK/preferences.git
+    export DOTPREFSDIR="$(cd preferences && pwd)" && launchctl setenv DOTPREFSDIR "$DOTPREFSDIR"
+    ```
+2. Setup [Homebrew](https://brew.sh)
 
     ```bash
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
     brew analytics off        # Turn off analytics
     brew tap buo/cask-upgrade # Better Cask command
     brew install mas          # App Store via CLI
-    ```
-2. Download this repo
-
-    ```bash
-    git clone --depth=1 --shallow-submodules --recurse-submodules --remote-submodules https://github.com/REDNBLACK/preferences.git
-    export DOTPREFSDIR="$(cd preferences && pwd)" && launchctl setenv DOTPREFSDIR "$DOTPREFSDIR"
     ```
 3. Setup [Git](https://git-scm.com) & [GitHub](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
 
@@ -37,10 +37,12 @@ My shell and programms settings
     ln -fs $DOTPREFSDIR/zsh ~/.config/zsh
     echo "export ZDOTDIR=$HOME/.config/zsh" | sudo tee /etc/zshenv > /dev/null
 
+    # Set as default shell
     which zsh | sudo tee -a /etc/shells > /dev/null
     chsh -s $(which zsh)
 
-    sudo dscl . -create ~ UserShell $(which zsh) # Just to be absolutely sure
+    # Set as default shell (alternative)
+    sudo dscl . -create ~ UserShell $(which zsh)
     ```
 6. Setup [iTerm](https://iterm2.com)
 
@@ -154,10 +156,11 @@ My shell and programms settings
     ```bash
     brew cask install haptic-touch-bar
     ```
-8. 💰 Setup [Copia]()
+8. Setup [Maccy](https://github.com/p0deje/Maccy)
 
     ```bash
-    # Program disappeared from AppStore
+    brew cask install maccy
+    defaults import org.p0deje.Maccy $DOTPREFSDIR/maccy/conf.plist
     ```
 9. 💰 Setup [iStat Menus](https://bjango.com/mac/istatmenus)
 
@@ -175,6 +178,11 @@ My shell and programms settings
 
     ```bash
     brew cask install cleanmymac
+    ```
+12. Setup [AppCleaner](https://freemacsoft.net/appcleaner)
+
+    ```bash
+    brew cask install appcleaner
     ```
 
 ##### Security
