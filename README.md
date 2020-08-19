@@ -30,15 +30,17 @@ My shell and programms settings
     ```bash
     brew cask install homebrew/cask-fonts/font-fira-code
     ```
-5. Setup [zsh](http://zsh.org) & [oh my zsh](https://ohmyz.sh) & [PowerLevel10k](https://github.com/romkatv/powerlevel10k) & [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) & [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) & [shellmarks](https://github.com/Bilalh/shellmarks)
+5. Setup [zsh](http://zsh.org) & [oh my zsh](https://ohmyz.sh) & [PowerLevel10k](https://github.com/romkatv/powerlevel10k) & [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) & [zsh-fast-syntax-highlighting](https://github.com/zdharma/fast-syntax-highlighting)
 
     ```bash
     brew install zsh
     ln -fs $DOTPREFSDIR/zsh ~/.config/zsh
     echo "export ZDOTDIR=$HOME/.config/zsh" | sudo tee /etc/zshenv > /dev/null
+
     which zsh | sudo tee -a /etc/shells > /dev/null
-    sudo dscl . -create ~ UserShell $(which zsh) # Just to be absolutely sure
     chsh -s $(which zsh)
+
+    sudo dscl . -create ~ UserShell $(which zsh) # Just to be absolutely sure
     ```
 6. Setup [iTerm](https://iterm2.com)
 
@@ -60,8 +62,8 @@ My shell and programms settings
 
     ```bash
     brew cask install sublime-text
-    curl -SsL "https://packagecontrol.io/Package%20Control.sublime-package" > ~/Library/Application\ Support/Sublime\ Text\ 3/Installed\ Packages/Package\ Control.sublime-package
     ln -fs $DOTPREFSDIR/sublime-text3/conf ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/User
+    curl -SsL "https://packagecontrol.io/Package%20Control.sublime-package" > ~/Library/Application\ Support/Sublime\ Text\ 3/Installed\ Packages/Package\ Control.sublime-package
     defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers -array-add \
     '{LSHandlerContentType=public.plain-text;LSHandlerRoleAll=com.sublimetext.3;}'
     ```
@@ -106,19 +108,19 @@ My shell and programms settings
     ```bash
     brew cask install keka
     brew cask install kekadefaultapp
-    defaults import com.aone.keka keka/conf.plist
+    defaults import com.aone.keka $DOTPREFSDIR/keka/conf.plist
     ```
 2. Setup [Cheatsheet](https://cheatsheetapp.com/CheatSheet)
 
     ```bash
     brew cask install cheatsheet
-    defaults import com.mediaatelier.CheatSheet cheatsheet/conf.plist
+    defaults import com.mediaatelier.CheatSheet $DOTPREFSDIR/cheatsheet/conf.plist
     ```
 3. Setup [Rectangle](https://github.com/rxhanson/Rectangle)
 
     ```bash
     brew cask install rectangle
-    defaults import com.knollsoft.Rectangle rectangle/conf.plist
+    defaults import com.knollsoft.Rectangle $DOTPREFSDIR/rectangle/conf.plist
     ```
 4. Setup [Pock](https://pock.dev)
 
@@ -159,7 +161,7 @@ My shell and programms settings
 
     ```bash
     brew cask install istat-menus # mas install 1319778037
-    defaults import com.bjango.istatmenus6.extras istat-menus/conf.plist
+    defaults import com.bjango.istatmenus6.extras $DOTPREFSDIR/istat-menus/conf.plist
     defaults write com.bjango.istatmenus license6 -dict email '**REDACTED**' serial '**REDACTED**'
     ```
 10. 💰 Setup [Apple Remote Desktop](https://apps.apple.com/app/apple-remote-desktop/id409907375)
@@ -249,14 +251,14 @@ https://mhmd.io/blog/04-2020/macsetup-devops/
 http://www.drjackyl.de/how/to/2017/08/15/Set_Global_Environment_Variables_in_macOS_10.10_and_later.html
 
 ```bash
-# Enable sudo auth via TouchID
+# Enable sudo auth via Touch ID
 sudo sed -i '.old' -e '2s;^;auth       sufficient     pam_tid.so\n;' /etc/pam.d/sudo
-# Show Library folder:
+# Show Library folder
 chflags nohidden ~/Library
-# Show hidden files:
+# Show hidden files
 defaults write com.apple.finder AppleShowAllFiles -bool true
-# Show path bar:
+# Show path bar
 defaults write com.apple.finder ShowPathbar -bool true
-# Show status bar:
+# Show status bar
 defaults write com.apple.finder ShowStatusBar -bool true
 ```

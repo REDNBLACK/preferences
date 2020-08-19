@@ -1002,17 +1002,6 @@ source "$DOTPREFSDIR/iterm2/integration.zsh"
 ####################################
 
 
-###########[ shellmarks ]###########
-# Path to save file
-SDIRS="$ZSH_CACHE_DIR/.shellmarks"
-
-# Integration with iTerm2
-# SHELLMARKS_ITERM_SESSION=""
-
-source "$ZDOTDIR/shellmarks/shellmarks.sh"
-####################################
-
-
 ######[ zsh-autosuggestions (more at https://github.com/zsh-users/zsh-autosuggestions#configuration) ]#######
 # Style suggestion is shown with
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"
@@ -1036,19 +1025,6 @@ source "$ZDOTDIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
 ####################################
 
 
-####[ zsh-syntax-highlighting (more at https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/docs/highlighters.md) ]#####
-# Maximum length (in characters) of command lines to be highlighted
-ZSH_HIGHLIGHT_MAXLENGTH=2048
-
-# Activate highlighters
-ZSH_HIGHLIGHT_HIGHLIGHTERS=(
-  main       # The base highlighter
-  # brackets # Matches brackets and parenthesis
-  # pattern  # Matches user-defined patterns
-  # cursor   # Matches the cursor position
-  # root     # Highlights the whole command line if the current user is root
-  # line     # Applied to the whole command line.
-)
-
-source "$ZDOTDIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+####[ zsh-fast-syntax-highlighting (more at https://github.com/zdharma/fast-syntax-highlighting) ]#####
+source "$ZDOTDIR/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
 ####################################
