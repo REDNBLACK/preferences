@@ -2,11 +2,6 @@
 #                  .zshrc
 # ==========================================
 
-##########[ Sublime Text ]###########
-source "$DOTPREFSDIR/sublime-text3/integration.zsh"
-#####################################
-
-
 ##############[ zsh ]################
 # Path to cache directory
 ZSH_CACHE_DIR="${HOME}/Library/Caches/zsh"
@@ -35,7 +30,7 @@ function abort() {
 }
 
 # Load the shell dotfiles, and then some:
-for file in $ZDOTDIR/{.profile,.path,.exports,.aliases,.functions,.extra}; do
+for file in $ZDOTDIR/{.functions,.profile,.path,.exports,.aliases,.extra}; do
   if [ -f "$file" ]; then
     source "$file"
   fi
@@ -43,7 +38,7 @@ done;
 unset file;
 
 alias reload=". $ZDOTDIR/.zshrc && echo 'ZSH config reloaded'"
-alias zshrc="$EDITOR $ZDOTDIR/.zshrc && reload"
+# alias zshrc="$(editf $ZDOTDIR/.zshrc) && reload"
 ###################################
 
 
@@ -995,6 +990,11 @@ typeset -g POWERLEVEL9K_CONFIG_FILE=${${(%):-%x}:a}
 (( ${#p10k_config_opts} )) && setopt ${p10k_config_opts[@]}
 'builtin' 'unset' 'p10k_config_opts'
 ####################################
+
+
+##########[ Sublime Text ]###########
+source "$DOTPREFSDIR/sublime-text3/integration.zsh"
+#####################################
 
 
 #############[ iTerm ]##############

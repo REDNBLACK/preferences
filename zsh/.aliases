@@ -42,7 +42,6 @@ alias duh="du -d 1 -h"
 alias dua="du -ah"
 
 # Update stuff
-# alias update-pip="pip3 list --outdated | cut -d " " -f 1  | xargs -n1 sudo -H pip3 install -U | lolcat"
 alias update-brew="echo "Core:"; brew update | lolcat; brew upgrade --formula | lolcat; brew cleanup formula -s --prune 1 | lolcat; echo "Cask:"; brew cu -a -y --no-brew-update --cleanup | lolcat; echo "MAS:"; mas upgrade | lolcat"
 
 # Kill all the tabs in Chrome to free up memory
