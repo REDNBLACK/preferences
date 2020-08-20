@@ -11,7 +11,8 @@ My shell and programms settings
 
     ```bash
     git clone --depth=1 --shallow-submodules --recurse-submodules --remote-submodules https://github.com/REDNBLACK/preferences.git
-    export DOTPREFSDIR="$(cd preferences && pwd)" && launchctl setenv DOTPREFSDIR "$DOTPREFSDIR"
+    echo "export DOTPREFSDIR=$(cd preferences && pwd)" | sudo tee -a /etc/zshenv > /dev/null
+    zsh
     ```
 3. Setup [Homebrew](https://brew.sh)
 
@@ -37,7 +38,7 @@ My shell and programms settings
     ```bash
     brew install zsh
     ln -fs $DOTPREFSDIR/zsh ~/.config/zsh
-    echo "export ZDOTDIR=$HOME/.config/zsh" | sudo tee /etc/zshenv > /dev/null
+    echo "export ZDOTDIR=$HOME/.config/zsh" | sudo tee -a /etc/zshenv > /dev/null
 
     # Set as default shell
     which zsh | sudo tee -a /etc/shells > /dev/null
@@ -112,7 +113,7 @@ My shell and programms settings
     brew cask install postgres
     ```
 
-##### System
+##### Productivity
 1. Setup [Rectangle](https://github.com/rxhanson/Rectangle)
 
     ```bash
@@ -125,7 +126,29 @@ My shell and programms settings
     brew cask install maccy
     defaults import org.p0deje.Maccy $DOTPREFSDIR/maccy/conf.plist
     ```
-3. Setup [Pock](https://github.com/pigigaldi/Pock)
+3. Setup [Cheatsheet](https://cheatsheetapp.com/CheatSheet)
+
+    ```bash
+    brew cask install cheatsheet
+    defaults import com.mediaatelier.CheatSheet $DOTPREFSDIR/cheatsheet/conf.plist
+    ```
+4. 💰 Setup [BetterTouchTool](https://folivora.ai)
+
+    ```bash
+    brew cask install bettertouchtool
+    ```
+5. Setup [HapticKey](https://github.com/niw/HapticKey)
+
+    ```bash
+    brew cask install haptickey
+    # defaults import at.niw.HapticKey $DOTPREFSDIR/haptickey/conf.plist
+    ```
+6. Setup [Flow](https://flowapp.info)
+
+    ```bash
+    mas install 1423210932
+    ```
+7. Setup [Pock](https://github.com/pigigaldi/Pock)
 
     ```bash
     brew cask install pock
@@ -137,13 +160,16 @@ My shell and programms settings
     defaults write com.apple.dock no-bouncing -bool true
     killall Dock
     ```
-4. Setup [Cheatsheet](https://cheatsheetapp.com/CheatSheet)
+
+##### System
+1. 💰 Setup [iStat Menus](https://bjango.com/mac/istatmenus)
 
     ```bash
-    brew cask install cheatsheet
-    defaults import com.mediaatelier.CheatSheet $DOTPREFSDIR/cheatsheet/conf.plist
+    brew cask install istat-menus # mas install 1319778037
+    defaults import com.bjango.istatmenus6.extras $DOTPREFSDIR/istat-menus/conf.plist
+    defaults write com.bjango.istatmenus license6 -dict email '**REDACTED**' serial '**REDACTED**'
     ```
-5. Setup [Amphetamine](https://apps.apple.com/app/amphetamine/id937984704) & [Amphetamine Enhancer](https://github.com/x74353/Amphetamine-Enhancer)
+2. Setup [Amphetamine](https://apps.apple.com/app/amphetamine/id937984704) & [Amphetamine Enhancer](https://github.com/x74353/Amphetamine-Enhancer)
 
     ```bash
     mas install 937984704
@@ -154,45 +180,32 @@ My shell and programms settings
     hdiutil detach -quiet /Volumes/Amphetamine\ Enhancer
     sed -r -i '' -e "s#/Applications/Amphetamine\\\? Enhancer.app#~/Library/Containers/com.if.Amphetamine/Data/Library/Application' 'Support/Amphetamine' 'Enhancer.app#g" Amphetamine\ Enhancer.app/**/*.(sh|plist)
     ```
-6. Setup [Keka](https://github.com/aonez/Keka)
+3. Setup [Keka](https://github.com/aonez/Keka)
 
     ```bash
     brew cask install keka
     brew cask install kekadefaultapp
     defaults import com.aone.keka $DOTPREFSDIR/keka/conf.plist
     ```
-7. 💰 Setup [BetterTouchTool](https://folivora.ai)
+4. Setup [AppCleaner](https://freemacsoft.net/appcleaner)
 
     ```bash
-    brew cask install bettertouchtool
+    brew cask install appcleaner
     ```
-8. Setup [HapticKey](https://github.com/niw/HapticKey)
+5. Setup [OnyX](https://www.titanium-software.fr/en/onyx.html)
 
     ```bash
-    brew cask install haptickey
-    # defaults import at.niw.HapticKey $DOTPREFSDIR/haptickey/conf.plist
+    brew cask install onyx
     ```
-9. 💰 Setup [iStat Menus](https://bjango.com/mac/istatmenus)
-
-    ```bash
-    brew cask install istat-menus # mas install 1319778037
-    defaults import com.bjango.istatmenus6.extras $DOTPREFSDIR/istat-menus/conf.plist
-    defaults write com.bjango.istatmenus license6 -dict email '**REDACTED**' serial '**REDACTED**'
-    ```
-10. 💰 Setup [Apple Remote Desktop](https://apps.apple.com/app/apple-remote-desktop/id409907375)
-
-    ```bash
-    mas install 409907375
-    ```
-11. 💰 Setup [CleanMyMac X](https://macpaw.com/cleanmymac)
+6. 💰 Setup [CleanMyMac X](https://macpaw.com/cleanmymac)
 
     ```bash
     brew cask install cleanmymac
     ```
-12. Setup [AppCleaner](https://freemacsoft.net/appcleaner)
+7. 💰 Setup [Apple Remote Desktop](https://apps.apple.com/app/apple-remote-desktop/id409907375)
 
     ```bash
-    brew cask install appcleaner
+    mas install 409907375
     ```
 
 ##### Security
@@ -239,6 +252,11 @@ My shell and programms settings
     ```bash
     brew cask install transmission
     ```
+6. Setup [Wi-Fi Explorer](https://intuitibits.com/products/wifi-explorer)
+
+    ```bash
+    brew cask install wifi-explorer
+    ```
 
 ##### Entertainment
 1. 💰 Setup [Spotify](https://spotify.com)
@@ -275,6 +293,7 @@ My shell and programms settings
 #### Core
 https://mhmd.io/blog/04-2020/macsetup-devops/
 http://www.drjackyl.de/how/to/2017/08/15/Set_Global_Environment_Variables_in_macOS_10.10_and_later.html
+https://github.com/aethys256/notes/blob/master/macOS_defaults.md
 
 ```bash
 # Enable sudo auth via Touch ID
