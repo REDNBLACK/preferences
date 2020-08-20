@@ -30,7 +30,7 @@ function abort() {
 }
 
 # Load the shell dotfiles, and then some:
-for file in $ZDOTDIR/{.functions,.profile,.path,.exports,.aliases,.extra}; do
+for file in $ZDOTDIR/{.profile,.functions,.path,.exports,.aliases,.extra}; do
   if [ -f "$file" ]; then
     source "$file"
   fi
@@ -83,12 +83,12 @@ plugins=(
 )
 
 # Source oh-my-zsh
-source "$ZSH/oh-my-zsh.sh"
+. $ZSH/oh-my-zsh.sh
 ####################################
 
 
 #########[ powerlevel10k (more at https://github.com/romkatv/powerlevel10k/tree/master/config) ]##########
-source "$ZDOTDIR/powerlevel10k/powerlevel10k.zsh-theme"
+. $ZDOTDIR/powerlevel10k/powerlevel10k.zsh-theme
 
 # Temporarily change options.
 'builtin' 'local' '-a' 'p10k_config_opts'
@@ -992,13 +992,18 @@ typeset -g POWERLEVEL9K_CONFIG_FILE=${${(%):-%x}:a}
 ####################################
 
 
+##########[ Java & JVM & sbt ]###########
+. $DOTPREFSDIR/jvm/integration.zsh
+#####################################
+
+
 ##########[ Sublime Text ]###########
-source "$DOTPREFSDIR/sublime-text3/integration.zsh"
+. $DOTPREFSDIR/sublime-text3/integration.zsh
 #####################################
 
 
 #############[ iTerm ]##############
-source "$DOTPREFSDIR/iterm2/integration.zsh"
+. $DOTPREFSDIR/iterm2/integration.zsh
 ####################################
 
 
@@ -1021,10 +1026,10 @@ ZSH_AUTOSUGGEST_STRATEGY=(
 # Disable suggestions for large buffers
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 
-source "$ZDOTDIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
+. $ZDOTDIR/zsh-autosuggestions/zsh-autosuggestions.zsh
 ####################################
 
 
 ####[ zsh-fast-syntax-highlighting (more at https://github.com/zdharma/fast-syntax-highlighting) ]#####
-source "$ZDOTDIR/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
+. $ZDOTDIR/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
 ####################################

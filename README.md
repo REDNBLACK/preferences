@@ -54,9 +54,14 @@ My shell and programms settings
 
     ```bash
     brew install nnn
-    brew install thefuck
     brew install jq
     brew install tldr
+
+    # thefuck (https://github.com/nvbn/thefuck)
+    # if command -v thefuck &> /dev/null; then
+    #   eval "$(thefuck --alias)"
+    # fi
+    # brew install thefuck
     ```
 
 ##### Coding
@@ -69,14 +74,15 @@ My shell and programms settings
     defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers -array-add \
     '{LSHandlerContentType=public.plain-text;LSHandlerRoleAll=com.sublimetext.3;}'
     ```
-2. Setup [Java JDK](https://adoptopenjdk.net)
+2. Setup [Java OpenJDK](https://adoptopenjdk.net) & [GraalVM](https://graalvm.org)
 
     ```bash
     brew cask install adoptopenjdk/openjdk/adoptopenjdk8
     brew cask install adoptopenjdk/openjdk/adoptopenjdk14
     brew cask install graalvm/tap/graalvm-ce-java11
-    jdk 1.8 # Switch version via `jdk` command with `1.8` or `14` or `graal`
-    # TODO `clean` = `find . -name target -type d -prune -exec rm -r {} \;`
+
+    # Switch jdk version to `1.8` or `14` or `graal`
+    jdk 1.8
     ```
 3. 💰 Setup [IntelliJ Idea](https://jetbrains.com/idea)
 
@@ -105,26 +111,19 @@ My shell and programms settings
     ```
 
 ##### System
-1. Setup [Keka](https://github.com/aonez/Keka)
-
-    ```bash
-    brew cask install keka
-    brew cask install kekadefaultapp
-    defaults import com.aone.keka $DOTPREFSDIR/keka/conf.plist
-    ```
-2. Setup [Cheatsheet](https://cheatsheetapp.com/CheatSheet)
-
-    ```bash
-    brew cask install cheatsheet
-    defaults import com.mediaatelier.CheatSheet $DOTPREFSDIR/cheatsheet/conf.plist
-    ```
-3. Setup [Rectangle](https://github.com/rxhanson/Rectangle)
+1. Setup [Rectangle](https://github.com/rxhanson/Rectangle)
 
     ```bash
     brew cask install rectangle
     defaults import com.knollsoft.Rectangle $DOTPREFSDIR/rectangle/conf.plist
     ```
-4. Setup [Pock](https://pock.dev)
+2. Setup [Maccy](https://github.com/p0deje/Maccy)
+
+    ```bash
+    brew cask install maccy
+    defaults import org.p0deje.Maccy $DOTPREFSDIR/maccy/conf.plist
+    ```
+3. Setup [Pock](https://github.com/pigigaldi/Pock)
 
     ```bash
     brew cask install pock
@@ -136,31 +135,39 @@ My shell and programms settings
     defaults write com.apple.dock no-bouncing -bool true
     killall Dock
     ```
-5. Setup [Amphetamine](https://apps.apple.com/app/amphetamine/id937984704)
+4. Setup [Cheatsheet](https://cheatsheetapp.com/CheatSheet)
+
+    ```bash
+    brew cask install cheatsheet
+    defaults import com.mediaatelier.CheatSheet $DOTPREFSDIR/cheatsheet/conf.plist
+    ```
+5. Setup [Amphetamine](https://apps.apple.com/app/amphetamine/id937984704) & [Amphetamine Enhancer](https://github.com/x74353/Amphetamine-Enhancer)
 
     ```bash
     mas install 937984704
+
     cd ~/Library/Containers/com.if.Amphetamine/Data/Library/Application\ Support
     hdiutil attach -nobrowse -quiet "https://github.com/x74353/Amphetamine-Enhancer/raw/master/Releases/Current/Amphetamine%20Enhancer.dmg"
     cp -rf /Volumes/Amphetamine\ Enhancer/*.app ./
     hdiutil detach -quiet /Volumes/Amphetamine\ Enhancer
     sed -r -i '' -e "s#/Applications/Amphetamine\\\? Enhancer.app#~/Library/Containers/com.if.Amphetamine/Data/Library/Application' 'Support/Amphetamine' 'Enhancer.app#g" Amphetamine\ Enhancer.app/**/*.(sh|plist)
     ```
-6. 💰 Setup [BetterTouchTool](https://folivora.ai)
+6. Setup [Keka](https://github.com/aonez/Keka)
+
+    ```bash
+    brew cask install keka
+    brew cask install kekadefaultapp
+    defaults import com.aone.keka $DOTPREFSDIR/keka/conf.plist
+    ```
+7. 💰 Setup [BetterTouchTool](https://folivora.ai)
 
     ```bash
     brew cask install bettertouchtool
     ```
-7. 💰 Setup [Haptic Touchbar](https://haptictouchbar.com)
+8. 💰 Setup [Haptic Touchbar](https://haptictouchbar.com)
 
     ```bash
     brew cask install haptic-touch-bar
-    ```
-8. Setup [Maccy](https://github.com/p0deje/Maccy)
-
-    ```bash
-    brew cask install maccy
-    defaults import org.p0deje.Maccy $DOTPREFSDIR/maccy/conf.plist
     ```
 9. 💰 Setup [iStat Menus](https://bjango.com/mac/istatmenus)
 

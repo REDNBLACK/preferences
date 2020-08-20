@@ -1,5 +1,5 @@
 # ==========================================
-# 		.profile 
+# 		.profile
 # ==========================================
 
 # Global settings
@@ -19,14 +19,6 @@ export HOMEBREW_REPOSITORY="/usr/local/Homebrew";
 export HOMEBREW_NO_ANALYTICS=1
 export HOMEBREW_NO_INSTALL_CLEANUP=1
 export HOMEBREW_NO_EMOJI=1
-
-# Java
-if [[ -f /usr/libexec/java_home ]]; then
-  export JAVA_HOME=$(/usr/libexec/java_home)
-  launchctl setenv JAVA_HOME $JAVA_HOME
-else
-  abort "Failed to set JAVA_HOME, /usr/libexec/java_home not found"
-fi
 
 # thefuck (https://github.com/nvbn/thefuck)
 if command -v thefuck &> /dev/null; then

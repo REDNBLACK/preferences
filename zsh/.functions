@@ -3,14 +3,12 @@
 # ==========================================
 #     .functions
 #
-#  - jdk
 #  - manpdf
+#  - editf
 #  - mkd = mkdir + cd
 #  - cdf = cd + finder
 #  - targz = -> .tar.gz
-#  - extract
 #  - fs = du [with options]
-#  - json
 #  - tre
 # ==========================================
 
@@ -29,27 +27,6 @@
 #     docker run -d for ((i=2;i<$args_num;i++)); do echo -p ${args[${i}]} done -v $HOME/.docker/$name:$volume_dir --name $name $image
 #   fi
 # }
-
-# Set Java JDK version (https://github.com/AdoptOpenJDK/homebrew-openjdk)
-function jdk() {
-  local version=$1
-
-  if [[ $version == "graal" ]]
-  then
-    version=$(/usr/libexec/java_home -V 2>&1 | grep -Eo '([0-9\.]+),.+graalvm-..-java[0-9\.-]+-' | awk '{gsub(/,/,""); print $1}')
-  fi
-
-  export JAVA_HOME=$(/usr/libexec/java_home -v"$version")
-  java -version
-}
-
-# Update sbt version to latest in current project
-function sbt-latest() {
-  local latestsbt=$(curl -s https://repo1.maven.org/maven2/org/scala-sbt/sbt/maven-metadata.xml | xmllint --xpath '/metadata/versioning/latest/text()' -)
-  # local latestscala=$(curl -s https://repo1.maven.org/maven2/org/scala-lang/scala-compiler/maven-metadata.xml | xmllint --xpath '/metadata/versioning/latest/text()' -)
-
-  echo "sbt.version = $latestsbt" > project/build.properties
-}
 
 # Open man page as PDF
 function manpdf() {
