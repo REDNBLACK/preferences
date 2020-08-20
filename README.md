@@ -5,13 +5,15 @@ My shell and programms settings
 ### Installation
 
 ##### Essentials
-1. Download this repo
+1. Open Terminal
+
+2. Download this repo
 
     ```bash
     git clone --depth=1 --shallow-submodules --recurse-submodules --remote-submodules https://github.com/REDNBLACK/preferences.git
     export DOTPREFSDIR="$(cd preferences && pwd)" && launchctl setenv DOTPREFSDIR "$DOTPREFSDIR"
     ```
-2. Setup [Homebrew](https://brew.sh)
+3. Setup [Homebrew](https://brew.sh)
 
     ```bash
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
@@ -19,18 +21,18 @@ My shell and programms settings
     brew tap buo/cask-upgrade # Better Cask command
     brew install mas          # App Store via CLI
     ```
-3. Setup [Git](https://git-scm.com) & [GitHub](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
+4. Setup [Git](https://git-scm.com) & [GitHub](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
 
     ```bash
     brew install git
     ln -fs $DOTPREFSDIR/git ~/.config/git
     ```
-4. Setup [Fira Code](https://github.com/tonsky/FiraCode)
+5. Setup [Fira Code](https://github.com/tonsky/FiraCode)
 
     ```bash
     brew cask install homebrew/cask-fonts/font-fira-code
     ```
-5. Setup [zsh](http://zsh.org) & [oh my zsh](https://ohmyz.sh) & [PowerLevel10k](https://github.com/romkatv/powerlevel10k) & [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) & [zsh-fast-syntax-highlighting](https://github.com/zdharma/fast-syntax-highlighting)
+6. Setup [zsh](http://zsh.org) & [oh my zsh](https://ohmyz.sh) & [PowerLevel10k](https://github.com/romkatv/powerlevel10k) & [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) & [zsh-fast-syntax-highlighting](https://github.com/zdharma/fast-syntax-highlighting)
 
     ```bash
     brew install zsh
@@ -44,13 +46,13 @@ My shell and programms settings
     # Set as default shell (alternative)
     sudo dscl . -create ~ UserShell $(which zsh)
     ```
-6. Setup [iTerm](https://iterm2.com)
+7. Setup [iTerm](https://iterm2.com)
 
     ```bash
     brew cask install iterm2
     ln -fs $DOTPREFSDIR/iterm2/conf.plist ~/Library/Preferences/com.googlecode.iterm2.plist
     ```
-7. Setup Tools
+8. Setup Tools
 
     ```bash
     brew install nnn
@@ -164,10 +166,11 @@ My shell and programms settings
     ```bash
     brew cask install bettertouchtool
     ```
-8. 💰 Setup [Haptic Touchbar](https://haptictouchbar.com)
+8. Setup [HapticKey](https://github.com/niw/HapticKey)
 
     ```bash
-    brew cask install haptic-touch-bar
+    brew cask install haptickey
+    # defaults import at.niw.HapticKey $DOTPREFSDIR/haptickey/conf.plist
     ```
 9. 💰 Setup [iStat Menus](https://bjango.com/mac/istatmenus)
 

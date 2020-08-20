@@ -19,8 +19,3 @@ export HOMEBREW_REPOSITORY="/usr/local/Homebrew";
 export HOMEBREW_NO_ANALYTICS=1
 export HOMEBREW_NO_INSTALL_CLEANUP=1
 export HOMEBREW_NO_EMOJI=1
-
-# thefuck (https://github.com/nvbn/thefuck)
-if command -v thefuck &> /dev/null; then
-  eval "$(thefuck --alias)"
-fi

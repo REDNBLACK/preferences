@@ -28,10 +28,14 @@
 	<false/>
 	<key>ClosingHotkeySwitchesSpaces</key>
 	<true/>
+	<key>Command</key>
+	<string></string>
 	<key>CommandSelection</key>
 	<true/>
 	<key>Control</key>
 	<integer>1</integer>
+	<key>ConvertTabDragToWindowDragForSolitaryTabInCompactOrMinimalTheme</key>
+	<false/>
 	<key>CopyLastNewline</key>
 	<false/>
 	<key>CopySelection</key>
@@ -473,6 +477,8 @@
 	<false/>
 	<key>DoubleClickPerformsSmartSelection</key>
 	<true/>
+	<key>DrawBottomLineForHorizontalTabBar</key>
+	<true/>
 	<key>EnableAPIServer</key>
 	<true/>
 	<key>EnableDivisionView</key>
@@ -587,7 +593,7 @@
 		</dict>
 	</dict>
 	<key>HapticFeedbackForEsc</key>
-	<false/>
+	<true/>
 	<key>HiddenAFRStrokeThickness</key>
 	<real>0.0</real>
 	<key>HiddenAdvancedFontRendering</key>
@@ -618,6 +624,8 @@
 	<true/>
 	<key>HotkeyModifiers</key>
 	<integer>1048840</integer>
+	<key>HotkeyWindowFloatsAboveOtherWindows</key>
+	<true/>
 	<key>IRMemory</key>
 	<integer>4</integer>
 	<key>JobName</key>
@@ -675,8 +683,10 @@
 		<key>TB Is Shown</key>
 		<integer>1</integer>
 	</dict>
+	<key>NSWindow Frame NSNavPanelAutosaveName</key>
+	<string>320 320 800 448 0 0 1440 875 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>0 475 1440 400 0 0 1440 875 </string>
+	<string>0 478 1440 400 0 0 1440 875 </string>
 	<key>NeverWarnAboutShortLivedSessions_253A9DE7-152C-41E9-B5A3-688AE70B1A42</key>
 	<true/>
 	<key>NeverWarnAboutShortLivedSessions_EE4A34AF-6B5C-4E75-8D8D-6DF8D45A19DA</key>
@@ -690,6 +700,18 @@
 			<true/>
 			<key>ASCII Ligatures</key>
 			<true/>
+			<key>AWDS Pane Directory</key>
+			<string></string>
+			<key>AWDS Pane Option</key>
+			<string>No</string>
+			<key>AWDS Tab Directory</key>
+			<string></string>
+			<key>AWDS Tab Option</key>
+			<string>No</string>
+			<key>AWDS Window Directory</key>
+			<string></string>
+			<key>AWDS Window Option</key>
+			<string>No</string>
 			<key>Allow Title Reporting</key>
 			<false/>
 			<key>Ambiguous Double Width</key>
@@ -939,22 +961,28 @@
 			<false/>
 			<key>Horizontal Spacing</key>
 			<real>1</real>
+			<key>HotKey Activated By Modifier</key>
+			<false/>
+			<key>HotKey Alternate Shortcuts</key>
+			<array/>
 			<key>HotKey Characters</key>
 			<string>`</string>
 			<key>HotKey Characters Ignoring Modifiers</key>
 			<string>`</string>
 			<key>HotKey Key Code</key>
 			<integer>50</integer>
+			<key>HotKey Modifier Activation</key>
+			<integer>0</integer>
 			<key>HotKey Modifier Flags</key>
-			<integer>1048840</integer>
+			<integer>1048576</integer>
 			<key>HotKey Window Animates</key>
-			<true/>
+			<false/>
 			<key>HotKey Window AutoHides</key>
-			<true/>
+			<false/>
 			<key>HotKey Window Dock Click Action</key>
 			<integer>0</integer>
 			<key>HotKey Window Floats</key>
-			<false/>
+			<true/>
 			<key>HotKey Window Reopens On Activation</key>
 			<false/>
 			<key>Icon</key>
@@ -963,6 +991,8 @@
 			<integer>0</integer>
 			<key>Initial Text</key>
 			<string></string>
+			<key>Initial Use Transparency</key>
+			<true/>
 			<key>Jobs to Ignore</key>
 			<array>
 				<string>rlogin</string>
@@ -1275,6 +1305,8 @@
 			<true/>
 			<key>Prompt Before Closing 2</key>
 			<integer>2</integer>
+			<key>Reduce Flicker</key>
+			<false/>
 			<key>Right Option Key Sends</key>
 			<integer>0</integer>
 			<key>Rows</key>
@@ -1813,6 +1845,8 @@
 		<key>topLeft</key>
 		<string>{105, 819}</string>
 	</dict>
+	<key>NoSyncHaveUsedCopyMode</key>
+	<false/>
 	<key>NoSyncInstallationId</key>
 	<string>D2B11596-501D-4672-AE4A-67E7734E728C</string>
 	<key>NoSyncLaunchExperienceControllerRunCount</key>
@@ -2551,6 +2585,8 @@
 	</dict>
 	<key>NoSyncTipOfTheDayEligibilityBeganTime</key>
 	<real>615069070.198686</real>
+	<key>NoSyncTipsDisabled</key>
+	<true/>
 	<key>OnlyWhenMoreTabs</key>
 	<false/>
 	<key>OpenArrangementAtStartup</key>
@@ -2609,7 +2645,7 @@
 	<key>PromptOnQuit</key>
 	<true/>
 	<key>QuitWhenAllWindowsClosed</key>
-	<false/>
+	<true/>
 	<key>RightCommand</key>
 	<integer>8</integer>
 	<key>RightOption</key>
@@ -2643,7 +2679,7 @@
 	<key>SmartPlacement</key>
 	<false/>
 	<key>SoundForEsc</key>
-	<false/>
+	<true/>
 	<key>SplitPaneDimmingAmount</key>
 	<real>0.40000000596046448</real>
 	<key>StatusBarIcon</key>
@@ -2666,23 +2702,22 @@
 	<integer>0</integer>
 	<key>ThreeFingerEmulates</key>
 	<false/>
+	<key>TimeBetweenTips</key>
+	<real>0.0</real>
 	<key>TmuxDashboardLimit</key>
 	<integer>10</integer>
 	<key>TripleClickSelectsFullWrappedLines</key>
 	<false/>
 	<key>URLHandlersByGuid</key>
-	<dict>
-		<key>ssh</key>
-		<string>EE4A34AF-6B5C-4E75-8D8D-6DF8D45A19DA</string>
-	</dict>
+	<dict/>
 	<key>UseBorder</key>
 	<false/>
 	<key>UseCompactLabel</key>
 	<true/>
 	<key>UseLionStyleFullscreen</key>
-	<true/>
-	<key>VisualIndicatorForEsc</key>
 	<false/>
+	<key>VisualIndicatorForEsc</key>
+	<true/>
 	<key>WebKitDefaultFontSize</key>
 	<integer>11</integer>
 	<key>WebKitStandardFont</key>

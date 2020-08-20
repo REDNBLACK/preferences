@@ -65,7 +65,7 @@ HIST_STAMPS="dd.mm.yyyy"
 plugins=(
   brew
   sudo
-  thefuck
+  # thefuck
   zsh_reload
   command-not-found
   git
