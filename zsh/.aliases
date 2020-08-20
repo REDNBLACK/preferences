@@ -14,7 +14,7 @@ alias ~="cd ~" # `cd` is probably faster to type though
 alias -- -="cd -"
 
 # Weather
-alias weather="curl v2.wttr.in"
+alias weather="curl wttr.in"
 
 # Shortcuts
 alias d="cd ~/Documents"

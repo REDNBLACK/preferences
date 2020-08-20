@@ -12,7 +12,7 @@ My shell and programms settings
     ```bash
     git clone --depth=1 --shallow-submodules --recurse-submodules --remote-submodules https://github.com/REDNBLACK/preferences.git
     echo "export DOTPREFSDIR=$(cd preferences && pwd)" | sudo tee -a /etc/zshenv > /dev/null
-    zsh
+    exec zsh
     ```
 3. Setup [Homebrew](https://brew.sh)
 
@@ -156,11 +156,8 @@ My shell and programms settings
     brew cask install pock
     defaults import com.pigigaldi.pock $DOTPREFSDIR/pock/conf.plist
 
-    # Hide Dock completely
-    defaults write com.apple.dock autohide -bool true
-    defaults write com.apple.dock autohide-delay -float 1000.0
-    defaults write com.apple.dock no-bouncing -bool true
-    killall Dock
+    # Hide system Dock
+    . $DOTPREFSDIR/pock/hide-dock.zsh apply
     ```
 
 ##### System
@@ -185,8 +182,7 @@ My shell and programms settings
 3. Setup [Keka](https://github.com/aonez/Keka)
 
     ```bash
-    brew cask install keka
-    brew cask install kekadefaultapp
+    brew cask install keka kekadefaultapp
     defaults import com.aone.keka $DOTPREFSDIR/keka/conf.plist
     ```
 4. Setup [AppCleaner](https://freemacsoft.net/appcleaner)
@@ -239,10 +235,7 @@ My shell and programms settings
     brew cask install google-chrome
 
     # Disable auto update
-    rm -rf /Applications/Google\ Chrome.app/Contents/Frameworks/Google\ Chrome\ Framework.framework/Versions/Current/Frameworks/KeystoneRegistration.framework
-    rm -rf ~/Library/LaunchAgents/com.google.*.plist
-    rm -rf ~/Library/Preferences/com.google.Keystone.*.plist
-    rm -rf ~/Library/Google/
+    . $DOTPREFSDIR/chrome/disable-updates.zsh
     ```
 4. Setup [Tor](https://github.com/TheTorProject)
 
@@ -266,7 +259,7 @@ My shell and programms settings
     ```bash
     brew cask install spotify
     ```
-2. 💰 Setup [Air Server](https://www.airserver.com/Mac)
+2. 💰 Setup [Air Server](https://airserver.com/Mac)
 
     ```bash
     brew cask install airserver
