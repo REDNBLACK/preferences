@@ -16,30 +16,12 @@ alias -- -="cd -"
 # Weather
 alias weather="curl v2.wttr.in"
 
-# Git
-alias g="git"
-alias gs='git status'
-alias ga='git add'
-alias gaa='git add .'
-alias gc='git commit'
-alias gca='git commit --amend --no-edit'
-alias gp='git push'
-alias gpf='git push -f'
-alias gl='git pull'
-alias glf='git fetch && git reset --hard origin/$(git rev-parse --abbrev-ref HEAD)'
-alias gfp='git fetch --prune'
-# alias gr='git rebase -i'
-
 # Shortcuts
 alias d="cd ~/Documents"
 alias dl="cd ~/Downloads"
 alias w="cd ~/Work"
-
-# Common
 alias h="history"
 alias j="jobs"
-alias duh="du -d 1 -h"
-alias dua="du -ah"
 
 # Update stuff
 alias update-brew="echo "Core:"; brew update | lolcat; brew upgrade --formula | lolcat; brew cleanup formula -s --prune 1 | lolcat; echo "Cask:"; brew cu -a -y --no-brew-update --cleanup | lolcat; echo "MAS:"; mas upgrade | lolcat"
@@ -47,8 +29,7 @@ alias update-brew="echo "Core:"; brew update | lolcat; brew upgrade --formula | 
 # Kill all the tabs in Chrome to free up memory
 alias chromekill="ps ux | grep '[C]hrome Helper --type=renderer' | grep -v extension-process | tr -s ' ' | cut -d ' ' -f2 | xargs kill"
 
-# Recursively delete `.DS_Store` files
-alias cleanup="find . -type f -name '*.DS_Store' -ls -delete"
-
 # Always enable colored `grep` output
 alias grep='grep --color=auto'
+alias duh="du -d 1 -h"
+alias dua="du -ah"

@@ -68,7 +68,7 @@
 		"log",
 		"coverage"
 	],
-	"font_face": "Fira Code Retina",
+	"font_face": "FiraCode Nerd Font Retina",
 	"font_size": 11,
 	"gutter": true,
 	"highlight_line": true,

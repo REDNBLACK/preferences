@@ -3,10 +3,8 @@
 # ==========================================
 #     .functions
 #
-#  - manpdf
 #  - editf
 #  - mkd = mkdir + cd
-#  - cdf = cd + finder
 #  - targz = -> .tar.gz
 #  - fs = du [with options]
 #  - tre
@@ -28,11 +26,6 @@
 #   fi
 # }
 
-# Open man page as PDF
-function manpdf() {
-  man -t "${1}" | open -f -a /Applications/Preview.app/
-}
-
 # Create a new directory and enter it
 function mkd() {
   mkdir -p "$@" && cd "$_";
@@ -41,11 +34,6 @@ function mkd() {
 # Open file in $EDITOR
 function editf() {
   $EDITOR $1
-}
-
-# Change working directory to the top-most Finder window location
-function cdf() { # short for `cdfinder`
-  cd "$(osascript -e 'tell app "Finder" to POSIX path of (insertion location as alias)')";
 }
 
 # Create a .tar.gz archive, using `zopfli`, `pigz` or `gzip` for compression

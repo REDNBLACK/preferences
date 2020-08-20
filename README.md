@@ -28,10 +28,12 @@ My shell and programms settings
     brew install git
     ln -fs $DOTPREFSDIR/git ~/.config/git
     ```
-5. Setup [Fira Code](https://github.com/tonsky/FiraCode)
+5. Setup [Fira Code (+Nerd)](https://github.com/tonsky/FiraCode) & [Meslo Nerd](https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/Meslo)
 
     ```bash
     brew cask install homebrew/cask-fonts/font-fira-code
+    brew cask install homebrew/cask-fonts/font-fira-code-nerd-font
+    brew cask install homebrew/cask-fonts/font-meslo-lg-nerd-font
     ```
 6. Setup [zsh](http://zsh.org) & [oh my zsh](https://ohmyz.sh) & [PowerLevel10k](https://github.com/romkatv/powerlevel10k) & [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) & [zsh-fast-syntax-highlighting](https://github.com/zdharma/fast-syntax-highlighting)
 
@@ -192,15 +194,15 @@ My shell and programms settings
     ```bash
     brew cask install appcleaner
     ```
-5. Setup [OnyX](https://www.titanium-software.fr/en/onyx.html)
+5. Setup [Clean Me](https://github.com/Kevin-De-Koninck/Clean-Me)
+
+    ```bash
+    brew cask install clean-me
+    ```
+6. Setup [OnyX](https://www.titanium-software.fr/en/onyx.html)
 
     ```bash
     brew cask install onyx
-    ```
-6. 💰 Setup [CleanMyMac X](https://macpaw.com/cleanmymac)
-
-    ```bash
-    brew cask install cleanmymac
     ```
 7. 💰 Setup [Apple Remote Desktop](https://apps.apple.com/app/apple-remote-desktop/id409907375)
 
@@ -291,9 +293,6 @@ My shell and programms settings
     ```
 
 #### Core
-https://mhmd.io/blog/04-2020/macsetup-devops/
-http://www.drjackyl.de/how/to/2017/08/15/Set_Global_Environment_Variables_in_macOS_10.10_and_later.html
-https://github.com/aethys256/notes/blob/master/macOS_defaults.md
 
 ```bash
 # Enable sudo auth via Touch ID
