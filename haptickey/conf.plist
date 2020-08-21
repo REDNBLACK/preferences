@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSStatusItem Visible Item-0</key>
+	<false/>
+	<key>FeedbackType</key>
+	<integer>1</integer>
+	<key>ListeningEventType</key>
+	<integer>2</integer>
+	<key>ScreenFlashEnabled</key>
+	<false/>
+	<key>SoundEffectType</key>
+	<integer>0</integer>
+	<key>SUHasLaunchedBefore</key>
+	<true/>
+	<key>SUEnableAutomaticChecks</key>
+	<false/>
+	<key>SUEnableSystemProfiling</key>
+	<false/>
+	<key>SUAllowsAutomaticUpdates</key>
+	<false/>
+	<key>SUAutomaticallyUpdate</key>
+	<false/>
+	<key>SUSendProfileInfo</key>
+	<false/>
+</dict>
+</plist>

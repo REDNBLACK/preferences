@@ -143,7 +143,7 @@ My shell and programms settings
 
     ```bash
     brew cask install haptickey
-    # defaults import at.niw.HapticKey $DOTPREFSDIR/haptickey/conf.plist
+    defaults import at.niw.HapticKey $DOTPREFSDIR/haptickey/conf.plist
     ```
 6. Setup [Flow](https://flowapp.info)
 
@@ -200,7 +200,7 @@ My shell and programms settings
     ```bash
     brew cask install onyx
     ```
-7. 💰 Setup [Apple Remote Desktop](https://apps.apple.com/app/apple-remote-desktop/id409907375)
+7. 💰 Setup [Apple Remote Desktop](https://apps.apple.com/app/id409907375)
 
     ```bash
     mas install 409907375
@@ -264,22 +264,22 @@ My shell and programms settings
     ```bash
     brew cask install airserver
     ```
-3. Setup [Helium Lift](https://apps.apple.com/app/heliumlift/id1018899653)
+3. Setup [Helium Lift](https://apps.apple.com/app/id1018899653)
 
     ```bash
     mas install 1018899653
     ```
-4. Setup [Picktorial](https://apps.apple.com/app/picktorial/id1043289526)
+4. Setup [Picktorial](https://apps.apple.com/app/id1043289526)
 
     ```bash
     mas install 1043289526
     ```
-5. Setup [Pocket](https://apps.apple.com/app/pocket/id568494494)
+5. Setup [Pocket](https://apps.apple.com/app/id568494494)
 
     ```bash
     mas install 568494494
     ```
-6. 💰 Setup [Noizio](https://apps.apple.com/app/noizio-focus-relax-sleep/id928871589)
+6. 💰 Setup [Noizio](https://apps.apple.com/app/id928871589)
 
     ```bash
     mas install 928871589
