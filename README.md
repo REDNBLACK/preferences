@@ -7,14 +7,14 @@ My shell and programms settings
 ##### Essentials
 1. Open Terminal
 
-1. Download this repo
+2. Download this repo
 
     ```bash
     git clone --depth=1 --shallow-submodules --recurse-submodules --remote-submodules https://github.com/REDNBLACK/preferences.git
     echo "export DOTPREFSDIR=$(cd preferences && pwd)" | sudo tee -a /etc/zshenv > /dev/null
     exec zsh
     ```
-1. Setup [Homebrew](https://brew.sh)
+3. Setup [Homebrew](https://brew.sh)
 
     ```bash
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
@@ -22,20 +22,20 @@ My shell and programms settings
     brew tap buo/cask-upgrade # Better Cask command
     brew install mas          # App Store via CLI
     ```
-1. Setup [Git](https://git-scm.com) & [GitHub](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
+4. Setup [Git](https://git-scm.com) & [GitHub](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
 
     ```bash
     brew install git
     ln -fs $DOTPREFSDIR/git ~/.config/git
     ```
-1. Setup [Fira Code (+Nerd)](https://github.com/tonsky/FiraCode) & [Meslo Nerd](https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/Meslo)
+5. Setup [Fira Code (+Nerd)](https://github.com/tonsky/FiraCode) & [Meslo Nerd](https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/Meslo)
 
     ```bash
     brew cask install homebrew/cask-fonts/font-fira-code
     brew cask install homebrew/cask-fonts/font-fira-code-nerd-font
     brew cask install homebrew/cask-fonts/font-meslo-lg-nerd-font
     ```
-1. Setup [zsh](http://zsh.org) & [oh my zsh](https://ohmyz.sh) & [PowerLevel10k](https://github.com/romkatv/powerlevel10k) & [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) & [zsh-fast-syntax-highlighting](https://github.com/zdharma/fast-syntax-highlighting)
+6. Setup [zsh](http://zsh.org) & [oh my zsh](https://ohmyz.sh) & [PowerLevel10k](https://github.com/romkatv/powerlevel10k) & [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) & [zsh-fast-syntax-highlighting](https://github.com/zdharma/fast-syntax-highlighting)
 
     ```bash
     brew install zsh
@@ -49,13 +49,13 @@ My shell and programms settings
     # Set as default shell (alternative)
     sudo dscl . -create ~ UserShell $(which zsh)
     ```
-1. Setup [iTerm](https://iterm2.com)
+7. Setup [iTerm](https://iterm2.com)
 
     ```bash
     brew cask install iterm2
     ln -fs $DOTPREFSDIR/iterm2/conf.plist ~/Library/Preferences/com.googlecode.iterm2.plist
     ```
-1. Setup Tools
+8. Setup Tools
 
     ```bash
     brew install nnn
@@ -76,10 +76,15 @@ My shell and programms settings
     brew cask install sublime-text
     ln -fs $DOTPREFSDIR/sublime-text3/conf ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/User
     curl -SsL "https://packagecontrol.io/Package%20Control.sublime-package" > ~/Library/Application\ Support/Sublime\ Text\ 3/Installed\ Packages/Package\ Control.sublime-package
+
+    # Install license
+    cp -f "**Path to License.sublime_license file**" ~/Library/Application\ Support/Sublime\ Text\ 3/Local/License.sublime_license
+
+    # Set as default editor
     defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers -array-add \
     '{LSHandlerContentType=public.plain-text;LSHandlerRoleAll=com.sublimetext.3;}'
     ```
-1. Setup [Java OpenJDK](https://adoptopenjdk.net) & [GraalVM](https://graalvm.org)
+2. Setup [Java OpenJDK](https://adoptopenjdk.net) & [GraalVM](https://graalvm.org)
 
     ```bash
     brew cask install adoptopenjdk/openjdk/adoptopenjdk8
@@ -89,27 +94,27 @@ My shell and programms settings
     # Switch jdk version to `1.8` or `14` or `graal`
     jdk 1.8
     ```
-1. 💰 Setup [IntelliJ Idea](https://jetbrains.com/idea)
+3. 💰 Setup [IntelliJ Idea](https://jetbrains.com/idea)
 
     ```bash
     brew cask install jetbrains-toolbox
     ```
-1. 💰 Setup [Paw](https://paw.cloud)
+4. 💰 Setup [Paw](https://paw.cloud)
 
     ```bash
     brew cask install paw
     ```
-1. Setup [Docker](https://github.com/docker/for-mac)
+5. Setup [Docker](https://github.com/docker/for-mac)
 
     ```bash
     brew cask install docker
     ```
-1. Setup [ngrok](https://ngrok.com)
+6. Setup [ngrok](https://ngrok.com)
 
     ```bash
     brew cask install ngrok
     ```
-1. Setup [Postgres App](https://github.com/PostgresApp/PostgresApp)
+7. Setup [Postgres App](https://github.com/PostgresApp/PostgresApp)
 
     ```bash
     brew cask install postgres
@@ -122,7 +127,7 @@ My shell and programms settings
     brew cask install cheatsheet
     defaults import com.mediaatelier.CheatSheet $DOTPREFSDIR/cheatsheet/conf.plist
     ```
-1. 💰 Setup [BetterTouchTool](https://folivora.ai)
+2. 💰 Setup [BetterTouchTool](https://folivora.ai)
 
     ```bash
     brew cask install bettertouchtool
@@ -131,25 +136,25 @@ My shell and programms settings
     # Install license
     cp -f "**Path to license.bettertouchtool file**" ~/Library/Application\ Support/BetterTouchTool/bettertouchtool.bttlicense
     ```
-1. ~~Setup [Maccy](https://github.com/p0deje/Maccy)~~ (Superseded by [BetterTouchTool](#Productivity))
+3. ~~Setup [Maccy](https://github.com/p0deje/Maccy)~~ (Superseded by [BetterTouchTool](#Productivity))
 
     ```bash
     # brew cask install maccy
     # defaults import org.p0deje.Maccy $DOTPREFSDIR/maccy/conf.plist
     ```
-1. ~~Setup [Rectangle](https://github.com/rxhanson/Rectangle)~~ (Superseded by [BetterTouchTool](#Productivity))
+4. ~~Setup [Rectangle](https://github.com/rxhanson/Rectangle)~~ (Superseded by [BetterTouchTool](#Productivity))
 
     ```bash
     # brew cask install rectangle
     # defaults import com.knollsoft.Rectangle $DOTPREFSDIR/rectangle/conf.plist
     ```
-1. ~~Setup [HapticKey](https://github.com/niw/HapticKey)~~ (Superseded by [BetterTouchTool](#Productivity))
+5. ~~Setup [HapticKey](https://github.com/niw/HapticKey)~~ (Superseded by [BetterTouchTool](#Productivity))
 
     ```bash
     # brew cask install haptickey
     # defaults import at.niw.HapticKey $DOTPREFSDIR/haptickey/conf.plist
     ```
-1. ~~Setup [Pock](https://github.com/pigigaldi/Pock)~~ (Superseded by [BetterTouchTool](#Productivity))
+6. ~~Setup [Pock](https://github.com/pigigaldi/Pock)~~ (Superseded by [BetterTouchTool](#Productivity))
 
     ```bash
     # brew cask install pock
@@ -158,7 +163,7 @@ My shell and programms settings
     # Hide system Dock
     # . $DOTPREFSDIR/pock/hide-dock.zsh apply
     ```
-1. ~~Setup [Flow](https://flowapp.info)~~ (Superseded by [BetterTouchTool](#Productivity))
+7. ~~Setup [Flow](https://flowapp.info)~~ (Superseded by [BetterTouchTool](#Productivity))
 
     ```bash
     # mas install 1423210932
@@ -174,7 +179,7 @@ My shell and programms settings
     # Install license
     defaults write com.bjango.istatmenus license6 -dict email '**License email**' serial '**License serial key**'
     ```
-1. Setup [Amphetamine](https://apps.apple.com/app/id937984704) & [Amphetamine Enhancer](https://github.com/x74353/Amphetamine-Enhancer)
+2. Setup [Amphetamine](https://apps.apple.com/app/id937984704) & [Amphetamine Enhancer](https://github.com/x74353/Amphetamine-Enhancer)
 
     ```bash
     mas install 937984704
@@ -185,28 +190,28 @@ My shell and programms settings
     hdiutil detach -quiet /Volumes/Amphetamine\ Enhancer
     sed -r -i '' -e "s#/Applications/Amphetamine\\\? Enhancer.app#~/Library/Containers/com.if.Amphetamine/Data/Library/Application' 'Support/Amphetamine' 'Enhancer.app#g" Amphetamine\ Enhancer.app/**/*.(sh|plist)
     ```
-1. Setup [Keka](https://github.com/aonez/Keka)
+3. Setup [Keka](https://github.com/aonez/Keka)
 
     ```bash
     brew cask install keka kekadefaultapp
     defaults import com.aone.keka $DOTPREFSDIR/keka/conf.plist
     ```
-1. Setup [AppCleaner](https://freemacsoft.net/appcleaner)
+4. Setup [AppCleaner](https://freemacsoft.net/appcleaner)
 
     ```bash
     brew cask install appcleaner
     ```
-1. Setup [Clean Me](https://github.com/Kevin-De-Koninck/Clean-Me)
+5. Setup [Clean Me](https://github.com/Kevin-De-Koninck/Clean-Me)
 
     ```bash
     brew cask install clean-me
     ```
-1. Setup [OnyX](https://www.titanium-software.fr/en/onyx.html)
+6. Setup [OnyX](https://www.titanium-software.fr/en/onyx.html)
 
     ```bash
     brew cask install onyx
     ```
-1. 💰 Setup [Apple Remote Desktop](https://apps.apple.com/app/id409907375)
+7. 💰 Setup [Apple Remote Desktop](https://apps.apple.com/app/id409907375)
 
     ```bash
     mas install 409907375
@@ -218,7 +223,7 @@ My shell and programms settings
     ```bash
     # 6.8.8 Not in AppStore or Brew Cask
     ```
-1. Setup [Gas Mask](https://github.com/2ndalpha/gasmask)
+2. Setup [Gas Mask](https://github.com/2ndalpha/gasmask)
 
     ```bash
     brew cask install gas-mask
@@ -230,12 +235,12 @@ My shell and programms settings
     ```bash
     brew cask install telegram
     ```
-1. Setup [Slack](https://slack.com)
+2. Setup [Slack](https://slack.com)
 
     ```bash
     brew cask install slack
     ```
-1. Setup [Google Chrome](https://google.com/chrome)
+3. Setup [Google Chrome](https://google.com/chrome)
 
     ```bash
     brew cask install google-chrome
@@ -243,17 +248,17 @@ My shell and programms settings
     # Disable auto update
     . $DOTPREFSDIR/chrome/disable-updates.zsh
     ```
-1. Setup [Tor](https://github.com/TheTorProject)
+4. Setup [Tor](https://github.com/TheTorProject)
 
     ```bash
     brew cask install tor-browser
     ```
-1. Setup [Transmission](https://github.com/transmission/transmission)
+5. Setup [Transmission](https://github.com/transmission/transmission)
 
     ```bash
     brew cask install transmission
     ```
-1. Setup [Wi-Fi Explorer](https://intuitibits.com/products/wifi-explorer)
+6. Setup [Wi-Fi Explorer](https://intuitibits.com/products/wifi-explorer)
 
     ```bash
     brew cask install wifi-explorer
@@ -265,28 +270,28 @@ My shell and programms settings
     ```bash
     brew cask install spotify
     ```
-1. 💰 Setup [Air Server](https://airserver.com/Mac)
+2. 💰 Setup [Air Server](https://airserver.com/Mac)
 
     ```bash
     brew cask install airserver
     ```
-1. ~~Setup [Helium Lift](https://apps.apple.com/app/id1018899653)~~ (Superseded by [BetterTouchTool](#Productivity))
+3. ~~Setup [Helium Lift](https://apps.apple.com/app/id1018899653)~~ (Superseded by [BetterTouchTool](#Productivity))
 
     ```bash
     # mas install 1018899653
     ```
 
-1. Setup [Picktorial](https://apps.apple.com/app/id1043289526)
+4. Setup [Picktorial](https://apps.apple.com/app/id1043289526)
 
     ```bash
     mas install 1043289526
     ```
-1. Setup [Pocket](https://apps.apple.com/app/id568494494)
+5. Setup [Abyss](https://apps.apple.com/app/id1507396839)
 
     ```bash
-    mas install 568494494
+    mas install 1507396839
     ```
-1. 💰 Setup [Noizio](https://apps.apple.com/app/id928871589)
+6. 💰 Setup [Noizio](https://apps.apple.com/app/id928871589)
 
     ```bash
     mas install 928871589
