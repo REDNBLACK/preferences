@@ -19,8 +19,8 @@ My shell and programms settings
     ```bash
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
     brew analytics off        # Turn off analytics
-    brew tap buo/cask-upgrade # Better Cask command
-    brew install mas          # App Store via CLI
+    brew tap buo/cask-upgrade # Install better "brew cask"
+    brew install mas          # Install CLI for App Store
     ```
 4. Setup [Git](https://git-scm.com) & [GitHub](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
 
@@ -58,15 +58,49 @@ My shell and programms settings
 8. Setup Tools
 
     ```bash
-    brew install nnn
-    brew install jq
-    brew install tldr
+    brew install exa         # 'ls' on steroids
+    brew install ripgrep     # Modern 'grep'
+    brew install tldr --HEAD # TL;DR version of 'man'
+    brew install nnn         # File Manager
+    brew install jq          # CLI for JSON processing
 
-    # thefuck (https://github.com/nvbn/thefuck)
-    # if command -v thefuck &> /dev/null; then
-    #   eval "$(thefuck --alias)"
-    # fi
+    # https://github.com/gleitz/howdoi
+    # brew install howdoi
+
+    # https://github.com/nvbn/thefuck
     # brew install thefuck
+    ```
+9. Setup macOS
+
+    ```bash
+    . $DOTPREFSDIR/macOS/conf.zsh
+    ```
+
+##### Security
+1. 💰 Setup [1Password](https://1password.com)
+
+    ```bash
+    # 6.8.8 Not in AppStore or Brew Cask
+    ```
+2. Setup [DNS over HTTPS](https://github.com/paulmillr/encrypted-dns)
+
+    ```bash
+    curl -OSsL "https://raw.githubusercontent.com/paulmillr/encrypted-dns/master/cloudflare-https.mobileconfig" && open -a ProfileHelper cloudflare-https.mobileconfig && open "x-apple.systempreferences:com.apple.preferences.configurationprofiles"
+    rm -f cloudflare-https.mobileconfig
+    ```
+3. Setup [Gas Mask](https://github.com/2ndalpha/gasmask)
+
+    ```bash
+    brew cask install gas-mask
+    ```
+4. Setup misc
+
+    ```bash
+    # Enable sudo auth via Touch ID
+    sudo sed -i '.old' -e '2s;^;auth       sufficient     pam_tid.so\n;' /etc/pam.d/sudo
+
+    # Allow applications downloaded from anywhere
+    sudo spctl --master-disable
     ```
 
 ##### Coding
@@ -80,9 +114,8 @@ My shell and programms settings
     # Install license
     cp -f "**Path to License.sublime_license file**" ~/Library/Application\ Support/Sublime\ Text\ 3/Local/License.sublime_license
 
-    # Set as default editor
-    defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers -array-add \
-    '{LSHandlerContentType=public.plain-text;LSHandlerRoleAll=com.sublimetext.3;}'
+    # Set file association
+    . $DOTPREFSDIR/sublime-text3/file-assoc.zsh
     ```
 2. Setup [Java OpenJDK](https://adoptopenjdk.net) & [GraalVM](https://graalvm.org)
 
@@ -184,17 +217,20 @@ My shell and programms settings
     ```bash
     mas install 937984704
 
-    cd ~/Library/Containers/com.if.Amphetamine/Data/Library/Application\ Support
-    hdiutil attach -nobrowse -quiet "https://github.com/x74353/Amphetamine-Enhancer/raw/master/Releases/Current/Amphetamine%20Enhancer.dmg"
-    cp -rf /Volumes/Amphetamine\ Enhancer/*.app ./
-    hdiutil detach -quiet /Volumes/Amphetamine\ Enhancer
-    sed -r -i '' -e "s#/Applications/Amphetamine\\\? Enhancer.app#~/Library/Containers/com.if.Amphetamine/Data/Library/Application' 'Support/Amphetamine' 'Enhancer.app#g" Amphetamine\ Enhancer.app/**/*.(sh|plist)
+    # cd ~/Library/Containers/com.if.Amphetamine/Data/Library/Application\ Support
+    # hdiutil attach -nobrowse -quiet "https://github.com/x74353/Amphetamine-Enhancer/raw/master/Releases/Current/Amphetamine%20Enhancer.dmg"
+    # cp -rf /Volumes/Amphetamine\ Enhancer/*.app ./
+    # hdiutil detach -quiet /Volumes/Amphetamine\ Enhancer
+    # sed -r -i '' -e "s#/Applications/Amphetamine\\\? Enhancer.app#~/Library/Containers/com.if.Amphetamine/Data/Library/Application' 'Support/Amphetamine' 'Enhancer.app#g" Amphetamine\ Enhancer.app/**/*.(sh|plist)
     ```
 3. Setup [Keka](https://github.com/aonez/Keka)
 
     ```bash
-    brew cask install keka kekadefaultapp
+    brew cask install keka
     defaults import com.aone.keka $DOTPREFSDIR/keka/conf.plist
+
+    # Set file association (Without using kekadefaultapp)
+    . $DOTPREFSDIR/keka/file-assoc.zsh
     ```
 4. Setup [AppCleaner](https://freemacsoft.net/appcleaner)
 
@@ -206,7 +242,7 @@ My shell and programms settings
     ```bash
     brew cask install clean-me
     ```
-6. Setup [OnyX](https://www.titanium-software.fr/en/onyx.html)
+6. Setup [OnyX](https://titanium-software.fr/en/onyx)
 
     ```bash
     brew cask install onyx
@@ -215,18 +251,6 @@ My shell and programms settings
 
     ```bash
     mas install 409907375
-    ```
-
-##### Security
-1. 💰 Setup [1Password](https://1password.com)
-
-    ```bash
-    # 6.8.8 Not in AppStore or Brew Cask
-    ```
-2. Setup [Gas Mask](https://github.com/2ndalpha/gasmask)
-
-    ```bash
-    brew cask install gas-mask
     ```
 
 ##### Network
@@ -246,8 +270,14 @@ My shell and programms settings
     brew cask install google-chrome
 
     # Disable auto update
-    . $DOTPREFSDIR/chrome/disable-updates.zsh
+    . $DOTPREFSDIR/chrome/disable-auto-update.zsh
+
+    # Disable built-in DNS
+    defaults write com.google.Chrome BuiltInDnsClientEnabled -boolean false
     ```
+
+    * Install [plugins, theme and StartPage search engine](/chrome/plugins.md)
+    * Import [uBlock Origin settings](/chrome/ublock-settings.txt)
 4. Setup [Tor](https://github.com/TheTorProject)
 
     ```bash
@@ -275,39 +305,42 @@ My shell and programms settings
     ```bash
     brew cask install airserver
     ```
-3. ~~Setup [Helium Lift](https://apps.apple.com/app/id1018899653)~~ (Superseded by [BetterTouchTool](#Productivity))
+3. Setup [HandBrake](https://handbrake.fr)
+
+    ```bash
+    brew cask install handbrake
+    ```
+4. ~~Setup [Helium Lift](https://apps.apple.com/app/id1018899653)~~ (Superseded by [BetterTouchTool](#Productivity))
 
     ```bash
     # mas install 1018899653
     ```
 
-4. Setup [Picktorial](https://apps.apple.com/app/id1043289526)
+5. Setup [Picktorial](https://apps.apple.com/app/id1043289526)
 
     ```bash
     mas install 1043289526
     ```
-5. Setup [Abyss](https://apps.apple.com/app/id1507396839)
+6. Setup [Abyss](https://apps.apple.com/app/id1507396839)
 
     ```bash
     mas install 1507396839
     ```
-6. 💰 Setup [Noizio](https://apps.apple.com/app/id928871589)
+7. 💰 Setup [Noizio](https://apps.apple.com/app/id928871589)
 
     ```bash
     mas install 928871589
     ```
+8. Setup [Touchbar Nyancat](https://github.com/avatsaev/touchbar_nyancat)
 
-#### Core
+    ```bash
+    curl -SsL "https://github.com/avatsaev/touchbar_nyancat/releases/download/0.0.2/touchbar_nyancat.app.zip" | tar -xf - -C /Applications/
+    chmod -R 755 /Applications/touchbar_nyancat.app
+    ```
 
-```bash
-# Enable sudo auth via Touch ID
-sudo sed -i '.old' -e '2s;^;auth       sufficient     pam_tid.so\n;' /etc/pam.d/sudo
-# Show Library folder
-chflags nohidden ~/Library
-# Show hidden files
-defaults write com.apple.finder AppleShowAllFiles -bool true
-# Show path bar
-defaults write com.apple.finder ShowPathbar -bool true
-# Show status bar
-defaults write com.apple.finder ShowStatusBar -bool true
-```
+##### Mobile
+1. Setup [AltServer](https://altstore.io)
+
+    ```bash
+    brew cask install altserver
+    ```

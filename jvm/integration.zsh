@@ -17,15 +17,20 @@ function jdk() {
   java -version
 }
 
-# Update sbt version to latest in current project
-function sbt-latest() {
-  local ver=$(curl -s https://repo1.maven.org/maven2/org/scala-sbt/sbt/maven-metadata.xml | xmllint --xpath '/metadata/versioning/latest/text()' -)
-  # local latestscala=$(curl -s https://repo1.maven.org/maven2/org/scala-lang/scala-compiler/maven-metadata.xml | xmllint --xpath '/metadata/versioning/latest/text()' -)
+# sbt utils
+#   1. Update sbt version to latest in current project
+#   2. Clear sbt compilation cache in current project
+function sbt() {
+  if [[ "$1" == "latest" ]]; then
+    local ver=$(curl -s https://repo1.maven.org/maven2/org/scala-sbt/sbt/maven-metadata.xml | xmllint --xpath '/metadata/versioning/latest/text()' -)
+    # local latestscala=$(curl -s https://repo1.maven.org/maven2/org/scala-lang/scala-compiler/maven-metadata.xml | xmllint --xpath '/metadata/versioning/latest/text()' -)
 
-  echo "sbt.version = $ver" > project/build.properties
-}
-
-# Clear sbt compilation cache in current project
-function sbt-cleanup() {
-  find . -name target -type d -prune -exec rm -r {} \;
+    echo "Setting project sbt version to $ver..."
+    echo "sbt.version = $ver" > project/build.properties
+  elif [[ "$1" == "cleanup" ]]; then
+    echo "Clearing project sbt compilation cache..."
+    find . -name target -type d -prune -exec rm -r {} \;
+  else
+    echo "Usage: sbt [latest|cleanup]"
+  fi
 }

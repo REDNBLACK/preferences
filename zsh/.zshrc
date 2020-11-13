@@ -30,9 +30,9 @@ function abort() {
 }
 
 # Load the shell dotfiles, and then some:
-for file in $ZDOTDIR/{.profile,.functions,.path,.exports,.aliases,.extra}; do
+for file in $ZDOTDIR/{.profile,.functions}; do
   if [ -f "$file" ]; then
-    source "$file"
+    . $file
   fi
 done;
 unset file;
@@ -63,25 +63,25 @@ HIST_STAMPS="dd.mm.yyyy"
 
 # Enable oh-my-zsh plugins
 plugins=(
-  brew
-  sudo
-  alias-finder
-  zsh_reload
-  extract
-  command-not-found
-  osx
-  git
-  gitignore
-  github
-  docker
-  docker-compose
-  jira
-  # thefuck
+  sudo              # Press `ESC` twice to prefix previous or current console command
+  alias-finder      # Learn existing aliases easily
+  zsh_reload        # Reload the zsh session by typing `src`
+  extract           # Defines `extract` function for wide variety of archive filetypes
+  osx               # Control macOS from command line
+  git               # Provides many aliases and a few useful functions for git
+  gitignore         # Download gitignore.io templates from the command line
+  docker            # Autocompletion for `docker`
+  docker-compose    # Autocompletion and aliases for `docker-compose`
+  jira              # Command line tools for interacting with Atlassian's JIRA
   # python
   # pip
 )
 
+# Load it
 . $ZSH/oh-my-zsh.sh
+
+# Load and override possible alias conflicts
+. $ZDOTDIR/.aliases
 ####################################
 
 

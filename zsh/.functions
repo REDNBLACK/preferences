@@ -3,11 +3,11 @@
 # ==========================================
 #     .functions
 #
-#  - editf
-#  - mkd = mkdir + cd
+#  - mkd   = mkdir + cd
+#  - vpn   = OpenConnect VPN
 #  - targz = -> .tar.gz
-#  - fs = du [with options]
-#  - tre
+#  - fs    = du [with options]
+#  - duti  = set file association
 # ==========================================
 
 
@@ -31,9 +31,35 @@ function mkd() {
   mkdir -p "$@" && cd "$_";
 }
 
-# Open file in $EDITOR
-function editf() {
-  $EDITOR $1
+# Connect to Cisco AnyConnect VPN
+#
+# To setup you need to execute this:
+#   `brew install openconnect`
+#   `security add-generic-password -l Work\ VPN -s HOST -a GROUP/USER -w PASSWORD`
+#
+# Dependencies: gmp, bdw-gc, libffi, libtool, libunistring,
+#               pkg-config, guile, libidn2, libtasn1, nettle,
+#               p11-kit, libevent, unbound, gnutls, stoken
+function vpn() {
+  local proc=`pgrep openconnect`
+  if [ -z "$proc" ]; then
+    local keychainLabel="Work VPN"
+
+    local raw=$(security 2>&1 find-generic-password -gl $keychainLabel | tr '\n' ' ')
+    local host=$(echo $raw | sed -nE 's:.*"svce"<blob>="([^"]*)".*:\1:p')
+    local acc=$(echo $raw | sed -nE 's:.*"acct"<blob>="([^"]*)".*:\1:p')
+    local group=$(echo $acc | cut -d'/' -f1)
+    local user=$(echo $acc | cut -d'/' -f2)
+    local pass=$(echo $raw | sed -nE 's:.*password\: "([^"]*)".*:\1:p')
+    local otp=$1
+
+    # echo "$acc $group $user $host $pass $otp"
+
+    echo "$pass\n$otp" | sudo openconnect --background --authgroup=$group --user=$user --passwd-on-stdin $host
+  else
+    echo "Closing OpenConnect..."
+    sudo kill -2 $proc
+  fi
 }
 
 # Create a .tar.gz archive, using `zopfli`, `pigz` or `gzip` for compression
@@ -84,10 +110,58 @@ function fs() {
   fi;
 }
 
-# `tre` is a shorthand for `tree` with hidden files and color enabled, ignoring
-# the `.git` directory, listing directories first. The output gets piped into
-# `less` with options to preserve color and line numbers, unless the output is
-# small enough for one screen.
-function tre() {
-  tree -aC -I '.git|.Trash|.DS_Store|.idea|.ipynb_checkpoints|.RData|.Rhistory' --dirsfirst "$@" | less -FRNX;
+# Set default applications for various document types on macOS,
+# using Apple's Uniform Type Identifiers (UTI) and/or file extensions.
+# Implemented via defaults + Launch Services LSHandlers
+function duti() {
+  zparseopts -D -E -F - -uti+:=uti -ext+:=ext -rebuild=rebuild -help=help
+
+  local pass_args=()
+  local usage=$(cat <<"EOF"
+Usage: duti [options…] <handler>    Assign given handler to always open provided UTIs or extensions
+
+Options:
+  --uti <uti>  Provide Uniform Type Identifier(s) for association with handler
+  --ext <ext>  Provide extension(s) for association with handler
+  --rebuild    Force rebuild of Launch Services database after successfull handler assign
+  --help       Show help (this message) and exit
+
+Examples:
+  duti --uti "com.rarlab.rar-archive" --uti "org.7-zip.7-zip-archive" --ext "zip" --ext "bzip" --rebuild com.aone.keka
+EOF
+)
+
+  if [ ${#help} = 1 ]; then
+    echo $usage
+  elif [[ ${#uti[@]} -eq 0 ]] && [[ ${#ext[@]} -eq 0 ]]; then
+    echo "--uti and/or --ext must be set"
+  elif [[ $# -eq 0 ]] || [[ $# -gt 1 ]]; then
+    echo "Single Handler Name expected, got $#"
+  else
+    local cmd='defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers -array-add'
+
+    for flag val in "${(@)uti}"; do
+      pass_args+=("'{LSHandlerContentType=$val;LSHandlerRoleAll=$1;}'")
+    done
+    unset flag val
+
+    for flag val in "${(@)ext}"; do
+      pass_args+=("'{LSHandlerContentTag=$val;LSHandlerContentTagClass=public.filename-extension;LSHandlerRoleAll=$1;}'")
+    done
+    unset flag val
+
+    echo "EXTs (${#ext[@]}): $ext"
+    echo "UTIs (${#uti[@]}): $uti"
+    echo "REBUILD ${#rebuild}"
+    echo "POS ($#): $@"
+
+    # eval $cmd ${(j: :)pass_args}
+    echo "$cmd ${(j: :)pass_args}"
+    if [ ${#rebuild} = 1 ]; then
+      # /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister -kill -r -v -apps u
+      echo '/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister -kill -r -v -apps u'
+    fi
+  fi
+
+  unset uti ext rebuild help
 }
