@@ -2,10 +2,20 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>ApplyQuarantineAfterExtraction</key>
+	<false/>
+	<key>ArchiveSingle</key>
+	<false/>
+	<key>AskZipUsingAES</key>
+	<true/>
 	<key>CloseController</key>
 	<true/>
 	<key>ColorIcons</key>
 	<false/>
+	<key>CustomNameMultipleFiles</key>
+	<string></string>
+	<key>CustomNameSingleFile</key>
+	<string></string>
 	<key>DefaultActionToPerform</key>
 	<integer>2</integer>
 	<key>DefaultAppDialog</key>
@@ -29,7 +39,7 @@
 	<key>DefaultSaveLocationController</key>
 	<integer>2</integer>
 	<key>DefaultSaveLocationSet</key>
-	<string/>
+	<string></string>
 	<key>DefaultSoundCompression</key>
 	<integer>0</integer>
 	<key>DefaultSoundExtraction</key>
@@ -39,6 +49,8 @@
 	<key>DeleteAfterExtraction</key>
 	<false/>
 	<key>DevLog</key>
+	<false/>
+	<key>DevLogAll</key>
 	<false/>
 	<key>DevLogNotifications</key>
 	<false/>
@@ -54,58 +66,104 @@
 	<true/>
 	<key>ExportPassword</key>
 	<false/>
+	<key>ExtractOnIntermediateFolder</key>
+	<true/>
+	<key>FallbackOption</key>
+	<integer>0</integer>
 	<key>FinderAfterCompression</key>
 	<false/>
 	<key>FinderAfterExtraction</key>
 	<false/>
 	<key>ForceHFSDMG</key>
 	<true/>
+	<key>ForceTarballOnCompressionOnly</key>
+	<true/>
 	<key>GrowlBlocksExit</key>
+	<true/>
+	<key>IgnoreGZIPName</key>
+	<false/>
+	<key>KeepExtension</key>
+	<integer>0</integer>
+	<key>KekaAskBeforeCancel</key>
 	<true/>
 	<key>KekaFirstStart</key>
 	<false/>
-	<key>KekaLaunchTimes</key>
+	<key>LetsMoveDialog</key>
+	<false/>
+	<key>LimitThreads</key>
+	<false/>
+	<key>MaximumThreads</key>
 	<integer>0</integer>
 	<key>OldServicesChecked</key>
 	<true/>
-	<key>SUHasLaunchedBefore</key>
+	<key>QueueCompression</key>
 	<true/>
-	<key>SUEnableAutomaticChecks</key>
+	<key>QueueCompressionLimit</key>
+	<integer>1</integer>
+	<key>QueueExtraction</key>
+	<true/>
+	<key>QueueExtractionLimit</key>
+	<integer>2</integer>
+	<key>QueueGlobal</key>
+	<true/>
+	<key>QueueGlobalLimit</key>
+	<integer>5</integer>
+	<key>RemoveBadPasswordExtraction</key>
+	<true/>
+	<key>RemoveIncompleteExtraction</key>
 	<false/>
-	<key>SUEnableSystemProfiling</key>
-	<false/>
+	<key>RetryPassword</key>
+	<true/>
+	<key>ReusePassword</key>
+	<true/>
 	<key>SUAllowsAutomaticUpdates</key>
 	<false/>
 	<key>SUAutomaticallyUpdate</key>
 	<false/>
+	<key>SUEnableAutomaticChecks</key>
+	<false/>
+	<key>SUEnableSystemProfiling</key>
+	<false/>
+	<key>SUHasLaunchedBefore</key>
+	<true/>
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>SelectedTab</key>
-	<string>7z</string>
+	<string>7Z</string>
 	<key>SelectedTabDefaults</key>
-	<integer>1003</integer>
+	<integer>1001</integer>
 	<key>SetAsDefaultApp</key>
+	<true/>
+	<key>SetModificationDateAfterExtraction</key>
 	<false/>
 	<key>SolidArchive</key>
 	<true/>
+	<key>SparkleDialog</key>
+	<false/>
 	<key>TarballSupport</key>
 	<true/>
-	<key>TasksList</key>
-	<array/>
 	<key>UnifiedToolbar</key>
 	<true/>
 	<key>UnrarWithP7ZIP</key>
 	<false/>
 	<key>UnzipWithUNAR</key>
 	<true/>
+	<key>UseBip2DMG</key>
+	<false/>
+	<key>UseCustomNameWithMultipleFiles</key>
+	<true/>
 	<key>UseGrowl</key>
 	<false/>
+	<key>UseLongTarballExtension</key>
+	<true/>
 	<key>UseMultithreadLzip</key>
 	<true/>
 	<key>UseMultithreadPbzip2</key>
 	<true/>
+	<key>UseParentName</key>
+	<false/>
 	<key>Version</key>
-	<integer>3477</integer>
+	<integer>4179</integer>
 	<key>ZipUsingAES</key>
 	<false/>
 </dict>
