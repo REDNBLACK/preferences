@@ -31,9 +31,9 @@ My shell and programms settings
 5. Setup [Fira Code (+Nerd)](https://github.com/tonsky/FiraCode) & [Meslo Nerd](https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/Meslo)
 
     ```bash
-    brew cask install homebrew/cask-fonts/font-fira-code
-    brew cask install homebrew/cask-fonts/font-fira-code-nerd-font
-    brew cask install homebrew/cask-fonts/font-meslo-lg-nerd-font
+    brew install --cask homebrew/cask-fonts/font-fira-code
+    brew install --cask homebrew/cask-fonts/font-fira-code-nerd-font
+    brew install --cask homebrew/cask-fonts/font-meslo-lg-nerd-font
     ```
 6. Setup [zsh](http://zsh.org) & [oh my zsh](https://ohmyz.sh) & [PowerLevel10k](https://github.com/romkatv/powerlevel10k) & [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) & [zsh-fast-syntax-highlighting](https://github.com/zdharma/fast-syntax-highlighting)
 
@@ -52,7 +52,7 @@ My shell and programms settings
 7. Setup [iTerm](https://iterm2.com)
 
     ```bash
-    brew cask install iterm2
+    brew install --cask iterm2
     ln -fs $DOTPREFSDIR/iterm2/conf.plist ~/Library/Preferences/com.googlecode.iterm2.plist
     ```
 8. Setup Tools
@@ -91,9 +91,15 @@ My shell and programms settings
 3. Setup [Gas Mask](https://github.com/2ndalpha/gasmask)
 
     ```bash
-    brew cask install gas-mask
+    brew install --cask gas-mask
     ```
-4. Setup misc
+4. Setup [rage](https://github.com/str4d/rage)
+
+    ```bash
+    brew tap str4d.xyz/rage https://str4d.xyz/rage
+    brew install rage
+    ```
+5. Setup misc
 
     ```bash
     # Enable sudo auth via Touch ID
@@ -107,7 +113,7 @@ My shell and programms settings
 1. Setup [Sublime Text 3](https://sublimetext.com/3)
 
     ```bash
-    brew cask install sublime-text
+    brew install --cask sublime-text
     ln -fs $DOTPREFSDIR/sublime-text3/conf ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/User
     curl -SsL "https://packagecontrol.io/Package%20Control.sublime-package" > ~/Library/Application\ Support/Sublime\ Text\ 3/Installed\ Packages/Package\ Control.sublime-package
 
@@ -117,53 +123,54 @@ My shell and programms settings
     # Set file association
     . $DOTPREFSDIR/sublime-text3/file-assoc.zsh
     ```
-2. Setup [Java OpenJDK](https://adoptopenjdk.net) & [GraalVM](https://graalvm.org)
+2. Setup Java [OpenJDK](https://adoptopenjdk.net) & [GraalVM](https://graalvm.org) & [JMC](https://oracle.com/java/technologies/jdk-mission-control.html)
 
     ```bash
-    brew cask install adoptopenjdk/openjdk/adoptopenjdk8
-    brew cask install adoptopenjdk/openjdk/adoptopenjdk14
-    brew cask install graalvm/tap/graalvm-ce-java11
+    brew install --cask adoptopenjdk/openjdk/adoptopenjdk8
+    brew install --cask adoptopenjdk/openjdk/adoptopenjdk15
+    brew install --cask graalvm/tap/graalvm-ce-java11
+    brew install --cask jdk-mission-control
 
-    # Switch jdk version to `1.8` or `14` or `graal`
+    # Switch JDK version to `1.8` or `15` or `graal`
     jdk 1.8
     ```
 3. 💰 Setup [IntelliJ Idea](https://jetbrains.com/idea)
 
     ```bash
-    brew cask install jetbrains-toolbox
+    brew install --cask jetbrains-toolbox
     ```
 4. 💰 Setup [Paw](https://paw.cloud)
 
     ```bash
-    brew cask install paw
+    brew install --cask paw
     ```
 5. Setup [Docker](https://github.com/docker/for-mac)
 
     ```bash
-    brew cask install docker
+    brew install --cask docker
     ```
 6. Setup [ngrok](https://ngrok.com)
 
     ```bash
-    brew cask install ngrok
+    brew install --cask ngrok
     ```
 7. Setup [Postgres App](https://github.com/PostgresApp/PostgresApp)
 
     ```bash
-    brew cask install postgres
+    brew install --cask postgres
     ```
 
 ##### Productivity
 1. Setup [Cheatsheet](https://cheatsheetapp.com/CheatSheet)
 
     ```bash
-    brew cask install cheatsheet
+    brew install --cask cheatsheet
     defaults import com.mediaatelier.CheatSheet $DOTPREFSDIR/cheatsheet/conf.plist
     ```
 2. 💰 Setup [BetterTouchTool](https://folivora.ai)
 
     ```bash
-    brew cask install bettertouchtool
+    brew install --cask bettertouchtool
     defaults import com.hegenberg.BetterTouchTool $DOTPREFSDIR/btt/conf.plist
 
     # Install license
@@ -172,25 +179,25 @@ My shell and programms settings
 3. ~~Setup [Maccy](https://github.com/p0deje/Maccy)~~ (Superseded by [BetterTouchTool](#Productivity))
 
     ```bash
-    # brew cask install maccy
+    # brew install --cask maccy
     # defaults import org.p0deje.Maccy $DOTPREFSDIR/maccy/conf.plist
     ```
 4. ~~Setup [Rectangle](https://github.com/rxhanson/Rectangle)~~ (Superseded by [BetterTouchTool](#Productivity))
 
     ```bash
-    # brew cask install rectangle
+    # brew install --cask rectangle
     # defaults import com.knollsoft.Rectangle $DOTPREFSDIR/rectangle/conf.plist
     ```
 5. ~~Setup [HapticKey](https://github.com/niw/HapticKey)~~ (Superseded by [BetterTouchTool](#Productivity))
 
     ```bash
-    # brew cask install haptickey
+    # brew install --cask haptickey
     # defaults import at.niw.HapticKey $DOTPREFSDIR/haptickey/conf.plist
     ```
 6. ~~Setup [Pock](https://github.com/pigigaldi/Pock)~~ (Superseded by [BetterTouchTool](#Productivity))
 
     ```bash
-    # brew cask install pock
+    # brew install --cask pock
     # defaults import com.pigigaldi.pock $DOTPREFSDIR/pock/conf.plist
 
     # Hide system Dock
@@ -206,7 +213,7 @@ My shell and programms settings
 1. 💰 Setup [iStat Menus](https://bjango.com/mac/istatmenus)
 
     ```bash
-    brew cask install istat-menus
+    brew install --cask istat-menus
     defaults import com.bjango.istatmenus6.extras $DOTPREFSDIR/istat-menus/conf.plist
 
     # Install license
@@ -226,7 +233,7 @@ My shell and programms settings
 3. Setup [Keka](https://github.com/aonez/Keka)
 
     ```bash
-    brew cask install keka
+    brew install --cask keka
     defaults import com.aone.keka $DOTPREFSDIR/keka/conf.plist
 
     # Set file association (Without using kekadefaultapp)
@@ -235,17 +242,17 @@ My shell and programms settings
 4. Setup [AppCleaner](https://freemacsoft.net/appcleaner)
 
     ```bash
-    brew cask install appcleaner
+    brew install --cask appcleaner
     ```
 5. Setup [Clean Me](https://github.com/Kevin-De-Koninck/Clean-Me)
 
     ```bash
-    brew cask install clean-me
+    brew install --cask clean-me
     ```
 6. Setup [OnyX](https://titanium-software.fr/en/onyx)
 
     ```bash
-    brew cask install onyx
+    brew install --cask onyx
     ```
 7. 💰 Setup [Apple Remote Desktop](https://apps.apple.com/app/id409907375)
 
@@ -257,17 +264,17 @@ My shell and programms settings
 1. Setup [Telegram](https://github.com/telegramdesktop/tdesktop)
 
     ```bash
-    brew cask install telegram
+    brew install --cask telegram
     ```
 2. Setup [Slack](https://slack.com)
 
     ```bash
-    brew cask install slack
+    brew install --cask slack
     ```
 3. Setup [Google Chrome](https://google.com/chrome)
 
     ```bash
-    brew cask install google-chrome
+    brew install --cask google-chrome
 
     # Disable auto update
     . $DOTPREFSDIR/chrome/disable-auto-update.zsh
@@ -281,66 +288,65 @@ My shell and programms settings
 4. Setup [Tor](https://github.com/TheTorProject)
 
     ```bash
-    brew cask install tor-browser
+    brew install --cask tor-browser
     ```
 5. Setup [Transmission](https://github.com/transmission/transmission)
 
     ```bash
-    brew cask install transmission
+    brew install --cask transmission
     ```
 6. Setup [Wi-Fi Explorer](https://intuitibits.com/products/wifi-explorer)
 
     ```bash
-    brew cask install wifi-explorer
+    brew install --cask wifi-explorer
     ```
 
 ##### Entertainment
 1. 💰 Setup [Spotify](https://spotify.com)
 
     ```bash
-    brew cask install spotify
+    brew install --cask spotify
     ```
 2. 💰 Setup [Air Server](https://airserver.com/Mac)
 
     ```bash
-    brew cask install airserver
+    brew install --cask airserver
     ```
 3. Setup [HandBrake](https://handbrake.fr)
 
     ```bash
-    brew cask install handbrake
+    brew install --cask handbrake
     ```
-4. ~~Setup [Helium Lift](https://apps.apple.com/app/id1018899653)~~ (Superseded by [BetterTouchTool](#Productivity))
-
-    ```bash
-    # mas install 1018899653
-    ```
-
-5. Setup [Picktorial](https://apps.apple.com/app/id1043289526)
+4. Setup [Picktorial](https://apps.apple.com/app/id1043289526)
 
     ```bash
     mas install 1043289526
     ```
-6. Setup [Abyss](https://apps.apple.com/app/id1507396839)
+5. Setup [Abyss](https://apps.apple.com/app/id1507396839)
 
     ```bash
     mas install 1507396839
     ```
-7. 💰 Setup [Noizio](https://apps.apple.com/app/id928871589)
+6. 💰 Setup [Noizio](https://apps.apple.com/app/id928871589)
 
     ```bash
     mas install 928871589
     ```
-8. Setup [Touchbar Nyancat](https://github.com/avatsaev/touchbar_nyancat)
+7. Setup [Touchbar Nyancat](https://github.com/avatsaev/touchbar_nyancat)
 
     ```bash
     curl -SsL "https://github.com/avatsaev/touchbar_nyancat/releases/download/0.0.2/touchbar_nyancat.app.zip" | tar -xf - -C /Applications/
     chmod -R 755 /Applications/touchbar_nyancat.app
+    ```
+8. ~~Setup [Helium Lift](https://apps.apple.com/app/id1018899653)~~ (Superseded by [BetterTouchTool](#Productivity))
+
+    ```bash
+    # mas install 1018899653
     ```
 
 ##### Mobile
 1. Setup [AltServer](https://altstore.io)
 
     ```bash
-    brew cask install altserver
+    brew install --cask altserver
     ```

@@ -24,8 +24,7 @@ alias h="history"
 alias j="jobs"
 
 # Update stuff
-# Add softwareupdate -ia
-alias update-brew="echo "Core:"; brew update | lolcat; brew upgrade --formula | lolcat; brew cleanup formula -s --prune 1 | lolcat; echo "Cask:"; brew cu -a -y --no-brew-update --cleanup | lolcat; echo "MAS:"; mas upgrade | lolcat"
+alias update-brew="echo "Core:"; brew update | lolcat; brew upgrade --formula | lolcat; brew cleanup formula -s --prune 1 | lolcat; echo "Cask:"; brew cu -a -y --no-brew-update --cleanup | lolcat; echo "MAS:"; mas upgrade | lolcat; softwareupdate -ia | lolcat"
 
 # Kill all the tabs in Chrome to free up memory
 alias chromekill="ps ux | grep '[C]hrome Helper --type=renderer' | grep -v extension-process | tr -s ' ' | cut -d ' ' -f2 | xargs kill"
