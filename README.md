@@ -239,10 +239,15 @@ My shell and programms settings
     # Set file association (Without using kekadefaultapp)
     . $DOTPREFSDIR/keka/file-assoc.zsh
     ```
-4. Setup [AppCleaner](https://freemacsoft.net/appcleaner)
+4. Setup [ForkLift](https://binarynights.com)
 
     ```bash
-    brew install --cask appcleaner
+    brew install --cask forklift
+    defaults import com.binarynights.ForkLift-3 $DOTPREFSDIR/forklift/conf.plist
+
+    # Set as default file viewer
+    defaults write -g NSFileViewer -string com.binarynights.ForkLift-3
+    defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers -array-add '{LSHandlerContentType="public.folder";LSHandlerRoleAll="com.binarynights.ForkLift-3";}'
     ```
 5. Setup [Clean Me](https://github.com/Kevin-De-Koninck/Clean-Me)
 
