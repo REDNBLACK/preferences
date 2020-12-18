@@ -219,10 +219,10 @@ My shell and programms settings
     # Install license
     defaults write com.bjango.istatmenus license6 -dict email '**License email**' serial '**License serial key**'
     ```
-2. Setup [Amphetamine](https://apps.apple.com/app/id937984704) & [Amphetamine Enhancer](https://github.com/x74353/Amphetamine-Enhancer)
+2. ~~Setup [Amphetamine](https://apps.apple.com/app/id937984704) & [Amphetamine Enhancer](https://github.com/x74353/Amphetamine-Enhancer)~~ (Superseded by [caffeinate](https://ss64.com/osx/caffeinate.html))
 
     ```bash
-    mas install 937984704
+    # mas install 937984704
 
     # cd ~/Library/Containers/com.if.Amphetamine/Data/Library/Application\ Support
     # hdiutil attach -nobrowse -quiet "https://github.com/x74353/Amphetamine-Enhancer/raw/master/Releases/Current/Amphetamine%20Enhancer.dmg"
@@ -266,30 +266,24 @@ My shell and programms settings
     ```
 
 ##### Network
-1. Setup [Telegram](https://github.com/telegramdesktop/tdesktop)
+1. Setup [Sidekick Browser](https://meetsidekick.com)
+
+    *
+        ```bash
+        brew install --cask pushplaylabs-sidekick
+        ```
+    * Install [plugins, theme and StartPage search engine](/sidekick/plugins.md)
+    * Import [uBlock Origin settings](/sidekick/ublock-settings.txt)
+2. Setup [Telegram](https://github.com/telegramdesktop/tdesktop)
 
     ```bash
     brew install --cask telegram
     ```
-2. Setup [Slack](https://slack.com)
+3. Setup [Slack](https://slack.com)
 
     ```bash
     brew install --cask slack
     ```
-3. Setup [Google Chrome](https://google.com/chrome)
-
-    ```bash
-    brew install --cask google-chrome
-
-    # Disable auto update
-    . $DOTPREFSDIR/chrome/disable-auto-update.zsh
-
-    # Disable built-in DNS
-    defaults write com.google.Chrome BuiltInDnsClientEnabled -boolean false
-    ```
-
-    * Install [plugins, theme and StartPage search engine](/chrome/plugins.md)
-    * Import [uBlock Origin settings](/chrome/ublock-settings.txt)
 4. Setup [Tor](https://github.com/TheTorProject)
 
     ```bash
@@ -354,4 +348,9 @@ My shell and programms settings
 
     ```bash
     brew install --cask altserver
+    ```
+2. Setup [WALTR PRO](https://softorino.com/pro)
+
+    ```bash
+    brew install --cask waltr-pro
     ```

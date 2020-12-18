@@ -33,19 +33,32 @@ function mkd() {
 
 # Connect to Cisco AnyConnect VPN
 #
-# To setup you need to execute this:
-#   `brew install openconnect`
-#   `security add-generic-password -l Work\ VPN -s HOST -a GROUP/USER -w PASSWORD`
+# To setup you need this:
+#   *. `security add-generic-password -l CiscoVPN -s $HOST -a $GROUP/$USER -w $PASSWORD`
+#   *. install cisco-any-connect.pkg  # For native Cisco client
+#   *. `brew install openconnect`     # For openconnect
 #
-# Dependencies: gmp, bdw-gc, libffi, libtool, libunistring,
-#               pkg-config, guile, libidn2, libtasn1, nettle,
-#               p11-kit, libevent, unbound, gnutls, stoken
+# To start VPN:
+#   `vpn --secure $OTP` # For native Cisco client
+#   `vpn $OTP`          # For openconnect
+#
+# To completely stop VPN:
+#   `vpn`
+#
+# Dependencies of "openconnect":
+#   gmp, bdw-gc, libffi, libtool, libunistring,
+#   pkg-config, guile, libidn2, libtasn1, nettle,
+#   p11-kit, libevent, unbound, gnutls, stoken
 function vpn() {
-  local proc=`pgrep openconnect`
-  if [ -z "$proc" ]; then
-    local keychainLabel="Work VPN"
+  local iseAgent="/Library/LaunchAgents/com.cisco.anyconnect.aciseposture.plist"
+  local vpnAgent="/Library/LaunchDaemons/com.cisco.anyconnect.vpnagentd.plist"
 
-    local raw=$(security 2>&1 find-generic-password -gl $keychainLabel | tr '\n' ' ')
+  if [ -z `pgrep vpnagentd` ] && [ -z `pgrep aciseposture` ] && [ -z `pgrep openconnect` ]; then
+    zparseopts -E -D - kc::=keychain -keychain::=keychain s=secure -secure=secure
+
+    local keychain=${${keychain#(--keychain|-kc)}:-"CiscoVPN"}
+    local secure=${#secure}
+    local raw=$(security 2>&1 find-generic-password -gl $keychain | tr '\n' ' ')
     local host=$(echo $raw | sed -nE 's:.*"svce"<blob>="([^"]*)".*:\1:p')
     local acc=$(echo $raw | sed -nE 's:.*"acct"<blob>="([^"]*)".*:\1:p')
     local group=$(echo $acc | cut -d'/' -f1)
@@ -53,12 +66,28 @@ function vpn() {
     local pass=$(echo $raw | sed -nE 's:.*password\: "([^"]*)".*:\1:p')
     local otp=$1
 
-    # echo "$acc $group $user $host $pass $otp"
+    # echo "Debug:\n  '$keychain' '$secure'\n  '$acc' '$group' '$user' '$host' '$pass' '$otp'"
 
-    echo "$pass\n$otp" | sudo openconnect --background --authgroup=$group --user=$user --passwd-on-stdin $host
+    if [ "$otp" = "" ]; then
+      echo "OTP is empty!"
+    elif [ $secure = 0 ]; then
+      echo "Launching OpenConnect..."
+
+      echo "$pass\n$otp" | sudo openconnect --background --authgroup=$group --user=$user --passwd-on-stdin $host
+    else
+      echo "Launching Cisco AnyConnect..."
+
+      group="0" # Always "0" for Cisco native client
+
+      sudo launchctl load $vpnAgent
+      echo "connect $host\n$group\n$user\n$pass\n$otp\n" | /opt/cisco/anyconnect/bin/vpn -s
+      sudo launchctl load $iseAgent
+    fi
   else
-    echo "Closing OpenConnect..."
-    sudo kill -2 $proc
+    echo "Closing VPN..."
+
+    sudo pkill "openconnect"
+    sudo launchctl unload $vpnAgent $iseAgent > /dev/null 2>&1
   fi
 }
 
