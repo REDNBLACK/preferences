@@ -133,12 +133,13 @@ My shell and programms settings
     brew install --cask jdk-mission-control
 
     # Switch JDK version to `1.8` or `15` or `graal`
-    jdk 1.8
+    jdk 15
     ```
-3. 💰 Setup [IntelliJ Idea](https://jetbrains.com/idea)
+3. 💰 Setup [IntelliJ IDEA](https://jetbrains.com/idea)
 
     ```bash
     brew install --cask jetbrains-toolbox
+    cp -f $DOTPREFSDIR/jb-toolbox/conf.json ~/Library/Application\ Support/JetBrains/Toolbox/.settings.json
     ```
 4. 💰 Setup [Paw](https://paw.cloud)
 
@@ -294,6 +295,7 @@ My shell and programms settings
 
     ```bash
     brew install --cask transmission
+    defaults import org.m0k.transmission $DOTPREFSDIR/transmission/conf.plist
     ```
 6. Setup [Wi-Fi Explorer](https://intuitibits.com/products/wifi-explorer)
 
@@ -349,6 +351,7 @@ My shell and programms settings
 
     ```bash
     brew install --cask altserver
+    defaults import com.rileytestut.AltServer $DOTPREFSDIR/altserver/conf.plist
     ```
 2. Setup [WALTR PRO](https://softorino.com/pro)
 

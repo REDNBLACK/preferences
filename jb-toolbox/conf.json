@@ -1,0 +1,15 @@
+{
+    "autostart": false,
+    "channel_rollback_max_history": 1,
+    "ui": {
+        "theme": "dark"
+    },
+    "update": {
+        "filter": {
+            "quality_filter": {
+                "order_value": 10000
+            }
+        },
+        "install_automatically": false
+    }
+}
