@@ -80,7 +80,8 @@ My shell and programms settings
 1. 💰 Setup [1Password](https://1password.com)
 
     ```bash
-    # 6.8.8 Not in AppStore or Brew Cask
+    brew install --cask 1password
+    # ~/Library/Group Containers/2BUA8C4S2C.com.agilebits/License/1Password 7 License.onepassword7-license-mac
     ```
 2. Setup [DNS over HTTPS](https://github.com/paulmillr/encrypted-dns)
 
