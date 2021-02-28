@@ -31,7 +31,11 @@ if [ "${ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX-}""$TERM" != "screen" -a "${ITE
   fi
 
   iterm2_print_state_data() {
-    printf "\033]1337;RemoteHost=%s@%s\007" "$USER" "${iterm2_hostname-}"
+    local _iterm2_hostname="${iterm2_hostname-}"
+    if [ -z "${iterm2_hostname:-}" ]; then
+      _iterm2_hostname=$(hostname -f 2>/dev/null)
+    fi
+    printf "\033]1337;RemoteHost=%s@%s\007" "$USER" "${_iterm2_hostname-}"
     printf "\033]1337;CurrentDir=%s\007" "$PWD"
     iterm2_print_user_vars
   }
@@ -135,10 +139,12 @@ if [ "${ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX-}""$TERM" != "screen" -a "${ITE
   # If hostname -f is slow on your system set iterm2_hostname prior to
   # sourcing this script.
   if [ -z "${iterm2_hostname-}" ]; then
-    iterm2_hostname=`hostname -f 2>/dev/null`
-    # Some flavors of BSD (i.e. NetBSD and OpenBSD) don't have the -f option.
-    if [ $? -ne 0 ]; then
-      iterm2_hostname=`hostname`
+    if [ "$(uname)" != "Darwin" ]; then
+      iterm2_hostname=`hostname -f 2>/dev/null`
+      # Some flavors of BSD (i.e. NetBSD and OpenBSD) don't have the -f option.
+      if [ $? -ne 0 ]; then
+        iterm2_hostname=`hostname`
+      fi
     fi
   fi
 

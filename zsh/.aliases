@@ -20,6 +20,7 @@ alias weather="curl wttr.in"
 alias d="cd ~/Documents"
 alias dl="cd ~/Downloads"
 alias w="cd ~/Work"
+alias pref="cd $DOTPREFSDIR"
 alias h="history"
 alias j="jobs"
 
@@ -34,3 +35,7 @@ alias grep='grep --color=auto'
 alias duh="du -d 1 -h"
 alias dua="du -ah"
 alias ls='exa --long --header --classify --group-directories-first --icons --all --git'
+
+# zsh aliases
+alias reload="exec zsh && echo 'ZSH config reloaded'"
+# alias zshrc="$(editf $ZDOTDIR/.zshrc) && reload"

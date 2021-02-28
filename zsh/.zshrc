@@ -3,11 +3,11 @@
 # ==========================================
 
 ##############[ zsh ]################
+# Load profile
+. $ZDOTDIR/.profile
+
 # Path to cache directory
-ZSH_CACHE_DIR="${HOME}/Library/Caches/zsh"
-if [[ ! -e "$ZSH_CACHE_DIR" ]]; then
-  mkdir -p "$ZSH_CACHE_DIR"
-fi
+ZSH_CACHE_DIR="$XDG_CACHE_HOME/zsh"
 
 # Correctly display UTF-8 with combining characters.
 setopt COMBINING_CHARS
@@ -24,21 +24,16 @@ SAVEHIST=1000
 # Ignore repeated lines in history file
 setopt HIST_IGNORE_ALL_DUPS
 
-# Declare usefull functions
-function abort() {
-  print "[Error] $1"
-}
-
 # Load the shell dotfiles, and then some:
-for file in $ZDOTDIR/{.profile,.functions}; do
+for file in $ZDOTDIR/{.functions,.aliases}; do
   if [ -f "$file" ]; then
     . $file
   fi
 done;
 unset file;
 
-alias reload="exec zsh && echo 'ZSH config reloaded'"
-# alias zshrc="$(editf $ZDOTDIR/.zshrc) && reload"
+# Create cache dir if not exists already
+mke $ZSH_CACHE_DIR
 ###################################
 
 
@@ -79,7 +74,10 @@ plugins=(
 
 # Load it
 . $ZSH/oh-my-zsh.sh
+####################################
 
+
+############[ aliases ]#############
 # Load and override possible alias conflicts
 . $ZDOTDIR/.aliases
 ####################################
@@ -130,7 +128,7 @@ plugins=(
     # context               # user@hostname
     # nordvpn               # nordvpn connection status, linux only (https://nordvpn.com/)
     # ranger                # ranger shell (https://github.com/ranger/ranger)
-    nnn                     # nnn shell (https://github.com/jarun/nnn)
+    # nnn                   # nnn shell (https://github.com/jarun/nnn)
     vim_shell               # vim shell indicator (:sh)
     # midnight_commander    # midnight commander shell (https://midnight-commander.org/)
     # nix_shell             # nix shell (https://nixos.org/nixos/nix-pills/developing-with-nix-shell.html)
@@ -139,7 +137,7 @@ plugins=(
     # timewarrior           # timewarrior tracking status (https://timewarrior.net/)
     # taskwarrior           # taskwarrior task count (https://taskwarrior.org/)
     time                    # current time
-    # vpn_ip                # virtual private network indicator
+    vpn_ip                  # virtual private network indicator
     # disk_usage            # disk usage
     # swap                  # used swap
     # ip                    # ip address and bandwidth usage for a specified network interface
@@ -314,10 +312,10 @@ plugins=(
 
   ######################[ nnn: nnn shell (https://github.com/jarun/nnn) ]#######################
   # Nnn shell color.
-  typeset -g POWERLEVEL9K_NNN_FOREGROUND=0
-  typeset -g POWERLEVEL9K_NNN_BACKGROUND=6
+  # typeset -g POWERLEVEL9K_NNN_FOREGROUND=0
+  # typeset -g POWERLEVEL9K_NNN_BACKGROUND=6
   # Custom icon.
-  typeset -g POWERLEVEL9K_NNN_VISUAL_IDENTIFIER_EXPANSION='⭐'
+  # typeset -g POWERLEVEL9K_NNN_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
   ######[ midnight_commander: midnight commander shell (https://midnight-commander.org/) ]######
   # Midnight Commander shell color.
@@ -553,7 +551,7 @@ typeset -g POWERLEVEL9K_CONFIG_FILE=${${(%):-%x}:a}
 
 
 ##########[ Sublime Text ]###########
-. $DOTPREFSDIR/sublime-text3/integration.zsh
+. $DOTPREFSDIR/sublime-text/integration.zsh
 #####################################
 
 
@@ -580,6 +578,9 @@ ZSH_AUTOSUGGEST_STRATEGY=(
 
 # Disable suggestions for large buffers
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+
+# Ignore history suggestions that match a pattern
+ZSH_AUTOSUGGEST_HISTORY_IGNORE="vpn *"
 
 . $ZDOTDIR/zsh-autosuggestions/zsh-autosuggestions.zsh
 ####################################

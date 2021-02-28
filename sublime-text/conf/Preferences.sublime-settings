@@ -76,7 +76,7 @@
 	"hot_exit": true,
 	"ignored_packages":
 	[
-		"Vintage"
+		"Vintage",
 	],
 	"open_files_in_new_window": false,
 	"overlay_scroll_bars": "system",
@@ -159,6 +159,6 @@
 		"xml": "public.xml",
 		"yaml": "public.yaml",
 		"yml": "public.yaml",
-		"zsh": "public.shell-script"
-	}
+		"zsh": "public.shell-script",
+	},
 }

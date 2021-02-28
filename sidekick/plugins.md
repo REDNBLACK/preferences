@@ -1,9 +1,10 @@
 ### Plugins
-1. [Dark Reader](https://chrome.google.com/webstore/detail/eimadpbcbfnmbkopoojfekhnkhdbieeh)
-2. [uBlock Origin](https://chrome.google.com/webstore/detail/cjpalhdlnbpafiamejdnhcphjbkeiagm)
-3. [Edit This Cookie](https://chrome.google.com/webstore/detail/fngmhnnpilhplaeedifhccceomclgfbg)
-4. [GitHub Code Folding](https://chrome.google.com/webstore/detail/lefcpjbffalgdcdgidjdnmabfenecjdf)
-5. [JSON Formatter](https://chrome.google.com/webstore/detail/bcjindcccaagfpapjjmafapmmgkkhgoa)
+*. [Dark Reader](https://chrome.google.com/webstore/detail/eimadpbcbfnmbkopoojfekhnkhdbieeh)
+*. [uBlock Origin](https://chrome.google.com/webstore/detail/cjpalhdlnbpafiamejdnhcphjbkeiagm)
+*. [Edit This Cookie](https://chrome.google.com/webstore/detail/fngmhnnpilhplaeedifhccceomclgfbg)
+*. [GitHub Code Folding](https://chrome.google.com/webstore/detail/lefcpjbffalgdcdgidjdnmabfenecjdf)
+*. [JSON Formatter](https://chrome.google.com/webstore/detail/bcjindcccaagfpapjjmafapmmgkkhgoa)
+*. [Stream Recorder](https://chrome.google.com/webstore/detail/iogidnfllpdhagebkblkgbfijkbkjdmm)
 
 ### Theme
 [Complete Black Theme](https://chrome.google.com/webstore/detail/ojocmeabgojddapjkfbdbmpeoodhepgd)

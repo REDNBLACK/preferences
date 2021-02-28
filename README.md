@@ -9,35 +9,38 @@ My shell and programms settings
 
 2. Download this repo
 
-    ```bash
-    git clone --depth=1 --shallow-submodules --recurse-submodules --remote-submodules https://github.com/REDNBLACK/preferences.git
-    echo "export DOTPREFSDIR=$(cd preferences && pwd)" | sudo tee -a /etc/zshenv > /dev/null
+    ```zsh
+    git clone --depth=1 --shallow-submodules --recurse-submodules --remote-submodules https://github.com/REDNBLACK/preferences.git Preferences
+    echo "export DOTPREFSDIR=$(cd Preferences && pwd)" | sudo tee -a /etc/zshenv > /dev/null
     exec zsh
     ```
 3. Setup [Homebrew](https://brew.sh)
 
-    ```bash
+    ```zsh
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-    brew analytics off        # Turn off analytics
-    brew tap buo/cask-upgrade # Install better "brew cask"
-    brew install mas          # Install CLI for App Store
+    brew analytics off
+    brew tap buo/cask-upgrade
+    brew install mas
+
+    # Symlink custom Casks
+    mkdir -p /usr/local/Homebrew/Library/Taps/rednblack/homebrew-custom && ln -fs $DOTPREFSDIR/homebrew/Casks "$_/Casks"
     ```
 4. Setup [Git](https://git-scm.com) & [GitHub](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
 
-    ```bash
+    ```zsh
     brew install git
     ln -fs $DOTPREFSDIR/git ~/.config/git
     ```
 5. Setup [Fira Code (+Nerd)](https://github.com/tonsky/FiraCode) & [Meslo Nerd](https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/Meslo)
 
-    ```bash
+    ```zsh
     brew install --cask homebrew/cask-fonts/font-fira-code
     brew install --cask homebrew/cask-fonts/font-fira-code-nerd-font
     brew install --cask homebrew/cask-fonts/font-meslo-lg-nerd-font
     ```
 6. Setup [zsh](http://zsh.org) & [oh my zsh](https://ohmyz.sh) & [PowerLevel10k](https://github.com/romkatv/powerlevel10k) & [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) & [zsh-fast-syntax-highlighting](https://github.com/zdharma/fast-syntax-highlighting)
 
-    ```bash
+    ```zsh
     brew install zsh
     ln -fs $DOTPREFSDIR/zsh ~/.config/zsh
     echo "export ZDOTDIR=$HOME/.config/zsh" | sudo tee -a /etc/zshenv > /dev/null
@@ -51,59 +54,86 @@ My shell and programms settings
     ```
 7. Setup [iTerm](https://iterm2.com)
 
-    ```bash
+    ```zsh
     brew install --cask iterm2
-    ln -fs $DOTPREFSDIR/iterm2/conf.plist ~/Library/Preferences/com.googlecode.iterm2.plist
+
+    # Variant 1
+    ln -fs $DOTPREFSDIR/iterm2/com.googlecode.iterm2.plist ~/Library/Preferences/com.googlecode.iterm2.plist
+
+    # Variant 2
+    defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool YES
+    defaults write com.googlecode.iterm2 PrefsCustomFolder "$DOTPREFSDIR/iterm2"
     ```
 8. Setup Tools
 
-    ```bash
+    ```zsh
     brew install exa         # 'ls' on steroids
     brew install ripgrep     # Modern 'grep'
+    brew install thefuck     # Corrects errors in previous commands
     brew install tldr --HEAD # TL;DR version of 'man'
-    brew install nnn         # File Manager
+    brew install howdoi      # Instant coding answers
     brew install jq          # CLI for JSON processing
-
-    # https://github.com/gleitz/howdoi
-    # brew install howdoi
-
-    # https://github.com/nvbn/thefuck
-    # brew install thefuck
     ```
 9. Setup macOS
 
-    ```bash
+    ```zsh
     . $DOTPREFSDIR/macOS/conf.zsh
     ```
 
 ##### Security
 1. 💰 Setup [1Password](https://1password.com)
 
-    ```bash
+    ```zsh
     brew install --cask 1password
-    # ~/Library/Group Containers/2BUA8C4S2C.com.agilebits/License/1Password 7 License.onepassword7-license-mac
+
+    # Install license
+    cp -f "**Path to 1Password 7 License.onepassword7-license-mac**" ~/Library/Group\ Containers/2BUA8C4S2C.com.agilebits/License/1Password\ 7\ License.onepassword7-license-mac
     ```
 2. Setup [DNS over HTTPS](https://github.com/paulmillr/encrypted-dns)
 
-    ```bash
-    curl -OSsL "https://raw.githubusercontent.com/paulmillr/encrypted-dns/master/cloudflare-https.mobileconfig" && open -a ProfileHelper cloudflare-https.mobileconfig && open "x-apple.systempreferences:com.apple.preferences.configurationprofiles"
-    rm -f cloudflare-https.mobileconfig
-    ```
-3. Setup [Gas Mask](https://github.com/2ndalpha/gasmask)
+    *
+        ```zsh
+        # Set config to cloudflare-https or something else
+        curl -LSs -o 'DoH.mobileconfig' 'https://raw.githubusercontent.com/paulmillr/encrypted-dns/master/{config}.mobileconfig' && \
+        open -a ProfileHelper DoH.mobileconfig && \
+        open "x-apple.systempreferences:com.apple.preferences.configurationprofiles"
+        ```
+    * In the Profiles window press 'Install...'
+    *
+        ```zsh
+        rm -f DoH.mobileconfig
+        ```
+3. 💰❔ Setup [NextDNS](https://nextdns.io)
 
-    ```bash
-    brew install --cask gas-mask
-    ```
+    *
+        ```zsh
+        # Set id, name, model to desired values
+        curl -GLSs -o 'NextDNS.mobileconfig' 'https://api.nextdns.io/apple/profile' \
+          -d 'configuration={id}' \
+          -d 'device_name={name}' \
+          -d 'device_model={model}' \
+          -d 'sign=0' \
+          -d 'trust_ca=0' \
+          -d 'bootstrap_ips=0' \
+          -d 'prohibit_disablement=0' && \
+        open -a ProfileHelper NextDNS.mobileconfig && \
+        open "x-apple.systempreferences:com.apple.preferences.configurationprofiles"
+        ```
+    * In the Profiles window press 'Install...'
+    *
+        ```zsh
+        rm -f NextDNS.mobileconfig
+        ```
 4. Setup [rage](https://github.com/str4d/rage)
 
-    ```bash
+    ```zsh
     brew tap str4d.xyz/rage https://str4d.xyz/rage
     brew install rage
     ```
 5. Setup misc
 
-    ```bash
-    # Enable sudo auth via Touch ID
+    ```zsh
+    # Enable sudo auth via Touch ID (⚠️ Must be done after every system update)
     sudo sed -i '.old' -e '2s;^;auth       sufficient     pam_tid.so\n;' /etc/pam.d/sudo
 
     # Allow applications downloaded from anywhere
@@ -111,67 +141,67 @@ My shell and programms settings
     ```
 
 ##### Coding
-1. Setup [Sublime Text 3](https://sublimetext.com/3)
+1. 💰❔ Setup [Sublime Text 4](https://sublimetext.com)
 
-    ```bash
+    ```zsh
     brew install --cask sublime-text
-    ln -fs $DOTPREFSDIR/sublime-text3/conf ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/User
-    curl -SsL "https://packagecontrol.io/Package%20Control.sublime-package" > ~/Library/Application\ Support/Sublime\ Text\ 3/Installed\ Packages/Package\ Control.sublime-package
+    ln -fs $DOTPREFSDIR/sublime-text/conf ~/Library/Application\ Support/Sublime\ Text/Packages/User
+    curl -LSs -o ~/Library/Application\ Support/Sublime\ Text/Installed\ Packages/Package\ Control.sublime-package 'https://packagecontrol.io/Package%20Control.sublime-package'
 
     # Install license
-    cp -f "**Path to License.sublime_license file**" ~/Library/Application\ Support/Sublime\ Text\ 3/Local/License.sublime_license
+    cp -f "**Path to License.sublime_license file**" ~/Library/Application\ Support/Sublime\ Text/Local/License.sublime_license
 
     # Set file association
-    . $DOTPREFSDIR/sublime-text3/file-assoc.zsh
+    . $DOTPREFSDIR/sublime-text/file-assoc.zsh
     ```
 2. Setup Java [OpenJDK](https://adoptopenjdk.net) & [GraalVM](https://graalvm.org) & [JMC](https://oracle.com/java/technologies/jdk-mission-control.html)
 
-    ```bash
+    ```zsh
     brew install --cask adoptopenjdk/openjdk/adoptopenjdk8
-    brew install --cask adoptopenjdk/openjdk/adoptopenjdk15
+    brew install --cask adoptopenjdk/openjdk/adoptopenjdk16
     brew install --cask graalvm/tap/graalvm-ce-java11
     brew install --cask jdk-mission-control
 
-    # Switch JDK version to `1.8` or `15` or `graal`
-    jdk 15
+    # Switch JDK version to `1.8` or `8` or `16` or `graal`
+    jdk 16
     ```
-3. 💰 Setup [IntelliJ IDEA](https://jetbrains.com/idea)
+3. 💰❔ Setup [IntelliJ IDEA](https://jetbrains.com/idea)
 
-    ```bash
+    ```zsh
     brew install --cask jetbrains-toolbox
-    cp -f $DOTPREFSDIR/jb-toolbox/conf.json ~/Library/Application\ Support/JetBrains/Toolbox/.settings.json
+    ln -fs $DOTPREFSDIR/jb-toolbox/conf.json ~/Library/Application\ Support/JetBrains/Toolbox/.settings.json
     ```
 4. 💰 Setup [Paw](https://paw.cloud)
 
-    ```bash
+    ```zsh
     brew install --cask paw
     ```
 5. Setup [Docker](https://github.com/docker/for-mac)
 
-    ```bash
+    ```zsh
     brew install --cask docker
     ```
 6. Setup [ngrok](https://ngrok.com)
 
-    ```bash
+    ```zsh
     brew install --cask ngrok
     ```
 7. Setup [Postgres App](https://github.com/PostgresApp/PostgresApp)
 
-    ```bash
+    ```zsh
     brew install --cask postgres
     ```
 
 ##### Productivity
 1. Setup [Cheatsheet](https://cheatsheetapp.com/CheatSheet)
 
-    ```bash
+    ```zsh
     brew install --cask cheatsheet
     defaults import com.mediaatelier.CheatSheet $DOTPREFSDIR/cheatsheet/conf.plist
     ```
 2. 💰 Setup [BetterTouchTool](https://folivora.ai)
 
-    ```bash
+    ```zsh
     brew install --cask bettertouchtool
     defaults import com.hegenberg.BetterTouchTool $DOTPREFSDIR/btt/conf.plist
 
@@ -180,25 +210,25 @@ My shell and programms settings
     ```
 3. ~~Setup [Maccy](https://github.com/p0deje/Maccy)~~ (Superseded by [BetterTouchTool](#Productivity))
 
-    ```bash
+    ```zsh
     # brew install --cask maccy
     # defaults import org.p0deje.Maccy $DOTPREFSDIR/maccy/conf.plist
     ```
 4. ~~Setup [Rectangle](https://github.com/rxhanson/Rectangle)~~ (Superseded by [BetterTouchTool](#Productivity))
 
-    ```bash
+    ```zsh
     # brew install --cask rectangle
     # defaults import com.knollsoft.Rectangle $DOTPREFSDIR/rectangle/conf.plist
     ```
 5. ~~Setup [HapticKey](https://github.com/niw/HapticKey)~~ (Superseded by [BetterTouchTool](#Productivity))
 
-    ```bash
+    ```zsh
     # brew install --cask haptickey
     # defaults import at.niw.HapticKey $DOTPREFSDIR/haptickey/conf.plist
     ```
 6. ~~Setup [Pock](https://github.com/pigigaldi/Pock)~~ (Superseded by [BetterTouchTool](#Productivity))
 
-    ```bash
+    ```zsh
     # brew install --cask pock
     # defaults import com.pigigaldi.pock $DOTPREFSDIR/pock/conf.plist
 
@@ -207,23 +237,57 @@ My shell and programms settings
     ```
 7. ~~Setup [Flow](https://flowapp.info)~~ (Superseded by [BetterTouchTool](#Productivity))
 
-    ```bash
+    ```zsh
     # mas install 1423210932
     ```
 
 ##### System
 1. 💰 Setup [iStat Menus](https://bjango.com/mac/istatmenus)
 
-    ```bash
+    ```zsh
     brew install --cask istat-menus
     defaults import com.bjango.istatmenus6.extras $DOTPREFSDIR/istat-menus/conf.plist
 
     # Install license
     defaults write com.bjango.istatmenus license6 -dict email '**License email**' serial '**License serial key**'
     ```
-2. ~~Setup [Amphetamine](https://apps.apple.com/app/id937984704) & [Amphetamine Enhancer](https://github.com/x74353/Amphetamine-Enhancer)~~ (Superseded by [caffeinate](https://ss64.com/osx/caffeinate.html))
+2. Setup [Keka](https://github.com/aonez/Keka)
 
-    ```bash
+    ```zsh
+    brew install --cask keka
+    defaults import com.aone.keka $DOTPREFSDIR/keka/conf.plist
+
+    # Set file association (Without using kekadefaultapp)
+    . $DOTPREFSDIR/keka/file-assoc.zsh
+    ```
+3. 💰❔ Setup [ForkLift](https://binarynights.com)
+
+    ```zsh
+    brew install --cask forklift
+    defaults import com.binarynights.ForkLift-3 $DOTPREFSDIR/forklift/conf.plist
+
+    # Set as default file viewer
+    defaults write -g NSFileViewer -string com.binarynights.ForkLift-3
+    defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers -array-add '{LSHandlerContentType="public.folder";LSHandlerRoleAll="com.binarynights.ForkLift-3";}'
+    ```
+4. Setup [Clean Me](https://github.com/Kevin-De-Koninck/Clean-Me)
+
+    ```zsh
+    brew install --cask clean-me
+    ```
+5. Setup [OnyX](https://titanium-software.fr/en/onyx)
+
+    ```zsh
+    brew install --cask onyx
+    ```
+6. 💰 Setup [Apple Remote Desktop](https://apps.apple.com/app/id409907375)
+
+    ```zsh
+    mas install 409907375
+    ```
+7. ~~Setup [Amphetamine](https://apps.apple.com/app/id937984704) & [Amphetamine Enhancer](https://github.com/x74353/Amphetamine-Enhancer)~~ (Superseded by [caffeinate](https://ss64.com/osx/caffeinate.html))
+
+    ```zsh
     # mas install 937984704
 
     # cd ~/Library/Containers/com.if.Amphetamine/Data/Library/Application\ Support
@@ -232,129 +296,102 @@ My shell and programms settings
     # hdiutil detach -quiet /Volumes/Amphetamine\ Enhancer
     # sed -r -i '' -e "s#/Applications/Amphetamine\\\? Enhancer.app#~/Library/Containers/com.if.Amphetamine/Data/Library/Application' 'Support/Amphetamine' 'Enhancer.app#g" Amphetamine\ Enhancer.app/**/*.(sh|plist)
     ```
-3. Setup [Keka](https://github.com/aonez/Keka)
-
-    ```bash
-    brew install --cask keka
-    defaults import com.aone.keka $DOTPREFSDIR/keka/conf.plist
-
-    # Set file association (Without using kekadefaultapp)
-    . $DOTPREFSDIR/keka/file-assoc.zsh
-    ```
-4. Setup [ForkLift](https://binarynights.com)
-
-    ```bash
-    brew install --cask forklift
-    defaults import com.binarynights.ForkLift-3 $DOTPREFSDIR/forklift/conf.plist
-
-    # Set as default file viewer
-    defaults write -g NSFileViewer -string com.binarynights.ForkLift-3
-    defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers -array-add '{LSHandlerContentType="public.folder";LSHandlerRoleAll="com.binarynights.ForkLift-3";}'
-    ```
-5. Setup [Clean Me](https://github.com/Kevin-De-Koninck/Clean-Me)
-
-    ```bash
-    brew install --cask clean-me
-    ```
-6. Setup [OnyX](https://titanium-software.fr/en/onyx)
-
-    ```bash
-    brew install --cask onyx
-    ```
-7. 💰 Setup [Apple Remote Desktop](https://apps.apple.com/app/id409907375)
-
-    ```bash
-    mas install 409907375
-    ```
 
 ##### Network
 1. Setup [Sidekick Browser](https://meetsidekick.com)
 
     *
-        ```bash
+        ```zsh
         brew install --cask pushplaylabs-sidekick
         ```
     * Install [plugins, theme and StartPage search engine](/sidekick/plugins.md)
     * Import [uBlock Origin settings](/sidekick/ublock-settings.txt)
 2. Setup [Telegram](https://github.com/telegramdesktop/tdesktop)
 
-    ```bash
+    ```zsh
     brew install --cask telegram
     ```
 3. Setup [Slack](https://slack.com)
 
-    ```bash
+    ```zsh
     brew install --cask slack
     ```
-4. Setup [Tor](https://github.com/TheTorProject)
+4. 💰 Setup [ProtonMail Bridge](https://protonmail.com/bridge)
 
-    ```bash
+    ```zsh
+    brew install --cask protonmail-bridge
+    ```
+5. Setup [Tor](https://github.com/TheTorProject)
+
+    ```zsh
     brew install --cask tor-browser
     ```
-5. Setup [Transmission](https://github.com/transmission/transmission)
+6. Setup [Transmission](https://github.com/transmission/transmission)
 
-    ```bash
+    ```zsh
     brew install --cask transmission
     defaults import org.m0k.transmission $DOTPREFSDIR/transmission/conf.plist
     ```
-6. Setup [Wi-Fi Explorer](https://intuitibits.com/products/wifi-explorer)
+7. Setup [Wi-Fi Explorer](https://intuitibits.com/products/wifi-explorer)
 
-    ```bash
+    ```zsh
     brew install --cask wifi-explorer
     ```
 
 ##### Entertainment
-1. 💰 Setup [Spotify](https://spotify.com)
+1. 💰❔ Setup [Spotify](https://spotify.com)
 
-    ```bash
+    ```zsh
     brew install --cask spotify
     ```
 2. 💰 Setup [Air Server](https://airserver.com/Mac)
 
-    ```bash
+    ```zsh
     brew install --cask airserver
     ```
 3. Setup [HandBrake](https://handbrake.fr)
 
-    ```bash
+    ```zsh
     brew install --cask handbrake
     ```
 4. Setup [Picktorial](https://apps.apple.com/app/id1043289526)
 
-    ```bash
+    ```zsh
     mas install 1043289526
     ```
 5. Setup [Abyss](https://apps.apple.com/app/id1507396839)
 
-    ```bash
+    ```zsh
     mas install 1507396839
     ```
 6. 💰 Setup [Noizio](https://apps.apple.com/app/id928871589)
 
-    ```bash
+    ```zsh
     mas install 928871589
     ```
-7. Setup [Touchbar Nyancat](https://github.com/avatsaev/touchbar_nyancat)
+7. Setup [Touchbar Nyan Cat](https://github.com/avatsaev/touchbar_nyancat)
 
-    ```bash
-    curl -SsL "https://github.com/avatsaev/touchbar_nyancat/releases/download/0.0.2/touchbar_nyancat.app.zip" | tar -xf - -C /Applications/
-    chmod -R 755 /Applications/touchbar_nyancat.app
+    ```zsh
+    brew install --cask touchbar-nyancat
     ```
 8. ~~Setup [Helium Lift](https://apps.apple.com/app/id1018899653)~~ (Superseded by [BetterTouchTool](#Productivity))
 
-    ```bash
+    ```zsh
     # mas install 1018899653
     ```
 
 ##### Mobile
 1. Setup [AltServer](https://altstore.io)
 
-    ```bash
+    ```zsh
     brew install --cask altserver
     defaults import com.rileytestut.AltServer $DOTPREFSDIR/altserver/conf.plist
     ```
-2. Setup [WALTR PRO](https://softorino.com/pro)
+2. 💰 Setup [WALTR PRO](https://softorino.com/waltr)
 
-    ```bash
+    ```zsh
     brew install --cask waltr-pro
+    defaults import com.softorino.waltrpro $DOTPREFSDIR/waltr/conf.plist
+
+    # ~/Library/Application\ Support/WALTR\ PRO/.alticense && /Users/Shared/WALTR PRO/.alticense
     ```

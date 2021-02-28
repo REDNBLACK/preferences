@@ -25,6 +25,11 @@ export HOMEBREW_NO_EMOJI=1
 ####################################
 
 
+############[ Docker ]##############
+export DOCKER_CONFIG="${XDG_CONFIG_HOME}/docker"
+####################################
+
+
 ###########[   tldr   ]############
 export TLDR_CACHE_DIR=$XDG_CACHE_HOME
 ###################################
