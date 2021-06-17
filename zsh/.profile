@@ -9,6 +9,7 @@
 typeset -gx LC_CTYPE="UTF-8"
 typeset -gx LC_ALL="en_US.$LC_CTYPE"
 typeset -gx LANG=$LC_ALL
+typeset -gx EOL="\n"
 typeset -gx XDG_CACHE_HOME="$HOME/Library/Caches"
 typeset -gx XDG_CONFIG_HOME="$HOME/.config"
 

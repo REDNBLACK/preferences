@@ -127,7 +127,6 @@ EOF
 )
     print_info "Fixing IntelliJ IDEA sbt configuration..."
     echo $xml > .idea/sbt.xml
-
   else
     print_err "Incorrect args, use --help to learn more"
   fi

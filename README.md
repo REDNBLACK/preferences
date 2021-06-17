@@ -17,10 +17,11 @@ My shell and programms settings
 3. Setup [Homebrew](https://brew.sh)
 
     ```zsh
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+    zsh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
     brew analytics off
     brew tap buo/cask-upgrade
     brew install mas
+    # /Library/Developer/CommandLineTools/usr/bin/python3
 
     # Symlink custom Casks
     mkdir -p /usr/local/Homebrew/Library/Taps/rednblack && ln -fs $DOTPREFSDIR/homebrew "$_/homebrew-custom"
@@ -376,13 +377,18 @@ My shell and programms settings
     ```
 
 ##### Mobile
-1. Setup [AltServer](https://altstore.io)
+1. Setup [Apple Configurator 2](https://support.apple.com/guide/apple-configurator-2/welcome/mac)
+
+    ```zsh
+    mas install 1037126344
+    ```
+2. Setup [AltServer](https://altstore.io)
 
     ```zsh
     brew install --cask altserver
     defaults import com.rileytestut.AltServer $DOTPREFSDIR/altserver/conf.plist
     ```
-2. 💰 Setup [WALTR PRO](https://softorino.com/waltr)
+3. 💰 Setup [WALTR PRO](https://softorino.com/waltr)
 
     ```zsh
     brew install --cask waltr-pro

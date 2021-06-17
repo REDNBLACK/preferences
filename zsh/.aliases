@@ -4,6 +4,7 @@
 
 alias stfu="osascript -e 'set volume output muted true'"
 alias afk="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
+alias lsregister="/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister"
 
 # Easier navigation: .., ..., ...., ....., ~ and -
 alias ..="cd .."

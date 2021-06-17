@@ -11,5 +11,8 @@
             }
         },
         "install_automatically": false
+    },
+    "jetbrains_account": {
+        "active": "rednblack@protonmail.com"
     }
 }

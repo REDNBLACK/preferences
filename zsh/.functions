@@ -23,7 +23,7 @@ function print_err() {
 
 # Print formatted debug
 function print_debug() {
-  echo -e $fg_bold[yellow]"[Debug]:\n$@"$reset_color
+  echo -e $fg_bold[yellow]"[Debug]:"$EOL"$@"$reset_color
 }
 
 # Docker images start/stop
@@ -190,32 +190,35 @@ function fs() {
 # using Apple's Uniform Type Identifiers (UTI) and/or file extensions.
 # Implemented via defaults + Launch Services LSHandlers
 function duti() {
-  zparseopts -D -E -F - -uti+:=uti -ext+:=ext r=rebuild -rebuild=rebuild h=help -help=help
+  zparseopts -D -E -F - -uti+:=uti -ext+:=ext -url+:=url r=rebuild -rebuild=rebuild h=help -help=help
 
   local usage=$(cat <<EOF
-${fg_bold[blue]}Usage:${reset_color} duti [options…] <handler> ${fg[cyan]}Assign given handler to always open provided UTIs or extensions${reset_color}
+${fg_bold[blue]}Usage:${reset_color} duti [options…] <handler> ${fg[cyan]}Assign given handler to always open provided UTIs/extensions/URL schemes${reset_color}
 
 ${fg_bold[blue]}Options:${reset_color}
   ${fg_bold[yellow]}--uti${reset_color} <uti>  ${fg[blue]}Provide Uniform Type Identifier(s) for association with handler${reset_color}
   ${fg_bold[yellow]}--ext${reset_color} <ext>  ${fg[blue]}Provide extension(s) for association with handler${reset_color}
+  ${fg_bold[yellow]}--url${reset_color} <url>  ${fg[blue]}Provide url scheme(s) for association with handler${reset_color}
   ${fg_bold[yellow]}--rebuild${reset_color}    ${fg[blue]}Force rebuild of Launch Services database after successfull handler assign${reset_color}
   ${fg_bold[yellow]}--help${reset_color}       ${fg[blue]}Show help (this message) and exit${reset_color}
 
 ${fg_bold[blue]}Examples:${reset_color}
   duti ${fg_bold[yellow]}--uti${reset_color} "com.rarlab.rar-archive" ${fg_bold[yellow]}--uti${reset_color} "org.7-zip.7-zip-archive" ${fg_bold[yellow]}--ext${reset_color} "zip" ${fg_bold[yellow]}--ext${reset_color} "bzip" ${fg_bold[yellow]}--rebuild${reset_color} com.aone.keka
+  duti ${fg_bold[yellow]}--url${reset_color} "http" ${fg_bold[yellow]}--url${reset_color} "https" ${fg_bold[yellow]}--rebuild${reset_color} com.google.chrome
 EOF
 )
 
   if [ ${#help} = 1 ]; then
     echo $usage
-  elif [[ ${#uti[@]} -eq 0 ]] && [[ ${#ext[@]} -eq 0 ]]; then
-    print_err "Arguments --uti and/or --ext must be set"
+  elif [[ ${#uti[@]} -eq 0 ]] && [[ ${#ext[@]} -eq 0 ]] && [[ ${#url[@]} -eq 0 ]]; then
+    print_err "Arguments --uti/--ext/--url must be set"
   elif [[ $# -ne 1 ]]; then
     print_err "Single handler name expected, got $#"
   else
     local args=()
-    for _ u ("${(@)uti}") args+=("'{LSHandlerContentType=$u;LSHandlerRoleAll=$1;}'")
-    for _ e ("${(@)ext}") args+=("'{LSHandlerContentTag=$e;LSHandlerContentTagClass=public.filename-extension;LSHandlerRoleAll=$1;}'")
+    for _ u ("${(@)uti}") args+=("'{LSHandlerRoleAll=$1;LSHandlerContentType=$u;}'")
+    for _ e ("${(@)ext}") args+=("'{LSHandlerRoleAll=$1;LSHandlerContentTag=$e;LSHandlerContentTagClass=public.filename-extension;}'")
+    for _ l ("${(@)url}") args+=("'{LSHandlerURLScheme=$l;LSHandlerRoleAll=$1;}'")
 
     # print_debug "    ${#rebuild}\n    $@\n    ${#args[@]}: $args"
 
@@ -225,7 +228,7 @@ EOF
     fi
   fi
 
-  unset uti ext rebuild help
+  unset uti ext url rebuild help
 }
 
 # Update/upgrade homebrew, homebrew cask, MAS and system
@@ -235,12 +238,12 @@ function upgrade() {
   brew upgrade --display-times --formula | lolcat
   brew cleanup formula -s --prune 1 | lolcat
 
-  print_info "\n[Cask]"
+  print_info $EOL"[Cask]"
   brew cu -a -y --no-brew-update --no-quarantine --cleanup | lolcat
 
-  print_info "\n[MAS]"
+  print_info $EOL"[MAS]"
   mas upgrade | lolcat
 
-  print_info "\n[System]"
+  print_info $EOL"[System]"
   softwareupdate -ia | lolcat
 }

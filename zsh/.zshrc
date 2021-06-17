@@ -121,47 +121,18 @@ plugins=(
   # automatically hidden when the input line reaches it. Right prompt above the
   # last prompt line gets hidden if it would overlap with left prompt.
   typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
-    # prompt_char           # prompt symbol
     status                  # exit code of the last command
     command_execution_time  # duration of the last command
     background_jobs         # presence of background jobs
     java_version            # java version (https://www.java.com/)
-    # pyenv                 # python environment (https://github.com/pyenv/pyenv)
-    # haskell_stack         # haskell version from stack (https://haskellstack.org/)
-    # rust_version          # rustc version (https://www.rust-lang.org)
-    # rbenv                 # ruby version from rbenv (https://github.com/rbenv/rbenv)
-    # direnv                # direnv status (https://direnv.net/)
-    # kubecontext           # current kubernetes context (https://kubernetes.io/)
-    # terraform             # terraform workspace (https://www.terraform.io)
-    # aws                   # aws profile (https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html)
-    # aws_eb_env            # aws elastic beanstalk environment (https://aws.amazon.com/elasticbeanstalk/)
-    # azure                 # azure account name (https://docs.microsoft.com/en-us/cli/azure)
-    # gcloud                # google cloud cli account and project (https://cloud.google.com/)
-    # google_app_cred       # google application credentials (https://cloud.google.com/docs/authentication/production)
-    # context               # user@hostname
-    # nordvpn               # nordvpn connection status, linux only (https://nordvpn.com/)
-    # ranger                # ranger shell (https://github.com/ranger/ranger)
-    # nnn                   # nnn shell (https://github.com/jarun/nnn)
-    vim_shell               # vim shell indicator (:sh)
-    # midnight_commander    # midnight commander shell (https://midnight-commander.org/)
-    # nix_shell             # nix shell (https://nixos.org/nixos/nix-pills/developing-with-nix-shell.html)
-    # vi_mode               # vi mode (you don't need this if you've enabled prompt_char)
-    # todo                  # todo items (https://github.com/todotxt/todo.txt-cli)
-    # timewarrior           # timewarrior tracking status (https://timewarrior.net/)
-    # taskwarrior           # taskwarrior task count (https://taskwarrior.org/)
-    time                    # current time
+    context                 # user@hostname
+    public_ip               # public IP address
     vpn_ip                  # virtual private network indicator
-    # disk_usage            # disk usage
-    # swap                  # used swap
-    # ip                    # ip address and bandwidth usage for a specified network interface
-    # public_ip             # public IP address
-    # proxy                 # system-wide http/https/ftp proxy
-    # wifi                  # wifi speed
-    # example               # example user-defined segment (see prompt_example function below)
+    time                    # current time
   )
 
   # Defines character set used by powerlevel10k. It's best to let `p10k configure` set it for you.
-  typeset -g POWERLEVEL9K_MODE=powerline
+  typeset -g POWERLEVEL9K_MODE=nerdfont-complete
   # When set to `moderate`, some icons will have an extra space after them. This is meant to avoid
   # icon overlap when using non-monospace fonts. When set to `none`, spaces are not added.
   typeset -g POWERLEVEL9K_ICON_PADDING=none
@@ -228,29 +199,6 @@ plugins=(
   # Left prompt terminator for lines without any segments.
   typeset -g POWERLEVEL9K_EMPTY_LINE_LEFT_PROMPT_LAST_SEGMENT_END_SYMBOL=
 
-  ################################[ prompt_char: prompt symbol ]################################
-  # Transparent background.
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_BACKGROUND=
-  # Green prompt symbol if the last command succeeded.
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_OK_{VIINS,VICMD,VIVIS,VIOWR}_FOREGROUND=76
-  # Red prompt symbol if the last command failed.
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_ERROR_{VIINS,VICMD,VIVIS,VIOWR}_FOREGROUND=196
-  # Default prompt symbol.
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_{OK,ERROR}_VIINS_CONTENT_EXPANSION='❯'
-  # Prompt symbol in command vi mode.
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_{OK,ERROR}_VICMD_CONTENT_EXPANSION='❮'
-  # Prompt symbol in visual vi mode.
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_{OK,ERROR}_VIVIS_CONTENT_EXPANSION='V'
-  # Prompt symbol in overwrite vi mode.
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_{OK,ERROR}_VIOWR_CONTENT_EXPANSION='▶'
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_OVERWRITE_STATE=true
-  # No line terminator if prompt_char is the last segment.
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_LEFT_PROMPT_LAST_SEGMENT_END_SYMBOL=
-  # No line introducer if prompt_char is the first segment.
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_LEFT_PROMPT_FIRST_SEGMENT_START_SYMBOL=
-  # No surrounding whitespace.
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_LEFT_{LEFT,RIGHT}_WHITESPACE=
-
   ##########################[ status: exit code of the last command ]###########################
   # Enable OK_PIPE, ERROR_PIPE and ERROR_SIGNAL status states to allow us to enable, disable and
   # style them independently from the regular OK and ERROR state.
@@ -316,43 +264,6 @@ plugins=(
   # Custom icon.
   typeset -g POWERLEVEL9K_BACKGROUND_JOBS_VISUAL_IDENTIFIER_EXPANSION='≡'
 
-  #######################[ direnv: direnv status (https://direnv.net/) ]########################
-  # Direnv color.
-  # typeset -g POWERLEVEL9K_DIRENV_FOREGROUND=3
-  # typeset -g POWERLEVEL9K_DIRENV_BACKGROUND=0
-  # Custom icon.
-  # typeset -g POWERLEVEL9K_DIRENV_VISUAL_IDENTIFIER_EXPANSION='⭐'
-
-  ######################[ nnn: nnn shell (https://github.com/jarun/nnn) ]#######################
-  # Nnn shell color.
-  # typeset -g POWERLEVEL9K_NNN_FOREGROUND=0
-  # typeset -g POWERLEVEL9K_NNN_BACKGROUND=6
-  # Custom icon.
-  # typeset -g POWERLEVEL9K_NNN_VISUAL_IDENTIFIER_EXPANSION='⭐'
-
-  ######[ midnight_commander: midnight commander shell (https://midnight-commander.org/) ]######
-  # Midnight Commander shell color.
-  # typeset -g POWERLEVEL9K_MIDNIGHT_COMMANDER_FOREGROUND=3
-  # typeset -g POWERLEVEL9K_MIDNIGHT_COMMANDER_BACKGROUND=0
-  # Custom icon.
-  # typeset -g POWERLEVEL9K_MIDNIGHT_COMMANDER_VISUAL_IDENTIFIER_EXPANSION='⭐'
-
-  ###########[ vi_mode: vi mode (you don't need this if you've enabled prompt_char) ]###########
-  # Foreground color.
-  # typeset -g POWERLEVEL9K_VI_MODE_FOREGROUND=0
-  # Text and color for normal (a.k.a. command) vi mode.
-  # typeset -g POWERLEVEL9K_VI_COMMAND_MODE_STRING=NORMAL
-  # typeset -g POWERLEVEL9K_VI_MODE_NORMAL_BACKGROUND=2
-  # Text and color for visual vi mode.
-  # typeset -g POWERLEVEL9K_VI_VISUAL_MODE_STRING=VISUAL
-  # typeset -g POWERLEVEL9K_VI_MODE_VISUAL_BACKGROUND=4
-  # Text and color for overtype (a.k.a. overwrite and replace) vi mode.
-  # typeset -g POWERLEVEL9K_VI_OVERWRITE_MODE_STRING=OVERTYPE
-  # typeset -g POWERLEVEL9K_VI_MODE_OVERWRITE_BACKGROUND=3
-  # Text and color for insert vi mode.
-  # typeset -g POWERLEVEL9K_VI_INSERT_MODE_STRING=
-  # typeset -g POWERLEVEL9K_VI_MODE_INSERT_FOREGROUND=8
-
   ##################################[ context: user@hostname ]##################################
   # Context color when running with privileges.
   typeset -g POWERLEVEL9K_CONTEXT_ROOT_FOREGROUND=1
@@ -391,81 +302,29 @@ plugins=(
   # Custom icon.
   # typeset -g POWERLEVEL9K_JAVA_VERSION_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
+  ###############################[ public_ip: public IP address ]###############################
+  # Public IP color.
+  typeset -g POWERLEVEL9K_PUBLIC_IP_FOREGROUND=7
+  typeset -g POWERLEVEL9K_PUBLIC_IP_BACKGROUND=0
+  # Custom icon.
+  # typeset -g POWERLEVEL9K_PUBLIC_IP_VISUAL_IDENTIFIER_EXPANSION='⭐'
+
   ########################[ vpn_ip: virtual private network indicator ]#########################
   # VPN IP color.
-  # typeset -g POWERLEVEL9K_VPN_IP_FOREGROUND=0
-  # typeset -g POWERLEVEL9K_VPN_IP_BACKGROUND=6
+  typeset -g POWERLEVEL9K_VPN_IP_FOREGROUND=0
+  typeset -g POWERLEVEL9K_VPN_IP_BACKGROUND=6
   # When on VPN, show just an icon without the IP address.
   # Tip: To display the private IP address when on VPN, remove the next line.
   typeset -g POWERLEVEL9K_VPN_IP_CONTENT_EXPANSION=
   # Regular expression for the VPN network interface. Run `ifconfig` or `ip -4 a show` while on VPN
   # to see the name of the interface.
-  typeset -g POWERLEVEL9K_VPN_IP_INTERFACE='(wg|(.*tun))[0-9]*'
+  typeset -g POWERLEVEL9K_VPN_IP_INTERFACE='(gpd|ipsec|wg|(.*tun)|tailscale)[0-9]*'
   # If set to true, show one segment per matching network interface. If set to false, show only
   # one segment corresponding to the first matching network interface.
   # Tip: If you set it to true, you'll probably want to unset POWERLEVEL9K_VPN_IP_CONTENT_EXPANSION.
   typeset -g POWERLEVEL9K_VPN_IP_SHOW_ALL=false
   # Custom icon.
   # typeset -g POWERLEVEL9K_VPN_IP_VISUAL_IDENTIFIER_EXPANSION='⭐'
-
-  ###########[ ip: ip address and bandwidth usage for a specified network interface ]###########
-  # IP color.
-  typeset -g POWERLEVEL9K_IP_BACKGROUND=4
-  typeset -g POWERLEVEL9K_IP_FOREGROUND=0
-  # The following parameters are accessible within the expansion:
-  #
-  #   Parameter             | Meaning
-  #   ----------------------+---------------
-  #   P9K_IP_IP         | IP address
-  #   P9K_IP_INTERFACE  | network interface
-  #   P9K_IP_RX_BYTES   | total number of bytes received
-  #   P9K_IP_TX_BYTES   | total number of bytes sent
-  #   P9K_IP_RX_RATE    | receive rate (since last prompt)
-  #   P9K_IP_TX_RATE    | send rate (since last prompt)
-  typeset -g POWERLEVEL9K_IP_CONTENT_EXPANSION='${P9K_IP_RX_RATE:+⇣$P9K_IP_RX_RATE }${P9K_IP_TX_RATE:+⇡$P9K_IP_TX_RATE }$P9K_IP_IP'
-  # Show information for the first network interface whose name matches this regular expression.
-  # Run `ifconfig` or `ip -4 a show` to see the names of all network interfaces.
-  typeset -g POWERLEVEL9K_IP_INTERFACE='e.*'
-  # Custom icon.
-  # typeset -g POWERLEVEL9K_IP_VISUAL_IDENTIFIER_EXPANSION='⭐'
-
-  #########################[ proxy: system-wide http/https/ftp proxy ]##########################
-  # Proxy color.
-  # typeset -g POWERLEVEL9K_PROXY_FOREGROUND=4
-  # typeset -g POWERLEVEL9K_PROXY_BACKGROUND=0
-  # Custom icon.
-  # typeset -g POWERLEVEL9K_PROXY_VISUAL_IDENTIFIER_EXPANSION='⭐'
-
-  #####################################[ wifi: wifi speed ]#####################################
-  # WiFi color.
-  # typeset -g POWERLEVEL9K_WIFI_FOREGROUND=0
-  # typeset -g POWERLEVEL9K_WIFI_BACKGROUND=4
-  # Custom icon.
-  # typeset -g POWERLEVEL9K_WIFI_VISUAL_IDENTIFIER_EXPANSION='⭐'
-
-  # Use different colors and icons depending on signal strength ($P9K_WIFI_BARS).
-  #
-  #   # Wifi colors and icons for different signal strength levels (low to high).
-  #   typeset -g my_wifi_fg=(0 0 0 0 0)                                # <-- change these values
-  #   typeset -g my_wifi_icon=('WiFi' 'WiFi' 'WiFi' 'WiFi' 'WiFi')     # <-- change these values
-  #
-  #   typeset -g POWERLEVEL9K_WIFI_CONTENT_EXPANSION='%F{${my_wifi_fg[P9K_WIFI_BARS+1]}}$P9K_WIFI_LAST_TX_RATE Mbps'
-  #   typeset -g POWERLEVEL9K_WIFI_VISUAL_IDENTIFIER_EXPANSION='%F{${my_wifi_fg[P9K_WIFI_BARS+1]}}${my_wifi_icon[P9K_WIFI_BARS+1]}'
-  #
-  # The following parameters are accessible within the expansions:
-  #
-  #   Parameter             | Meaning
-  #   ----------------------+---------------
-  #   P9K_WIFI_SSID         | service set identifier, a.k.a. network name
-  #   P9K_WIFI_LINK_AUTH    | authentication protocol such as "wpa2-psk" or "none"
-  #   P9K_WIFI_LAST_TX_RATE | wireless transmit rate in megabits per second
-  #   P9K_WIFI_RSSI         | signal strength in dBm, from -120 to 0
-  #   P9K_WIFI_NOISE        | noise in dBm, from -120 to 0
-  #   P9K_WIFI_BARS         | signal strength in bars, from 0 to 4 (derived from P9K_WIFI_RSSI and P9K_WIFI_NOISE)
-  #
-  # All parameters except P9K_WIFI_BARS are extracted from the output of the following command:
-  #
-  #   /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I
 
   ####################################[ time: current time ]####################################
   # Current time color.
@@ -481,39 +340,6 @@ plugins=(
   typeset -g POWERLEVEL9K_TIME_VISUAL_IDENTIFIER_EXPANSION=
   # Custom prefix.
   # typeset -g POWERLEVEL9K_TIME_PREFIX='at '
-
-  # Example of a user-defined prompt segment. Function prompt_example will be called on every
-  # prompt if `example` prompt segment is added to POWERLEVEL9K_LEFT_PROMPT_ELEMENTS or
-  # POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS. It displays an icon and yellow text on red background
-  # greeting the user.
-  #
-  # Type `p10k help segment` for documentation and a more sophisticated example.
-  function prompt_example() {
-    p10k segment -b 1 -f 3 -i '⭐' -t 'hello, %n'
-  }
-
-  # User-defined prompt segments may optionally provide an instant_prompt_* function. Its job
-  # is to generate the prompt segment for display in instant prompt. See
-  # https://github.com/romkatv/powerlevel10k/blob/master/README.md#instant-prompt.
-  #
-  # Powerlevel10k will call instant_prompt_* at the same time as the regular prompt_* function
-  # and will record all `p10k segment` calls it makes. When displaying instant prompt, Powerlevel10k
-  # will replay these calls without actually calling instant_prompt_*. It is imperative that
-  # instant_prompt_* always makes the same `p10k segment` calls regardless of environment. If this
-  # rule is not observed, the content of instant prompt will be incorrect.
-  #
-  # Usually, you should either not define instant_prompt_* or simply call prompt_* from it. If
-  # instant_prompt_* is not defined for a segment, the segment won't be shown in instant prompt.
-  function instant_prompt_example() {
-    # Since prompt_example always makes the same `p10k segment` calls, we can call it from
-    # instant_prompt_example. This will give us the same `example` prompt segment in the instant
-    # and regular prompts.
-    prompt_example
-  }
-
-  # User-defined prompt segments can be customized the same way as built-in segments.
-  # typeset -g POWERLEVEL9K_EXAMPLE_FOREGROUND=3
-  # typeset -g POWERLEVEL9K_EXAMPLE_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
   # Transient prompt works similarly to the builtin transient_rprompt option. It trims down prompt
   # when accepting a command line. Supported values:
@@ -578,6 +404,15 @@ typeset -gx TLDR_CACHE_DIR=$XDG_CACHE_HOME
 if command -v thefuck &> /dev/null; then
   eval "$(thefuck --alias)"
 fi
+# ====================================================================================== #
+
+
+# ====================================================================================== #
+#                                     Rust                                               #
+# ====================================================================================== #
+typeset -gx RUSTUP_HOME="$XDG_CONFIG_HOME/rustup"
+typeset -gx CARGO_HOME="$XDG_CONFIG_HOME/cargo"
+
 # ====================================================================================== #
 
 
