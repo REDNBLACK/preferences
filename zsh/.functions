@@ -1,14 +1,15 @@
-# ==========================================
-#     .functions
-#
-#  - print_{info|err|debug} = formatted print
-#  - mkd                      = mkdir + cd
-#  - mke                      = mkdir only if not exists
-#  - vpn                      = connect to Cisco AnyConnect or OpenConnect VPN
-#  - targz                    = -> .tar.gz
-#  - fs                       = du [with options]
-#  - duti                     = set file association
-# ==========================================
+# ====================================================================================== #
+#                                 .functions                                             #
+#                                                                                        #
+# - print_{info|err|debug} = formatted print                                             #
+# - mkd                    = mkdir + cd                                                  #
+# - mke                    = mkdir only if not exists                                    #
+# - vpn                    = connect to Cisco AnyConnect or OpenConnect VPN              #
+# - targz                  = -> .tar.gz                                                  #
+# - fs                     = du [with options]                                           #
+# - duti                   = set file association                                        #
+# - upgrade                = update manager                                              #
+# ====================================================================================== #
 
 # Print formatted info
 function print_info() {
@@ -225,4 +226,21 @@ EOF
   fi
 
   unset uti ext rebuild help
+}
+
+# Update/upgrade homebrew, homebrew cask, MAS and system
+function upgrade() {
+  print_info "[Formula]"
+  brew update | lolcat
+  brew upgrade --display-times --formula | lolcat
+  brew cleanup formula -s --prune 1 | lolcat
+
+  print_info "\n[Cask]"
+  brew cu -a -y --no-brew-update --no-quarantine --cleanup | lolcat
+
+  print_info "\n[MAS]"
+  mas upgrade | lolcat
+
+  print_info "\n[System]"
+  softwareupdate -ia | lolcat
 }

@@ -1,10 +1,17 @@
 #!/bin/zsh
 emulate -LR zsh
 
+# ====================================================================================== #
+#                          JDK, JVM and sbt integrations                                 #
+#                                                                                        #
+#  - jdk = get or set current Java version                                               #
+#  - sbt = various sbt tools                                                             #
+# ====================================================================================== #
+
 # Initialize JAVA_HOME
 if [[ -f /usr/libexec/java_home ]]; then
-  export JAVA_HOME=$(/usr/libexec/java_home)
-  export PATH=$JAVA_HOME/bin:$PATH
+  typeset -gx JAVA_HOME=$(/usr/libexec/java_home)
+  typeset -gx PATH=$JAVA_HOME/bin:$PATH
 fi
 
 # Java JDK utils
@@ -37,8 +44,8 @@ EOF
     fi
 
     print_info "Setting JDK version to $ver..."
-    export JAVA_HOME=$(/usr/libexec/java_home -v "$ver")
-    export PATH=$JAVA_HOME/bin:$PATH
+    typeset -gx JAVA_HOME=$(/usr/libexec/java_home -v "$ver")
+    typeset -gx PATH=$JAVA_HOME/bin:$PATH
   else
     java -version
   fi

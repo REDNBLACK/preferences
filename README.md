@@ -23,7 +23,7 @@ My shell and programms settings
     brew install mas
 
     # Symlink custom Casks
-    mkdir -p /usr/local/Homebrew/Library/Taps/rednblack/homebrew-custom && ln -fs $DOTPREFSDIR/homebrew/Casks "$_/Casks"
+    mkdir -p /usr/local/Homebrew/Library/Taps/rednblack && ln -fs $DOTPREFSDIR/homebrew "$_/homebrew-custom"
     ```
 4. Setup [Git](https://git-scm.com) & [GitHub](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
 
@@ -41,7 +41,7 @@ My shell and programms settings
 6. Setup [zsh](http://zsh.org) & [oh my zsh](https://ohmyz.sh) & [PowerLevel10k](https://github.com/romkatv/powerlevel10k) & [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) & [zsh-fast-syntax-highlighting](https://github.com/zdharma/fast-syntax-highlighting)
 
     ```zsh
-    brew install zsh
+    brew install zsh # ⚠️ Command may be skipped in case of actual preinstalled zsh version
     ln -fs $DOTPREFSDIR/zsh ~/.config/zsh
     echo "export ZDOTDIR=$HOME/.config/zsh" | sudo tee -a /etc/zshenv > /dev/null
 
@@ -67,12 +67,13 @@ My shell and programms settings
 8. Setup Tools
 
     ```zsh
-    brew install exa         # 'ls' on steroids
-    brew install ripgrep     # Modern 'grep'
-    brew install thefuck     # Corrects errors in previous commands
-    brew install tldr --HEAD # TL;DR version of 'man'
-    brew install howdoi      # Instant coding answers
-    brew install jq          # CLI for JSON processing
+    brew install lolercat --HEAD # Rainbow cat!
+    brew install exa             # 'ls' on steroids
+    brew install ripgrep         # Modern 'grep'
+    brew install thefuck         # Corrects errors in previous commands
+    brew install tldr --HEAD     # TL;DR version of 'man'
+    brew install howdoi          # Instant coding answers
+    brew install jq              # CLI for JSON processing
     ```
 9. Setup macOS
 
@@ -93,8 +94,8 @@ My shell and programms settings
 
     *
         ```zsh
-        # Set config to cloudflare-https or something else
-        curl -LSs -o 'DoH.mobileconfig' 'https://raw.githubusercontent.com/paulmillr/encrypted-dns/master/{config}.mobileconfig' && \
+        # ⚠️ Set config to `cloudflare-https` or other config name from repo
+        curl -LSs -o 'DoH.mobileconfig' "https://raw.githubusercontent.com/paulmillr/encrypted-dns/master/${config}.mobileconfig" && \
         open -a ProfileHelper DoH.mobileconfig && \
         open "x-apple.systempreferences:com.apple.preferences.configurationprofiles"
         ```
@@ -107,15 +108,15 @@ My shell and programms settings
 
     *
         ```zsh
-        # Set id, name, model to desired values
+        # ⚠️ Set `id`, `name`, `model` to desired values before running.
         curl -GLSs -o 'NextDNS.mobileconfig' 'https://api.nextdns.io/apple/profile' \
-          -d 'configuration={id}' \
-          -d 'device_name={name}' \
-          -d 'device_model={model}' \
-          -d 'sign=0' \
-          -d 'trust_ca=0' \
-          -d 'bootstrap_ips=0' \
-          -d 'prohibit_disablement=0' && \
+          -d "configuration=${id}" \
+          --data-urlencode "device_name=${name}" \
+          --data-urlencode "device_model=${model}" \
+          -d "sign=${sign:-0}" \
+          -d "trust_ca=${trust:-0}" \
+          -d "bootstrap_ips=${bootstrap:-0}" \
+          -d "prohibit_disablement=${supervised:-0}" && \
         open -a ProfileHelper NextDNS.mobileconfig && \
         open "x-apple.systempreferences:com.apple.preferences.configurationprofiles"
         ```
@@ -270,31 +271,25 @@ My shell and programms settings
     defaults write -g NSFileViewer -string com.binarynights.ForkLift-3
     defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers -array-add '{LSHandlerContentType="public.folder";LSHandlerRoleAll="com.binarynights.ForkLift-3";}'
     ```
-4. Setup [Clean Me](https://github.com/Kevin-De-Koninck/Clean-Me)
-
-    ```zsh
-    brew install --cask clean-me
-    ```
-5. Setup [OnyX](https://titanium-software.fr/en/onyx)
+4. Setup [OnyX](https://titanium-software.fr/en/onyx)
 
     ```zsh
     brew install --cask onyx
     ```
-6. 💰 Setup [Apple Remote Desktop](https://apps.apple.com/app/id409907375)
+5. 💰 Setup [Apple Remote Desktop](https://apps.apple.com/app/id409907375)
 
     ```zsh
     mas install 409907375
+    ```
+6. ~~Setup [Clean Me](https://github.com/Kevin-De-Koninck/Clean-Me)~~ (Abandoned)
+
+    ```zsh
+    # brew install --cask clean-me
     ```
 7. ~~Setup [Amphetamine](https://apps.apple.com/app/id937984704) & [Amphetamine Enhancer](https://github.com/x74353/Amphetamine-Enhancer)~~ (Superseded by [caffeinate](https://ss64.com/osx/caffeinate.html))
 
     ```zsh
     # mas install 937984704
-
-    # cd ~/Library/Containers/com.if.Amphetamine/Data/Library/Application\ Support
-    # hdiutil attach -nobrowse -quiet "https://github.com/x74353/Amphetamine-Enhancer/raw/master/Releases/Current/Amphetamine%20Enhancer.dmg"
-    # cp -rf /Volumes/Amphetamine\ Enhancer/*.app ./
-    # hdiutil detach -quiet /Volumes/Amphetamine\ Enhancer
-    # sed -r -i '' -e "s#/Applications/Amphetamine\\\? Enhancer.app#~/Library/Containers/com.if.Amphetamine/Data/Library/Application' 'Support/Amphetamine' 'Enhancer.app#g" Amphetamine\ Enhancer.app/**/*.(sh|plist)
     ```
 
 ##### Network

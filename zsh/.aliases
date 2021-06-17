@@ -1,6 +1,6 @@
-# ==========================================
-#                  .aliases
-# ==========================================
+# ====================================================================================== #
+#                                .aliases                                                #
+# ====================================================================================== #
 
 alias stfu="osascript -e 'set volume output muted true'"
 alias afk="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
@@ -23,9 +23,6 @@ alias w="cd ~/Work"
 alias pref="cd $DOTPREFSDIR"
 alias h="history"
 alias j="jobs"
-
-# Update stuff
-alias update-brew="echo "Core:"; brew update | lolcat; brew upgrade --display-times --formula | lolcat; brew cleanup formula -s --prune 1 | lolcat; echo "Cask:"; brew cu -a -y --no-brew-update --no-quarantine --cleanup | lolcat; echo "MAS:"; mas upgrade | lolcat; softwareupdate -ia | lolcat"
 
 # Kill all the tabs in Chrome to free up memory
 alias chromekill="ps ux | grep '[C]hrome Helper --type=renderer' | grep -v extension-process | tr -s ' ' | cut -d ' ' -f2 | xargs kill"
