@@ -1,4 +1,4 @@
-class Lolercat < Formula
+class LolcatC < Formula
   desc "Faster lolcat implementation in CLang"
   homepage "https://github.com/jaseg/lolcat"
   url "https://github.com/jaseg/lolcat/archive/refs/tags/v1.2.tar.gz"

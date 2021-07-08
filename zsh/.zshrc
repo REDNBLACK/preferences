@@ -126,8 +126,6 @@ plugins=(
     background_jobs         # presence of background jobs
     java_version            # java version (https://www.java.com/)
     context                 # user@hostname
-    public_ip               # public IP address
-    vpn_ip                  # virtual private network indicator
     time                    # current time
   )
 
@@ -302,30 +300,6 @@ plugins=(
   # Custom icon.
   # typeset -g POWERLEVEL9K_JAVA_VERSION_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
-  ###############################[ public_ip: public IP address ]###############################
-  # Public IP color.
-  typeset -g POWERLEVEL9K_PUBLIC_IP_FOREGROUND=7
-  typeset -g POWERLEVEL9K_PUBLIC_IP_BACKGROUND=0
-  # Custom icon.
-  # typeset -g POWERLEVEL9K_PUBLIC_IP_VISUAL_IDENTIFIER_EXPANSION='⭐'
-
-  ########################[ vpn_ip: virtual private network indicator ]#########################
-  # VPN IP color.
-  typeset -g POWERLEVEL9K_VPN_IP_FOREGROUND=0
-  typeset -g POWERLEVEL9K_VPN_IP_BACKGROUND=6
-  # When on VPN, show just an icon without the IP address.
-  # Tip: To display the private IP address when on VPN, remove the next line.
-  typeset -g POWERLEVEL9K_VPN_IP_CONTENT_EXPANSION=
-  # Regular expression for the VPN network interface. Run `ifconfig` or `ip -4 a show` while on VPN
-  # to see the name of the interface.
-  typeset -g POWERLEVEL9K_VPN_IP_INTERFACE='(gpd|ipsec|wg|(.*tun)|tailscale)[0-9]*'
-  # If set to true, show one segment per matching network interface. If set to false, show only
-  # one segment corresponding to the first matching network interface.
-  # Tip: If you set it to true, you'll probably want to unset POWERLEVEL9K_VPN_IP_CONTENT_EXPANSION.
-  typeset -g POWERLEVEL9K_VPN_IP_SHOW_ALL=false
-  # Custom icon.
-  # typeset -g POWERLEVEL9K_VPN_IP_VISUAL_IDENTIFIER_EXPANSION='⭐'
-
   ####################################[ time: current time ]####################################
   # Current time color.
   # typeset -g POWERLEVEL9K_TIME_FOREGROUND=0
@@ -434,6 +408,70 @@ typeset -gx CARGO_HOME="$XDG_CONFIG_HOME/cargo"
 #                                     iTerm                                              #
 # ====================================================================================== #
 . $DOTPREFSDIR/iterm2/integration.zsh
+typeset -gA ITERM_VARS=(
+  [timer]=0
+)
+
+function iterm2_print_user_vars() {
+  should_update() {
+    local now=$(date +%s)
+
+    if [ $ITERM_VARS[timer] -eq 0 ] || [ $now -ge $ITERM_VARS[timer] ]; then
+      echo $(($now + 10))
+    else
+      echo 0
+    fi
+  }
+
+  public_ip() {
+    local ip="$(dig +tries=1 +short -4 A myip.opendns.com @resolver1.opendns.com 2>/dev/null)"
+    [[ $ip == ';'* ]] && ip=
+
+    if [[ -z $ip ]]; then
+      ip="$(dig +tries=1 +short -6 AAAA myip.opendns.com @resolver1.opendns.com 2>/dev/null)"
+      [[ $ip == ';'* ]] && ip=
+    fi
+
+    [[ $ip =~ '^[0-9a-f.:]+$' ]] || ip=''
+
+    echo $ip
+  }
+
+  is_vpn() {
+    local vpn=false
+
+    for line in ${(f)"$(command ifconfig 2>/dev/null)"}; do
+      if [[ $line =~ ^(gpd|ipsec|wg|tailscale)[0-9]*:.*$ ]]; then
+        vpn=true
+        break
+      fi
+    done
+
+    echo $vpn
+  }
+
+  local curr="${(%):-%n}"
+  if [ $curr != $USER ]; then
+    local prefix=''
+
+    if [[ $P9K_SSH == 1 ]]; then
+      prefix=" $prefix"
+    fi
+
+    if [[ -n "$SUDO_COMMAND" ]]; then
+      prefix=" $prefix"
+    fi
+
+    iterm2_set_user_var Context "$prefix$curr@$(hostname -s)"
+  fi
+
+  local time=$(should_update)
+  if [ $time -ne 0 ]; then
+    ITERM_VARS[timer]=$time
+
+    iterm2_set_user_var PublicIP "$(public_ip)$([ $(is_vpn) = true ] && echo " " || echo "")"
+  fi
+}
 # ====================================================================================== #
 
 

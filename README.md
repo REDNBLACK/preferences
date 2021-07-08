@@ -14,17 +14,16 @@ My shell and programms settings
     echo "export DOTPREFSDIR=$(cd Preferences && pwd)" | sudo tee -a /etc/zshenv > /dev/null
     exec zsh
     ```
-3. Setup [Homebrew](https://brew.sh)
+3. Setup [Homebrew](https://brew.sh) & [mas-cli](https://github.com/mas-cli/mas) & [cask-upgrade](https://github.com/buo/homebrew-cask-upgrade)
 
     ```zsh
     zsh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
     brew analytics off
     brew tap buo/cask-upgrade
     brew install mas
-    # /Library/Developer/CommandLineTools/usr/bin/python3
 
     # Symlink custom Casks
-    mkdir -p /usr/local/Homebrew/Library/Taps/rednblack && ln -fs $DOTPREFSDIR/homebrew "$_/homebrew-custom"
+    mkdir -p /usr/local/Homebrew/Library/Taps/custom && ln -fs $DOTPREFSDIR/homebrew "$_/homebrew-custom"
     ```
 4. Setup [Git](https://git-scm.com) & [GitHub](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
 
@@ -46,11 +45,11 @@ My shell and programms settings
     ln -fs $DOTPREFSDIR/zsh ~/.config/zsh
     echo "export ZDOTDIR=$HOME/.config/zsh" | sudo tee -a /etc/zshenv > /dev/null
 
-    # Set as default shell
+    # Set as default shell ⚠️ Command may be skipped in case of actual preinstalled zsh version
     which zsh | sudo tee -a /etc/shells > /dev/null
     chsh -s $(which zsh)
 
-    # Set as default shell (alternative)
+    # Set as default shell (alternative) ⚠️ Command may be skipped in case of actual preinstalled zsh version
     sudo dscl . -create ~ UserShell $(which zsh)
     ```
 7. Setup [iTerm](https://iterm2.com)
@@ -68,13 +67,16 @@ My shell and programms settings
 8. Setup Tools
 
     ```zsh
-    brew install lolercat --HEAD # Rainbow cat!
-    brew install exa             # 'ls' on steroids
-    brew install ripgrep         # Modern 'grep'
-    brew install thefuck         # Corrects errors in previous commands
-    brew install tldr --HEAD     # TL;DR version of 'man'
-    brew install howdoi          # Instant coding answers
-    brew install jq              # CLI for JSON processing
+    brew install lolercat --HEAD # ['cat' with rainbows!](https://github.com/jaseg/lolcat)
+    brew install exa             # ['ls' on steroids](https://github.com/ogham/exa)
+    brew install ripgrep         # ['grep' modern alternative](https://github.com/BurntSushi/ripgrep)
+    brew install tldr --HEAD     # ['man' in TL;DR variant](https://github.com/tldr-pages/tldr)
+
+    # /Library/Developer/CommandLineTools/usr/bin/python3
+
+    brew install jq              # [Process JSON via CLI](https://github.com/stedolan/jq)
+    brew install thefuck         # [Corrects errors in previous commands](https://github.com/nvbn/thefuck)
+    brew install howdoi          # [Instant coding answers](https://github.com/gleitz/howdoi)
     ```
 9. Setup macOS
 
@@ -142,7 +144,7 @@ My shell and programms settings
     sudo spctl --master-disable
     ```
 
-##### Coding
+##### Development
 1. 💰❔ Setup [Sublime Text 4](https://sublimetext.com)
 
     ```zsh
@@ -156,42 +158,48 @@ My shell and programms settings
     # Set file association
     . $DOTPREFSDIR/sublime-text/file-assoc.zsh
     ```
-2. Setup Java [OpenJDK](https://adoptopenjdk.net) & [GraalVM](https://graalvm.org) & [JMC](https://oracle.com/java/technologies/jdk-mission-control.html)
-
-    ```zsh
-    brew install --cask adoptopenjdk/openjdk/adoptopenjdk8
-    brew install --cask adoptopenjdk/openjdk/adoptopenjdk16
-    brew install --cask graalvm/tap/graalvm-ce-java11
-    brew install --cask jdk-mission-control
-
-    # Switch JDK version to `1.8` or `8` or `16` or `graal`
-    jdk 16
-    ```
-3. 💰❔ Setup [IntelliJ IDEA](https://jetbrains.com/idea)
+2. 💰❔ Setup [JetBrains Toolbox](https://jetbrains.com/idea)
 
     ```zsh
     brew install --cask jetbrains-toolbox
     ln -fs $DOTPREFSDIR/jb-toolbox/conf.json ~/Library/Application\ Support/JetBrains/Toolbox/.settings.json
     ```
-4. 💰 Setup [Paw](https://paw.cloud)
-
-    ```zsh
-    brew install --cask paw
-    ```
-5. Setup [Docker](https://github.com/docker/for-mac)
+3. Setup [Docker](https://docs.docker.com/docker-for-mac)
 
     ```zsh
     brew install --cask docker
     ```
-6. Setup [ngrok](https://ngrok.com)
+4. Setup [HELM](https://helm.sh)
 
     ```zsh
-    brew install --cask ngrok
+    brew install helm
     ```
-7. Setup [Postgres App](https://github.com/PostgresApp/PostgresApp)
+5. Setup Java [OpenJDK](https://adoptopenjdk.net) & [GraalVM](https://graalvm.org) & [JMC](https://oracle.com/java/technologies/jdk-mission-control.html)
+
+    ```zsh
+    brew install --cask adoptopenjdk/openjdk/adoptopenjdk8
+    brew install --cask adoptopenjdk/openjdk/adoptopenjdk16
+    brew install --cask graalvm/tap/graalvm-ce-java11
+
+    brew install --cask jdk-mission-control
+
+    # Switch JDK version to `1.8` or `8` or `16` or `graal`
+    jdk 16
+    ```
+6. Setup [Postgres App](https://github.com/PostgresApp/PostgresApp)
 
     ```zsh
     brew install --cask postgres
+    ```
+7. 💰 Setup [Paw](https://paw.cloud)
+
+    ```zsh
+    brew install --cask paw
+    ```
+8. Setup [ngrok](https://ngrok.com)
+
+    ```zsh
+    brew install --cask ngrok
     ```
 
 ##### Productivity
@@ -294,7 +302,12 @@ My shell and programms settings
     ```
 
 ##### Network
-1. Setup [Sidekick Browser](https://meetsidekick.com)
+1. Setup [grpcurl](https://github.com/fullstorydev/grpcurl)
+
+    ```zsh
+    brew install grpcurl
+    ```
+2. Setup [Sidekick Browser](https://meetsidekick.com)
 
     *
         ```zsh
@@ -302,36 +315,43 @@ My shell and programms settings
         ```
     * Install [plugins, theme and StartPage search engine](/sidekick/plugins.md)
     * Import [uBlock Origin settings](/sidekick/ublock-settings.txt)
-2. Setup [Telegram](https://github.com/telegramdesktop/tdesktop)
-
-    ```zsh
-    brew install --cask telegram
-    ```
-3. Setup [Slack](https://slack.com)
-
-    ```zsh
-    brew install --cask slack
-    ```
-4. 💰 Setup [ProtonMail Bridge](https://protonmail.com/bridge)
-
-    ```zsh
-    brew install --cask protonmail-bridge
-    ```
-5. Setup [Tor](https://github.com/TheTorProject)
+3. Setup [Tor](https://github.com/TheTorProject)
 
     ```zsh
     brew install --cask tor-browser
     ```
-6. Setup [Transmission](https://github.com/transmission/transmission)
+4. Setup [Transmission](https://github.com/transmission/transmission)
 
     ```zsh
     brew install --cask transmission
     defaults import org.m0k.transmission $DOTPREFSDIR/transmission/conf.plist
     ```
-7. Setup [Wi-Fi Explorer](https://intuitibits.com/products/wifi-explorer)
+5. Setup [Wi-Fi Explorer](https://intuitibits.com/products/wifi-explorer)
 
     ```zsh
     brew install --cask wifi-explorer
+    ```
+
+##### Social
+1. Setup [Telegram](https://github.com/telegramdesktop/tdesktop)
+
+    ```zsh
+    brew install --cask telegram
+    ```
+2. Setup [Slack](https://slack.com)
+
+    ```zsh
+    brew install --cask slack
+    ```
+3. Setup [Zoom](https://zoom.us)
+
+    ```zsh
+    brew install --cask zoom
+    ```
+4. 💰 Setup [ProtonMail Bridge](https://protonmail.com/bridge)
+
+    ```zsh
+    brew install --cask protonmail-bridge
     ```
 
 ##### Entertainment
