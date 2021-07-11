@@ -4,55 +4,56 @@ emulate -LR zsh
 # ====================================================================================== #
 #                          JDK, JVM and sbt integrations                                 #
 #                                                                                        #
-#  - jdk = get or set current Java version                                               #
-#  - sbt = various sbt tools                                                             #
+#  - jdk  = get or set current Java version                                              #
+#  - sbtu = various sbt tools                                                            #
 # ====================================================================================== #
-
-# Initialize JAVA_HOME
-if [[ -f /usr/libexec/java_home ]]; then
-  typeset -gx JAVA_HOME=$(/usr/libexec/java_home)
-  typeset -gx PATH=$JAVA_HOME/bin:$PATH
-fi
 
 # Java JDK utils
 function jdk() {
-  zparseopts -D -E -F - h=help -help=help
-
   local usage=$(cat <<EOF
 ${fg_bold[blue]}Usage:${reset_color} jdk <version> ${fg[cyan]}Get current or change Java JDK version${reset_color}
 
 ${fg_bold[blue]}Options:${reset_color}
+  ${fg_bold[yellow]}--init${reset_color}      ${fg[blue]}Set JAVA_HOME and PATH to highest installed JDK version${reset_color}
   ${fg_bold[yellow]}--help${reset_color}      ${fg[blue]}Show help (this message) and exit${reset_color}
 
 ${fg_bold[blue]}Examples:${reset_color}
+  jdk --init  ${fg[blue]}Initialize JAVA_HOME and PATH${reset_color}
   jdk         ${fg[blue]}Get current JDK version${reset_color}
-  jdk 1.8     ${fg[blue]}Set JDK version to 1.8.0_x${reset_color}
   jdk 8       ${fg[blue]}Set JDK version to 1.8.0_x${reset_color}
   jdk 16      ${fg[blue]}Set JDK version to 16.0.x${reset_color}
   jdk graal   ${fg[blue]}Set JDK version to latest GraalVM${reset_color}
 EOF
 )
 
-  if [[ ${#help} = 1 ]]; then
-    echo $usage
-  elif [[ "$1" != "" ]]; then
-    local ver="$1"
-    if [[ $ver = "graal" ]]; then
-      ver="$(/usr/libexec/java_home -V 2>&1 | grep -Eo '([0-9\.]+).+graalvm-..-java[0-9\.-]+-' | awk '{gsub(/,/,""); print $1}')"
-    elif [[ $ver -gt 1.8 && $ver -le 8 ]]; then
-      ver="1.$ver"
+  switch() {
+    if [[ ! -z "$JAVA_HOME" ]]; then
+      path=(${(@)path:#$JAVA_HOME/bin})
     fi
 
-    print_info "Setting JDK version to $ver..."
-    typeset -gx JAVA_HOME=$(/usr/libexec/java_home -v "$ver")
-    typeset -gx PATH=$JAVA_HOME/bin:$PATH
-  else
-    java -version
-  fi
+    typeset -gx JAVA_HOME=$(/usr/libexec/java_home -v "$1" 2> /dev/null)
+
+    if [[ ! -z "$JAVA_HOME" ]]; then
+      path+=("$JAVA_HOME/bin")
+      typeset -aU path
+    fi
+  }
+
+  case $1 in
+    ([1-9])       switch "1.$1" ;;
+    ([1-9][0-9])  switch $1 ;;
+    (graal)       switch "$(/usr/libexec/java_home -V 2>&1 | grep -Eo '([0-9\.]+).+graalvm-..-java[0-9\.-]+-' | awk '{gsub(/,/,""); print $1}')" ;;
+    (-i | --init) switch ;;
+    (-h | --help) echo $usage ;;
+    (*)           java -version ;;
+  esac
 }
 
+# Initialize JAVA_HOME and PATH
+jdk --init
+
 # Utils for sbt
-function sbt() {
+function sbtu() {
   zparseopts -D -E -F - l=latest -latest=latest h=help -help=help
 
   local usage=$(cat <<EOF
@@ -63,24 +64,24 @@ ${fg_bold[blue]}Options:${reset_color}
   ${fg_bold[yellow]}--help${reset_color}      ${fg[blue]}Show help (this message) and exit${reset_color}
 
 ${fg_bold[blue]}Examples:${reset_color}
-  sbt update ${fg_bold[yellow]}--latest${reset_color}                ${fg[blue]}Perform sbt version update to 'latest' in current project${reset_color}
-  sbt cleanup                        ${fg[blue]}Completely remove sbt cache ('.target' dirs) in current project${reset_color}
-  sbt ideafix                        ${fg[blue]}Fix IntelliJ IDEA sbt configuration, including .sbt and .ivy dirs location move to ~/.config${reset_color}
-  sbt version org/domain/library_x.y ${fg[blue]}Get 'release' version of library published in Maven Central${reset_color}
-  sbt version ${fg_bold[yellow]}--latest${reset_color} scala         ${fg[blue]}Get 'latest' version of Scala Compiler published in Maven Central${reset_color}
-  sbt version sbt                    ${fg[blue]}Get 'release' version of sbt published in Maven Central${reset_color}
+  sbtu update ${fg_bold[yellow]}--latest${reset_color}                ${fg[blue]}Perform sbt version update to 'latest' in current project${reset_color}
+  sbtu cleanup                        ${fg[blue]}Completely remove sbt cache ('.target' dirs) in current project${reset_color}
+  sbtu ideafix                        ${fg[blue]}Fix IntelliJ IDEA sbt configuration, including .sbt and .ivy dirs location move to ~/.config${reset_color}
+  sbtu version org/domain/library_x.y ${fg[blue]}Get 'release' version of library published in Maven Central${reset_color}
+  sbtu version ${fg_bold[yellow]}--latest${reset_color} scala         ${fg[blue]}Get 'latest' version of Scala Compiler published in Maven Central${reset_color}
+  sbtu version sbt                    ${fg[blue]}Get 'release' version of sbt published in Maven Central${reset_color}
 EOF
 )
 
-  function lib_ver() {
-    local ver=$([ "$2" = '1' ] && echo 'latest' || echo 'release')
+  fetch() {
+    local ver=$([ "$2" -eq 1 ] && echo 'latest' || echo 'release')
 
-    local lib="$1"
-    if [[ $lib == "scala" ]]; then
-      lib="org/scala-lang/scala-compiler"
-    elif [[ $lib == "sbt" ]]; then
-      lib="org/scala-sbt/sbt"
-    fi
+    local lib
+    case $1 in
+      (sbt)   lib="org/scala-sbt/sbt" ;;
+      (scala) lib="org/scala-lang/scala-compiler" ;;
+      (*)     lib="$1" ;;
+    esac
 
     echo $(curl -s "https://repo1.maven.org/maven2/$lib/maven-metadata.xml" | xmllint --xpath "/metadata/versioning/$ver/text()" -)
   }
@@ -89,12 +90,12 @@ EOF
 
   if [ ${#help} = 1 ]; then
     echo $usage
+  elif [[ $1 == "version" ]] && [[ "$2" != "" ]]; then
+    print_info $(fetch "$2" ${#latest})
   elif [[ $1 == "update" ]]; then
-    local ver=$(lib_ver "sbt" $latest)
+    local ver=$(fetch "sbt" ${#latest})
     print_info "Setting project sbt version to $ver..."
     echo "sbt.version = $ver" > project/build.properties
-  elif [[ $1 == "version" ]] && [[ "$2" != "" ]]; then
-    echo $(lib_ver "$2" $latest)
   elif [[ $1 == "cleanup" ]]; then
     print_info "Clearing project sbt compilation cache..."
     find . -name target -type d -prune -exec rm -r {} \;

@@ -13,9 +13,7 @@ typeset -gx EOL="\n"
 typeset -gx XDG_CACHE_HOME="$HOME/Library/Caches"
 typeset -gx XDG_CONFIG_HOME="$HOME/.config"
 
-if [ -x /usr/libexec/path_helper ]; then
-  eval `/usr/libexec/path_helper -s`
-fi
+eval `/usr/libexec/path_helper -s`
 # ====================================================================================== #
 
 

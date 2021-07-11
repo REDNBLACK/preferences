@@ -4,10 +4,9 @@ emulate -LR zsh
 # ====================================================================================== #
 #                          Keka files association setup                                  #
 # ====================================================================================== #
-function () {
-  print_info "Setting Keka file associations..."
+print_info "Setting Keka file associations..."
 
-  local args=()
+() {
   local utis=(
     "com.apple.bom-compressed-cpio"
     "com.apple.xip-archive"
@@ -73,8 +72,9 @@ function () {
     "tgzip"
   )
 
-  for u ("${utis[@]}") args+=("--uti $u")
-  for e ("${exts[@]}") args+=("--ext $e")
+  local args=()
+  for u (${utis[@]}) args+=(--uti $u)
+  for e (${exts[@]}) args+=(--ext $e)
 
-  eval 'duti' ${(j: :)args} '--rebuild' 'com.aone.keka'
+  duti "${args[@]}" --rebuild 'com.aone.keka'
 }

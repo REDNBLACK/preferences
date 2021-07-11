@@ -32,8 +32,9 @@ alias chromekill="ps ux | grep '[C]hrome Helper --type=renderer' | grep -v exten
 alias grep='grep --color=auto'
 alias duh="du -d 1 -h"
 alias dua="du -ah"
-alias ls='exa --long --header --classify --group-directories-first --icons --all --git'
-
-# zsh aliases
-alias reload="exec zsh && echo 'ZSH config reloaded'"
-# alias zshrc="$(editf $ZDOTDIR/.zshrc) && reload"
+if (( $+commands[exa] )); then
+  alias ls='exa --long --header --classify --group-directories-first --icons --all --git'
+else
+  export LSCOLORS='Gxfxcxdxbxegedabagacad'
+  alias ls="ls -lah"
+fi

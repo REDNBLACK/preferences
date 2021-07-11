@@ -9,11 +9,11 @@
 # Load profile
 . $ZDOTDIR/.profile
 
-# Path to cache directory
-ZSH_CACHE_DIR="$XDG_CACHE_HOME/zsh"
-
 # Correctly display UTF-8 with combining characters.
 setopt COMBINING_CHARS
+
+# Path to cache directory
+ZSH_CACHE_DIR="$XDG_CACHE_HOME/zsh"
 
 # Path to history file
 HISTFILE="$ZSH_CACHE_DIR/.history"
@@ -73,8 +73,6 @@ plugins=(
   git               # Provides many aliases and a few useful functions for git
   gitignore         # Download gitignore.io templates from the command line
   docker            # Autocompletion for `docker`
-  docker-compose    # Autocompletion and aliases for `docker-compose`
-  jira              # Command line tools for interacting with Atlassian's JIRA
   # python
   # pip
 )
@@ -375,7 +373,7 @@ typeset -gx TLDR_CACHE_DIR=$XDG_CACHE_HOME
 # ====================================================================================== #
 #                                     thefuck                                            #
 # ====================================================================================== #
-if command -v thefuck &> /dev/null; then
+if (( $+commands[thefuck] )); then
   eval "$(thefuck --alias)"
 fi
 # ====================================================================================== #
@@ -386,7 +384,6 @@ fi
 # ====================================================================================== #
 typeset -gx RUSTUP_HOME="$XDG_CONFIG_HOME/rustup"
 typeset -gx CARGO_HOME="$XDG_CONFIG_HOME/cargo"
-
 # ====================================================================================== #
 
 
@@ -408,70 +405,6 @@ typeset -gx CARGO_HOME="$XDG_CONFIG_HOME/cargo"
 #                                     iTerm                                              #
 # ====================================================================================== #
 . $DOTPREFSDIR/iterm2/integration.zsh
-typeset -gA ITERM_VARS=(
-  [timer]=0
-)
-
-function iterm2_print_user_vars() {
-  should_update() {
-    local now=$(date +%s)
-
-    if [ $ITERM_VARS[timer] -eq 0 ] || [ $now -ge $ITERM_VARS[timer] ]; then
-      echo $(($now + 10))
-    else
-      echo 0
-    fi
-  }
-
-  public_ip() {
-    local ip="$(dig +tries=1 +short -4 A myip.opendns.com @resolver1.opendns.com 2>/dev/null)"
-    [[ $ip == ';'* ]] && ip=
-
-    if [[ -z $ip ]]; then
-      ip="$(dig +tries=1 +short -6 AAAA myip.opendns.com @resolver1.opendns.com 2>/dev/null)"
-      [[ $ip == ';'* ]] && ip=
-    fi
-
-    [[ $ip =~ '^[0-9a-f.:]+$' ]] || ip=''
-
-    echo $ip
-  }
-
-  is_vpn() {
-    local vpn=false
-
-    for line in ${(f)"$(command ifconfig 2>/dev/null)"}; do
-      if [[ $line =~ ^(gpd|ipsec|wg|tailscale)[0-9]*:.*$ ]]; then
-        vpn=true
-        break
-      fi
-    done
-
-    echo $vpn
-  }
-
-  local curr="${(%):-%n}"
-  if [ $curr != $USER ]; then
-    local prefix=''
-
-    if [[ $P9K_SSH == 1 ]]; then
-      prefix=" $prefix"
-    fi
-
-    if [[ -n "$SUDO_COMMAND" ]]; then
-      prefix=" $prefix"
-    fi
-
-    iterm2_set_user_var Context "$prefix$curr@$(hostname -s)"
-  fi
-
-  local time=$(should_update)
-  if [ $time -ne 0 ]; then
-    ITERM_VARS[timer]=$time
-
-    iterm2_set_user_var PublicIP "$(public_ip)$([ $(is_vpn) = true ] && echo " " || echo "")"
-  fi
-}
 # ====================================================================================== #
 
 
@@ -481,25 +414,25 @@ function iterm2_print_user_vars() {
 #    https://github.com/zsh-users/zsh-autosuggestions#configuration                      #
 # ====================================================================================== #
 # Style suggestion is shown with
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"
+typeset -gx ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"
 
 # Fetch suggestions asynchronously
-ZSH_AUTOSUGGEST_USE_ASYNC="1"
+typeset -gx ZSH_AUTOSUGGEST_USE_ASYNC="1"
 
 # Disable automatic widget re-binding on each precmd
-ZSH_AUTOSUGGEST_MANUAL_REBIND="1"
+typeset -gx ZSH_AUTOSUGGEST_MANUAL_REBIND="1"
 
 # Suggestions strategy
-ZSH_AUTOSUGGEST_STRATEGY=(
+typeset -gx ZSH_AUTOSUGGEST_STRATEGY=(
   history    # Chooses the most recent match from history
   completion # Chooses a suggestion based on what tab-completion would suggest
 )
 
 # Disable suggestions for large buffers
-ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+typeset -gx ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 
 # Ignore history suggestions that match a pattern
-ZSH_AUTOSUGGEST_HISTORY_IGNORE="vpn *"
+typeset -gx ZSH_AUTOSUGGEST_HISTORY_IGNORE="vpn *"
 
 . $ZDOTDIR/zsh-autosuggestions/zsh-autosuggestions.zsh
 # ====================================================================================== #
