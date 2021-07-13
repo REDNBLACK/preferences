@@ -4,20 +4,54 @@ emulate -LR zsh
 # ====================================================================================== #
 #                          Sublime Text files association setup                          #
 # ====================================================================================== #
-if (( ! $+commands[jq] )); then
-  print_err "Installation of jq is required to set Sublime Text file associations"
-else
-  print_info "Setting Sublime Text file associations..."
+print_info "Setting Sublime Text file associations..."
 
-  () {
-    local cfg="$DOTPREFSDIR/sublime-text/conf/Preferences.sublime-settings"
-    local utis=($(jq -r '.x_file_assoc | del(.[] | nulls) | to_entries | unique_by(.value) | .[].value' $cfg))
-    local exts=($(jq -r '.x_file_assoc | del(.[] | values) | to_entries | .[].key' $cfg))
+() {
+  local utis=$(cat <<EOF
+    com.apple.property-list
+    public.css
+    public.html
+    public.json
+    public.plain-text
+    public.rtf
+    public.shell-script
+    public.source-code
+    public.xhtml
+    public.xml
+    public.yaml
+    bashrc
+    bat
+    cfg
+    cmd
+    conf
+    default
+    groovy
+    hs
+    inc
+    inf
+    ini
+    jsonl
+    jsonp
+    jsp
+    kt
+    lng
+    make
+    markdown
+    md
+    nfo
+    properties
+    rc
+    reg
+    sbt
+    scala
+    sql
+    src
+    toml
+    ts
+    usr
+    vbs
+EOF
+)
 
-    local args=()
-    for u (${utis[@]}) args+=(--uti $u)
-    for e (${exts[@]}) args+=(--ext $e)
-
-    duti "${args[@]}" --rebuild 'com.sublimetext.4'
-  }
-fi
+  echo $utis | awk '{print "com.sublimetext.4", $1, "all"}' | duti -v
+}

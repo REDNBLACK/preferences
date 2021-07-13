@@ -84,6 +84,9 @@ My shell and programms settings
     # 'man' in TL;DR variant (https://github.com/tldr-pages/tldr) (depends on libzip)
     brew install tldr --HEAD
 
+    # Set files association
+    brew install duti
+
     # Process JSON via CLI (https://github.com/stedolan/jq) (depends on oniguruma)
     brew install jq
 
