@@ -1,8 +1,11 @@
 {
     "autostart": false,
     "channel_rollback_max_history": 1,
+    "proxy": {
+        "type": "system"
+    },
     "ui": {
-        "theme": "dark"
+        "theme": "auto"
     },
     "update": {
         "filter": {
@@ -13,6 +16,6 @@
         "install_automatically": false
     },
     "jetbrains_account": {
-        "active": "rednblack@protonmail.com"
+        "active": "966069"
     }
 }

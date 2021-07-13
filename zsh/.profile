@@ -20,9 +20,7 @@ eval `/usr/libexec/path_helper -s`
 # ====================================================================================== #
 #                                Homebrew settings                                       #
 # ====================================================================================== #
-typeset -gx HOMEBREW_PREFIX="/usr/local"
-typeset -gx HOMEBREW_CELLAR="$HOMEBREW_PREFIX/Cellar"
-typeset -gx HOMEBREW_REPOSITORY="$HOMEBREW_PREFIX/Homebrew"
+eval `brew shellenv`
 typeset -gx HOMEBREW_NO_ANALYTICS=1
 typeset -gx HOMEBREW_NO_INSTALL_CLEANUP=1
 typeset -gx HOMEBREW_NO_EMOJI=1

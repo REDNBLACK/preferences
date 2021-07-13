@@ -23,7 +23,7 @@ My shell and programms settings
 3. Setup [Homebrew](https://brew.sh) [[:octocat:](https://github.com/Homebrew)] & [mas-cli](https://github.com/mas-cli/mas) & [cask-upgrade](https://github.com/buo/homebrew-cask-upgrade)
 
     ```zsh
-    zsh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+    bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
     brew analytics off
     brew tap buo/cask-upgrade
     brew install mas
@@ -40,9 +40,7 @@ My shell and programms settings
 5. Setup [Fira Code (+Nerd)](https://github.com/tonsky/FiraCode) & [Meslo Nerd](https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/Meslo)
 
     ```zsh
-    brew install --cask homebrew/cask-fonts/font-fira-code
-    brew install --cask homebrew/cask-fonts/font-fira-code-nerd-font
-    brew install --cask homebrew/cask-fonts/font-meslo-lg-nerd-font
+    brew install --cask homebrew/cask-fonts/font-{fira-code,fira-code-nerd-font,meslo-lg-nerd-font}
     ```
 6. Setup [zsh](http://zsh.org) [[:octocat:](https://github.com/zsh-users)] & [oh my zsh](https://ohmyz.sh) [[:octocat:](https://github.com/ohmyzsh/ohmyzsh)] & [PowerLevel10k](https://github.com/romkatv/powerlevel10k) & [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) & [zsh-fast-syntax-highlighting](https://github.com/zdharma/fast-syntax-highlighting)
 
@@ -83,6 +81,9 @@ My shell and programms settings
 
     # 'man' in TL;DR variant (https://github.com/tldr-pages/tldr) (depends on libzip)
     brew install tldr --HEAD
+
+    # Set files association
+    brew install duti
 
     # Process JSON via CLI (https://github.com/stedolan/jq) (depends on oniguruma)
     brew install jq
