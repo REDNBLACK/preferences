@@ -3,7 +3,9 @@ emulate -LR zsh
 
 # ====================================================================================== #
 #                          JDK, JVM and sbt integrations                                 #
-#                                                                                        #
+# ====================================================================================== #
+# Depends on .zshrc                                                                      #
+# ====================================================================================== #
 #  - jdk  = get or set current Java version                                              #
 #  - sbtu = various sbt tools                                                            #
 # ====================================================================================== #
@@ -14,7 +16,7 @@ function jdk() {
 ${fg_bold[blue]}Usage:${reset_color} jdk <version> ${fg[cyan]}Get current or change Java JDK version${reset_color}
 
 ${fg_bold[blue]}Options:${reset_color}
-  ${fg_bold[yellow]}--init${reset_color}      ${fg[blue]}Set JAVA_HOME and PATH to highest installed JDK version${reset_color}
+  ${fg_bold[yellow]}--init${reset_color}      ${fg[blue]}Set JAVA_HOME and PATH to the most up-to-date installed JDK version${reset_color}
   ${fg_bold[yellow]}--help${reset_color}      ${fg[blue]}Show help (this message) and exit${reset_color}
 
 ${fg_bold[blue]}Examples:${reset_color}
@@ -31,11 +33,11 @@ EOF
       path=(${(@)path:#$JAVA_HOME/bin})
     fi
 
-    typeset -gx JAVA_HOME=$(/usr/libexec/java_home -v "$1" 2> /dev/null)
+    declare -gx JAVA_HOME=$(/usr/libexec/java_home -v "$1" 2> /dev/null)
 
-    if [[ ! -z "$JAVA_HOME" ]]; then
+    if [[ -d "$JAVA_HOME/bin" ]]; then
       path+=("$JAVA_HOME/bin")
-      typeset -aU path
+      declare -aU path
     fi
   }
 
@@ -86,18 +88,18 @@ EOF
     echo $(curl -s "https://repo1.maven.org/maven2/$lib/maven-metadata.xml" | xmllint --xpath "/metadata/versioning/$ver/text()" -)
   }
 
-  # print_debug "    $1\n    ${#latest}\n    $2"
+  # show -d "    $1\n    ${#latest}\n    $2"
 
   if [ ${#help} = 1 ]; then
     echo $usage
   elif [[ $1 == "version" ]] && [[ "$2" != "" ]]; then
-    print_info $(fetch "$2" ${#latest})
+    show $(fetch "$2" ${#latest})
   elif [[ $1 == "update" ]]; then
     local ver=$(fetch "sbt" ${#latest})
-    print_info "Setting project sbt version to $ver..."
+    show "Setting project sbt version to $ver..."
     echo "sbt.version = $ver" > project/build.properties
   elif [[ $1 == "cleanup" ]]; then
-    print_info "Clearing project sbt compilation cache..."
+    show "Clearing project sbt compilation cache..."
     find . -name target -type d -prune -exec rm -r {} \;
   elif [[ $1 == "ideafix" ]]; then
     local xml=$(cat <<EOF
@@ -126,9 +128,9 @@ EOF
 </project>
 EOF
 )
-    print_info "Fixing IntelliJ IDEA sbt configuration..."
+    show "Fixing IntelliJ IDEA sbt configuration..."
     echo $xml > .idea/sbt.xml
   else
-    print_err "Incorrect args, use --help to learn more"
+    show -e "Incorrect args, use --help to learn more"
   fi
 }

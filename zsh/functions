@@ -1,0 +1,309 @@
+# ====================================================================================== #
+#                                 functions                                              #
+# ====================================================================================== #
+# - show                   = formatted print                                             #
+# - mkd                    = mkdir + cd or mkdir only if dir not exists                  #
+# - vpn                    = connect to Cisco AnyConnect or OpenConnect VPN              #
+# - upgrade                = update manager                                              #
+# - internal               = internal tools                                              #
+# - targz                  = -> .tar.gz                                                  #
+# - fs                     = du [with options]                                           #
+# ====================================================================================== #
+
+# Print formatted info/error/debug
+function show() {
+  zparseopts -D -E -F - l::=label r=rainbow e=error d=debug h=help -help=help
+
+  local usage=$(cat <<EOF
+${fg_bold[blue]}Usage:${reset_color} show [options…] <text> ${fg[cyan]}Pretty printing and show${reset_color}
+
+${fg_bold[blue]}Options:${reset_color}
+  ${fg_bold[yellow]}-r${reset_color}                 ${fg[blue]}Show message text with rainbow color${reset_color}
+  ${fg_bold[yellow]}-e${reset_color}                 ${fg[blue]}Set message level to Error${reset_color}
+  ${fg_bold[yellow]}-d${reset_color}                 ${fg[blue]}Set message level to Debug${reset_color}
+  ${fg_bold[yellow]}-l <label>${reset_color}         ${fg[blue]}Prepend label before message (always shown after message level, if set)${reset_color}
+  ${fg_bold[yellow]}--help${reset_color}             ${fg[blue]}Show help (this message) and exit${reset_color}
+
+${fg_bold[blue]}Examples:${reset_color}
+  show "Hello there" ${fg_bold[yellow]}-l${reset_color} "Me" ${fg[blue]}Show info message with label${reset_color} ${fg_bold[yellow]}Me${reset_color}
+  show ${fg_bold[yellow]}-e${reset_color} "Oh god, failure"  ${fg[blue]}Show error message${reset_color}
+  show ${fg_bold[yellow]}-d${reset_color} "Debugging" "Here" ${fg[blue]}Show debug message${reset_color}
+EOF
+)
+  local label=$([ ! -z "$label" ] && echo "[${label#-l}]" || echo '')
+
+  if [[ ${#help} = 1 ]]; then
+    echo $usage
+  elif [[ ${#error} = 1 ]]; then
+    echo -e $fg_bold[red]"[Error]"${label}" $@"$reset_color
+  elif [[ ${#debug} = 1 ]]; then
+    echo -e $fg_bold[yellow]"[Debug]"${label}${EOL}"$@"$reset_color
+  else
+    [[ ! -z $label ]] && label+=' '
+    if [[ ${#rainbow} = 1 ]]; then
+      echo -e "$(echo -n ${label}"$@" | lolcat -f)"
+    else
+      echo -e $fg_bold[blue]${label}"$@"$reset_color
+    fi
+  fi
+}
+
+# Docker images start/stop
+# Usage start_docker_image $name $volume_dir $image $port[]
+# function start_docker_image() {
+#   name=$1
+#   volume_dir=$2
+#   image=$3
+#   args=("$@")
+#   args_num=${#args[@]}
+#   if [ "$(docker ps -q -f name=$name)" ]; then
+#     docker rm -f $name
+#   else
+#     docker run -d for ((i=2;i<$args_num;i++)); do echo -p ${args[${i}]} done -v $HOME/.docker/$name:$volume_dir --name $name $image
+#   fi
+# }
+
+# Advanced `mkdir`
+function mkd() {
+  zparseopts -D -E -F - e=exists s=silent h=help -help=help
+
+  local usage=$(cat <<EOF
+${fg_bold[blue]}Usage:${reset_color} mkd [options…] <path to dir> ${fg[cyan]}Advanced mkdir${reset_color}
+
+${fg_bold[blue]}Options:${reset_color}
+  ${fg_bold[yellow]}-e${reset_color}                 ${fg[blue]}Create directory only if not exists (disables cd inside)${reset_color}
+  ${fg_bold[yellow]}-s${reset_color}                 ${fg[blue]}Do not print message when creating directory with ${fg_bold[yellow]}-e${reset_color} ${fg[blue]}flag${reset_color}
+  ${fg_bold[yellow]}--help${reset_color}             ${fg[blue]}Show help (this message) and exit${reset_color}
+
+${fg_bold[blue]}Examples:${reset_color}
+  mkd ${fg_bold[yellow]}-e${reset_color} a/new/dir     ${fg[blue]}Create dir if not exists, showing message on launch${reset_color}
+  mkd ${fg_bold[yellow]}-e${reset_color} ${fg_bold[yellow]}-s${reset_color} a/new/dir  ${fg[blue]}Create dir if not exists, silently${reset_color}
+  mkd a/new/dir        ${fg[blue]}Create dir and then cd inside of it${reset_color}
+EOF
+)
+
+  if [[ ${#help} = 1 ]]; then
+    echo $usage
+  elif [[ $# -lt 1 ]]; then
+    show -e "Path to dir not passed!"
+  else
+    if [[ ${#exists} = 1 ]]; then
+      if [[ ! -e "$@" ]]; then
+        [[ ${#silent} = 1 ]] || show "Creating directory $@..."
+        mkdir -p "$@"
+      fi
+    else
+      mkdir -p "$@" && cd "$_"
+    fi
+  fi
+}
+
+# Manage connection to Cisco AnyConnect VPN
+function vpn() {
+  zparseopts -D -E -F - kc::=keychain -keychain::=keychain s=secure -secure=secure h=help -help=help
+
+  local totp="$1"
+  local secure=${#secure}
+  local keychain=${${keychain#(--keychain|-kc)}:-"CiscoVPN"}
+
+  local usage=$(cat <<EOF
+${fg_bold[blue]}Usage:${reset_color} vpn [options…] <TOTP> ${fg[cyan]}Manage connection to Cisco AnyConnect based VPN${reset_color}
+
+${fg_bold[blue]}Options:${reset_color}
+  ${fg_bold[yellow]}--secure${reset_color}           ${fg[blue]}Connect to VPN using native Cisco AnyConnect client${reset_color} ${fg[cyan]}(without flag OpenConnect client will be used)${reset_color}
+  ${fg_bold[yellow]}--keychain${reset_color} <entry> ${fg[blue]}Name of KeyChain entry to use for connection${reset_color} ${fg[cyan]}(CiscoVPN entry will be used if not set)${reset_color}
+  ${fg_bold[yellow]}--help${reset_color}             ${fg[blue]}Show help (this message) and exit${reset_color}
+
+${fg_bold[blue]}Setup:${reset_color}
+  ${fg[blue]}Add your VPN connection credentials to secure macOS KeyChain by executing this${reset_color} ${fg[cyan]}(required step in order for this program to work):${reset_color}
+      security add-generic-password ${fg_bold[yellow]}-l${reset_color} CiscoVPN ${fg_bold[yellow]}-s${reset_color} %HOST% ${fg_bold[yellow]}-a${reset_color} %GROUP%/%USER% ${fg_bold[yellow]}-w${reset_color} %PASSWORD%
+  ${fg[blue]}Install manually if you want to use native client:${reset_color}
+      cisco-any-connect.pkg
+  ${fg[blue]}...or execute this if you prefer openconnect$reset_color ${fg[cyan]}(depends on gmp bdw-gc libffi libtool libunistring pkg-config guile libidn2 libtasn1 nettle p11-kit libevent unbound gnutls stoken):${reset_color}
+      brew install openconnect
+
+${fg_bold[blue]}Examples:${reset_color}
+  vpn ${fg_bold[yellow]}--keychain${reset_color} SuperVPN ${fg_bold[yellow]}--secure${reset_color} 133742   ${fg[blue]}Connect via native client using 'SuperVPN' KeyChain entry${reset_color}
+  vpn 800855                                ${fg[blue]}Connect via openconnect using default KeyChain entry 'CiscoVPN'${reset_color}
+  vpn                                       ${fg[blue]}Disconnect and gracefully close all Cisco VPN daemons and workers${reset_color}
+EOF
+)
+
+  if [ ${#help} = 1 ]; then
+    echo $usage
+  else
+    local iseAgent="/Library/LaunchAgents/com.cisco.anyconnect.aciseposture.plist"
+    local vpnAgent="/Library/LaunchDaemons/com.cisco.anyconnect.vpnagentd.plist"
+    local stopped=$(([ -z `pgrep vpnagentd` ] && [ -z `pgrep aciseposture` ] && [ -z `pgrep openconnect` ]) && echo 1 || echo 0)
+    local type=$([ $secure = 0 ] && echo "OpenConnect" || echo "Cisco AnyConnect")
+
+    # show -d "    '$keychain' '$secure' '$type' '$stopped'\n    '$totp'"
+
+    start() {
+      local raw=$(security 2>&1 find-generic-password -gl $keychain | tr '\n' ' ')
+      local host=$(echo $raw | sed -nE 's:.*"svce"<blob>="([^"]*)".*:\1:p')
+      local acc=$(echo $raw | sed -nE 's:.*"acct"<blob>="([^"]*)".*:\1:p')
+      local group=$(echo $acc | cut -d'/' -f1)
+      local user=$(echo $acc | cut -d'/' -f2)
+      local pass=$(echo $raw | sed -nE 's:.*password\: "([^"]*)".*:\1:p')
+
+      # show -d "    '$acc' '$group' '$user' '$host'\n    '$pass'"
+
+      if [ $secure = 0 ]; then
+        echo "$pass\n$totp" | sudo openconnect --background --authgroup=$group --user=$user --passwd-on-stdin $host
+      else
+        group="0" # Always "0" for Cisco native client
+
+        sudo launchctl load $vpnAgent
+        echo "connect $host\n$group\n$user\n$pass\n$totp\n" | /opt/cisco/anyconnect/bin/vpn -s
+        sudo launchctl load $iseAgent
+      fi
+    }
+
+    stop() {
+      sudo pkill "openconnect"
+      sudo launchctl unload $vpnAgent $iseAgent > /dev/null 2>&1
+    }
+
+    if [ $stopped = 1 ] && [ "$totp" = '' ]; then
+      show -e -l 'VPN' 'TOTP is empty!'
+    elif [ $stopped = 1 ] && [ -n "$totp" ]; then
+      show -l 'VPN' "Launching $type..."
+      start
+    elif [ $stopped = 0 ] && [ "$totp" = '' ]; then
+      show -l 'VPN' 'Closing...'
+      stop
+    elif [ $stopped = 0 ] && [ -n "$totp" ]; then
+      show -l 'VPN' "Restarting $type..."
+      stop
+      start
+    fi
+  fi
+}
+
+# Update/upgrade homebrew, homebrew cask, MAS and system
+function upgrade() {
+  show '[Brew Formula]'
+  brew update | lolcat
+  brew upgrade --display-times --formula 2>&1 | lolcat
+  brew cleanup formula -s --prune 1 2>&1 | lolcat
+
+  show $EOL'[Brew Cask]'
+  brew cu -a -y --no-brew-update --no-quarantine --cleanup 2>&1 | lolcat
+
+  if (( $+commands[mas] )); then
+    show $EOL'[AppStore]'
+    mas upgrade 2>&1 | lolcat
+  fi
+
+  show $EOL'[System]'
+  softwareupdate -ia 2>&1 | lolcat
+
+  show $EOL'[ZInit]'
+  zinit self-update 2>&1 | lolcat
+  zinit update -q --plugins 2>&1 | lolcat
+
+  if (( $+commands[tldr] )); then
+    show $EOL$EOL'[TLDR]'
+    tldr -u 2>&1 | lolcat
+  fi
+}
+
+function internal() {
+  local usage=$(cat <<EOF
+${fg_bold[blue]}Usage:${reset_color} internal <command> ${fg[cyan]}Execute internal helper function${reset_color}
+
+${fg_bold[blue]}Commands:${reset_color}
+  ${fg_bold[yellow]}app-installed <app-name>${reset_color}      ${fg[blue]}Check if macOS app installed in Applications folder${reset_color}
+  ${fg_bold[yellow]}set-file-assoc <app-name> <handler> <path to file w/ assoc>${reset_color}      ${fg[blue]}Set files association for app${reset_color}
+  ${fg_bold[yellow]}download <uri> <save path> <app-name>${reset_color}      ${fg[blue]}Download and save file to directory${reset_color}
+
+${fg_bold[blue]}Examples:${reset_color}
+  internal --init  ${fg[blue]}Do something${reset_color}
+EOF
+)
+
+  case $1 in
+    (app-installed)  # Check if Mac App installed
+      local app=$2
+
+      if [[ ! -d ~/Applications/"$app".app && ! -d /Applications/"$app".app ]]; then
+        return 1
+      fi
+      return 0
+    ;;
+    (set-file-assoc) # Set files association
+      local label=$2
+      local handler=$3
+      local file=$4
+
+      if [[ ! -r "$file"  ]]; then
+        show -e "Can't read file $file"
+      elif (( !$+commands[duti] )); then
+        show -e 'duti required to set files association'
+      else
+        show -l $label 'Setting file associations...'
+        cat "$file" | awk -v "handler=$handler" '{print handler, $1, "all"}' | duti -v
+      fi
+    ;;
+    (download)       # Download and save file
+      local uri=$2
+      local dest=$3
+      local label=$4
+
+      show -l $label "Downloading $(basename $dest | cut -d. -f1)..."
+      curl -sSL $uri -o $dest --create-dirs
+    ;;
+    (-h | --help) echo $usage ;;
+    (*)           show -e 'Wrong arguments, see --help'
+  esac
+}
+
+# Create a .tar.gz archive, using `zopfli`, `pigz` or `gzip` for compression
+function targz() {
+  local tmpFile="${@%/}.tar"
+  tar -cvf "${tmpFile}" --exclude=".DS_Store" "${@}" || return 1
+
+  size=$(
+    stat -f"%z" "${tmpFile}" 2> /dev/null; # macOS `stat`
+    stat -c"%s" "${tmpFile}" 2> /dev/null;  # GNU `stat`
+  )
+
+  local cmd="";
+  if (( size < 52428800 )) && hash zopfli 2> /dev/null; then
+    # the .tar file is smaller than 50 MB and Zopfli is available; use it
+    cmd="zopfli"
+  else
+    if hash pigz 2> /dev/null; then
+      cmd="pigz"
+    else
+      cmd="gzip"
+    fi
+  fi
+
+  show "Compressing .tar ($((size / 1000)) kB) using \`${cmd}\`…"
+
+  "${cmd}" -v "${tmpFile}" || return 1;
+  [ -f "${tmpFile}" ] && rm "${tmpFile}";
+
+  zippedSize=$(
+    stat -f"%z" "${tmpFile}.gz" 2> /dev/null; # macOS `stat`
+    stat -c"%s" "${tmpFile}.gz" 2> /dev/null; # GNU `stat`
+  )
+
+  show "${tmpFile}.gz ($((zippedSize / 1000)) kB) created successfully"
+}
+
+# Determine size of a file or total size of a directory
+function fs() {
+  if du -b /dev/null > /dev/null 2>&1; then
+    local cmd=-sbh;
+  else
+    local cmd=-sh;
+  fi
+  if [[ -n "$@" ]]; then
+    du $cmd -- "$@";
+  else
+    du $cmd .[^.]* ./*;
+  fi
+}

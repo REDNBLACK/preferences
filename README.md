@@ -42,7 +42,7 @@ My shell and programms settings
     ```zsh
     brew install --cask homebrew/cask-fonts/font-{fira-code,fira-code-nerd-font,meslo-lg-nerd-font}
     ```
-6. Setup [zsh](http://zsh.org) [[:octocat:](https://github.com/zsh-users)] & [oh my zsh](https://ohmyz.sh) [[:octocat:](https://github.com/ohmyzsh/ohmyzsh)] & [PowerLevel10k](https://github.com/romkatv/powerlevel10k) & [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) & [zsh-fast-syntax-highlighting](https://github.com/zdharma/fast-syntax-highlighting)
+6. Setup [zsh](http://zsh.org) [[:octocat:](https://github.com/zsh-users)] & [zinit](https://zdharma.github.io/zinit/wiki/) [[:octocat:](https://github.com/zdharma/zinit)] & [PowerLevel10K](https://github.com/romkatv/powerlevel10k) & [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) & [zsh-fast-syntax-highlighting](https://github.com/zdharma/fast-syntax-highlighting)
 
     ```zsh
     brew install zsh # ⚠️ Command may be skipped in case of actual preinstalled zsh version
@@ -69,31 +69,38 @@ My shell and programms settings
     defaults write com.googlecode.iterm2 PrefsCustomFolder "$DOTPREFSDIR/iterm2"
     ```
 8. Setup Tools
-    ```zsh
-    # 'ls' on steroids (https://github.com/ogham/exa)
-    brew install exa
-
-    # 'grep' modern alternative (https://github.com/BurntSushi/ripgrep) (depends on pcre2)
-    brew install ripgrep
-
-    # 'cat' with rainbows! (https://github.com/jaseg/lolcat)
-    brew install lolcat-c --HEAD
-
-    # 'man' in TL;DR variant (https://github.com/tldr-pages/tldr) (depends on libzip)
-    brew install tldr --HEAD
-
-    # Set files association
-    brew install duti
-
-    # Process JSON via CLI (https://github.com/stedolan/jq) (depends on oniguruma)
-    brew install jq
-
-    # Corrects errors in previous commands (https://github.com/nvbn/thefuck) (depends on python)
-    brew install thefuck
-
-    # Instant coding answers (https://github.com/gleitz/howdoi) (depends on python)
-    brew install howdoi
-    ```
+    * [`cat` with rainbows!](https://github.com/jaseg/lolcat)
+        ```zsh
+        brew install lolcat-c --HEAD
+        ```
+    * [`ls` on steroids](https://github.com/ogham/exa)
+        ```zsh
+        brew install exa
+        ```
+    * [`grep` modern alternative](https://github.com/BurntSushi/ripgrep) (depends on `pcre2`)
+        ```zsh
+        brew install ripgrep
+        ```
+    * [`man` in TL;DR variant](https://github.com/tldr-pages/tldr) (depends on `libzip`)
+        ```zsh
+        brew install tldr --HEAD
+        ```
+    * [Set files association](https://github.com/moretension/duti)
+        ```zsh
+        brew install duti
+        ```
+    * [Process JSON via CLI](https://github.com/stedolan/jq) (depends on `oniguruma`)
+        ```zsh
+        brew install jq
+        ```
+    * [Correct errors in previous commands](https://github.com/nvbn/thefuck) (depends on `python`)
+        ```zsh
+        brew install thefuck
+        ```
+    * [Instant coding answers](https://github.com/gleitz/howdoi) (depends on `python`)
+        ```zsh
+        brew install howdoi
+        ```
 9. Setup macOS
 
     ```zsh
@@ -156,8 +163,8 @@ My shell and programms settings
     # Install license
     cp -f "**Path to License.sublime_license file**" ~/Library/Application\ Support/Sublime\ Text/Local/License.sublime_license
 
-    # Set file association
-    . $DOTPREFSDIR/sublime-text/file-assoc.zsh
+    # Set files association
+    internal set-file-assoc SublimeText com.sublimetext.4 $DOTPREFSDIR/sublime-text/file-assoc.list
     ```
 2. [🆓] Setup [JetBrains Toolbox](https://jetbrains.com/toolbox-app) [[:octocat:](https://github.com/JetBrains)]
 
@@ -180,34 +187,38 @@ My shell and programms settings
     ```zsh
     brew install --cask adoptopenjdk/openjdk/adoptopenjdk{8,16}
     brew install --cask graalvm/tap/graalvm-ce-java11
-
     brew install --cask jdk-mission-control
 
     # Switch JDK version to `8` or `16` or `graal`
     jdk 16
     ```
-6. Setup [Python 3](https://python.org) [[:octocat:](https://github.com/python)]
+6. Setup Rust [rustup](https://rust-lang.github.io/rustup/) [[:octocat:](https://github.com/rust-lang/)]
+
+    ```zsh
+    bash -c "$(curl -fsSL https://sh.rustup.rs)" -- --profile default --default-toolchain nightly -y --no-modify-path
+    ```
+7. Setup [Python 3](https://python.org) [[:octocat:](https://github.com/python)]
 
     ```zsh
     ln -fs /Library/Developer/CommandLineTools/usr/bin/python3 /usr/local/bin/python
     ln -fs /Library/Developer/CommandLineTools/usr/bin/pip3 /usr/local/bin/pip
     ```
-7. Setup [Postgres App](http://postgresapp.com) [[:octocat:](https://github.com/PostgresApp/PostgresApp)]
+8. Setup [Postgres App](http://postgresapp.com) [[:octocat:](https://github.com/PostgresApp/PostgresApp)]
 
     ```zsh
     brew install --cask postgres
     ```
-8. [💰] Setup [Paw](https://paw.cloud) [[:octocat:](https://github.com/luckymarmot)]
+9. [💰] Setup [Paw](https://paw.cloud) [[:octocat:](https://github.com/luckymarmot)]
 
     ```zsh
     brew install --cask paw
     ```
-9. Setup [grpcurl](https://github.com/fullstorydev/grpcurl)
+10. Setup [grpcurl](https://github.com/fullstorydev/grpcurl)
 
     ```zsh
     brew install grpcurl
     ```
-10. Setup [ngrok](https://ngrok.com)
+11. Setup [ngrok](https://ngrok.com)
 
     ```zsh
     brew install --cask ngrok
@@ -251,8 +262,8 @@ My shell and programms settings
     brew install --cask keka
     defaults import com.aone.keka $DOTPREFSDIR/keka/conf.plist
 
-    # Set file association (Without using kekadefaultapp)
-    . $DOTPREFSDIR/keka/file-assoc.zsh
+    # Set file association (w/o using kekadefaultapp)
+    internal set-file-assoc Keka com.aone.keka $DOTPREFSDIR/keka/file-assoc.list
     ```
 3. [🆓] Setup [ForkLift](https://binarynights.com)
 

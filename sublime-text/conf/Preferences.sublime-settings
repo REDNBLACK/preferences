@@ -76,7 +76,7 @@
 	"hot_exit": true,
 	"ignored_packages":
 	[
-		"Vintage"
+		"Vintage",
 	],
 	"open_files_in_new_window": false,
 	"overlay_scroll_bars": "system",
@@ -102,5 +102,5 @@
 	"ui_native_titlebar": false,
 	"ui_separator": true,
 	"ui_wide_scrollbars": true,
-	"use_tab_stops": true
+	"use_tab_stops": true,
 }

@@ -7,7 +7,7 @@ emulate -LR zsh
 #  - General                                                                             #
 #  - Finder                                                                              #
 # ====================================================================================== #
-print_info "Configuring macOS..."
+show -l "macOS" "Configuring..."
 
 
 # ====================================================================================== #
@@ -15,9 +15,9 @@ print_info "Configuring macOS..."
 # ====================================================================================== #
 # Set computer name
 scutil --set ComputerName "RB's YYYYY XXXX"
-scutil --set HostName "rb"
-scutil --set LocalHostName "rb"
-defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "rb"
+scutil --set HostName 'rb'
+scutil --set LocalHostName 'rb'
+defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string 'rb'
 
 # Menu Bar and Dock color
 defaults write -g AppleInterfaceStyle -string 'Dark'
@@ -116,5 +116,5 @@ defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 defaults write com.apple.finder WarnOnEmptyTrash -bool true
 
 # Disable backup While on Battery
-defaults write /Library/Preferences/com.apple.TimeMachine RequiresACPower -bool false
+# defaults write /Library/Preferences/com.apple.TimeMachine RequiresACPower -bool false
 # ====================================================================================== #

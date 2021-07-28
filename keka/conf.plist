@@ -2,12 +2,16 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>AlreadyLovedKeka</key>
+	<integer>1</integer>
 	<key>ApplyQuarantineAfterExtraction</key>
 	<false/>
 	<key>ArchiveSingle</key>
 	<false/>
 	<key>AskZipUsingAES</key>
 	<true/>
+	<key>CalculateMD5</key>
+	<false/>
 	<key>CloseController</key>
 	<true/>
 	<key>ColorIcons</key>
@@ -67,6 +71,10 @@
 	<key>ExportPassword</key>
 	<false/>
 	<key>ExtractOnIntermediateFolder</key>
+	<false/>
+	<key>ExtractionExcludeMacForks</key>
+	<true/>
+	<key>ExtractionFolderRenameExtension</key>
 	<true/>
 	<key>FallbackOption</key>
 	<integer>0</integer>
@@ -88,6 +96,12 @@
 	<true/>
 	<key>KekaFirstStart</key>
 	<false/>
+	<key>KekaLaunchTimes</key>
+	<integer>91</integer>
+	<key>LastLogsCompressionDate</key>
+	<date>2021-08-27T16:07:39Z</date>
+	<key>LastUsedLocalization</key>
+	<string>en-GB</string>
 	<key>LetsMoveDialog</key>
 	<false/>
 	<key>LimitThreads</key>
@@ -112,6 +126,8 @@
 	<true/>
 	<key>RemoveIncompleteExtraction</key>
 	<false/>
+	<key>RemoveKekaQuarantineIfPossible</key>
+	<true/>
 	<key>RetryPassword</key>
 	<true/>
 	<key>ReusePassword</key>
@@ -128,10 +144,12 @@
 	<true/>
 	<key>SUSendProfileInfo</key>
 	<false/>
+	<key>SelectedMethod</key>
+	<integer>5</integer>
 	<key>SelectedTab</key>
 	<string>7Z</string>
 	<key>SelectedTabDefaults</key>
-	<integer>1001</integer>
+	<integer>1000</integer>
 	<key>SetAsDefaultApp</key>
 	<true/>
 	<key>SetModificationDateAfterExtraction</key>
@@ -149,21 +167,19 @@
 	<key>UnzipWithUNAR</key>
 	<true/>
 	<key>UseBip2DMG</key>
-	<false/>
+	<true/>
 	<key>UseCustomNameWithMultipleFiles</key>
 	<true/>
 	<key>UseGrowl</key>
 	<false/>
 	<key>UseLongTarballExtension</key>
-	<true/>
+	<false/>
 	<key>UseMultithreadLzip</key>
 	<true/>
 	<key>UseMultithreadPbzip2</key>
 	<true/>
 	<key>UseParentName</key>
-	<false/>
-	<key>Version</key>
-	<integer>4179</integer>
+	<true/>
 	<key>ZipUsingAES</key>
 	<false/>
 </dict>
