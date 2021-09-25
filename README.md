@@ -23,7 +23,7 @@ My shell and programms settings
 3. Setup [Homebrew](https://brew.sh) [[:octocat:](https://github.com/Homebrew)] & [mas-cli](https://github.com/mas-cli/mas) & [cask-upgrade](https://github.com/buo/homebrew-cask-upgrade)
 
     ```zsh
-    bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+    bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     brew analytics off
     brew tap buo/cask-upgrade
     brew install mas
@@ -31,11 +31,14 @@ My shell and programms settings
     # Symlink custom Casks
     mkdir -p /usr/local/Homebrew/Library/Taps/custom && ln -fs $DOTPREFSDIR/homebrew "$_/homebrew-custom"
     ```
-4. Setup [Git](https://git-scm.com) [[:octocat:](https://github.com/git/git)] & [GitHub](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
+4. Setup [Git](https://git-scm.com) [[:octocat:](https://github.com/git/git)] & [GitHub](hhttps://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 
     ```zsh
     brew install git
     ln -fs $DOTPREFSDIR/git ~/.config/git
+
+    # After generation of Personal Access Token
+    security add-internet-password -s github.com -r htps -a %GitHub Account Name% -w %GitHub Account Token%
     ```
 5. Setup [Fira Code (+Nerd)](https://github.com/tonsky/FiraCode) & [Meslo Nerd](https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/Meslo)
 
@@ -182,15 +185,18 @@ My shell and programms settings
     ```zsh
     brew install helm
     ```
-5. Setup Java [OpenJDK](https://adoptopenjdk.net) [[:octocat:](https://github.com/AdoptOpenJDK)] & [GraalVM](https://graalvm.org) [[:octocat:](https://github.com/graalvm)] & [JMC](https://oracle.com/java/technologies/jdk-mission-control.html) [[:octocat:](https://github.com/openjdk/jmc)]
+5. Setup Java [OpenJDK](https://openjdk.java.net) [[:octocat:](https://github.com/openjdk)] & [GraalVM](https://graalvm.org) [[:octocat:](https://github.com/graalvm)] & [JMC](https://oracle.com/java/technologies/jdk-mission-control.html) [[:octocat:](https://github.com/openjdk/jmc)] & [sbt](https://scala-sbt.org) [[:octocat:](https://github.com/sbt/sbt)]
 
     ```zsh
-    brew install --cask adoptopenjdk/openjdk/adoptopenjdk{8,16}
-    brew install --cask graalvm/tap/graalvm-ce-java11
-    brew install --cask jdk-mission-control
+    brew install openjdk@8 && sudo ln -fs $HOMEBREW_PREFIX/opt/openjdk@8/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-8.jdk
+    brew install openjdk@17 && sudo ln -fs $HOMEBREW_PREFIX/opt/openjdk@17/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-17.jdk
+    brew install --cask graalvm/tap/graalvm-ce-java17
 
-    # Switch JDK version to `8` or `16` or `graal`
-    jdk 16
+    brew install --cask jdk-mission-control
+    brew install sbt
+
+    # Switch JDK version to `8` or `17` or `graal`
+    jdk 17
     ```
 6. Setup Rust [rustup](https://rust-lang.github.io/rustup/) [[:octocat:](https://github.com/rust-lang/)]
 

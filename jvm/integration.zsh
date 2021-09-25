@@ -6,8 +6,8 @@ emulate -LR zsh
 # ====================================================================================== #
 # Depends on .zshrc                                                                      #
 # ====================================================================================== #
-#  - jdk  = get or set current Java version                                              #
-#  - sbtu = various sbt tools                                                            #
+#  - jdk   = get or set current Java version                                             #
+#  - scala = various sbt tools                                                           #
 # ====================================================================================== #
 
 # Java JDK utils
@@ -54,24 +54,27 @@ EOF
 # Initialize JAVA_HOME and PATH
 jdk --init
 
-# Utils for sbt
-function sbtu() {
+# Initialize SBT_OPTS
+declare -gx SBT_OPTS="-Xmx4G -Xss2M -Dsbt.global.base=$XDG_CONFIG_HOME/sbt -Dsbt.ivy.home=$XDG_CONFIG_HOME/ivy2"
+
+# Utils for Scala & sbt
+function scala() {
   zparseopts -D -E -F - l=latest -latest=latest h=help -help=help
 
   local usage=$(cat <<EOF
-${fg_bold[blue]}Usage:${reset_color} sbt [options…] <command> ${fg[cyan]}Useful sbt tools${reset_color}
+${fg_bold[blue]}Usage:${reset_color} scala [options…] <command> ${fg[cyan]}Useful Scala & sbt tools${reset_color}
 
 ${fg_bold[blue]}Options:${reset_color}
   ${fg_bold[yellow]}--latest${reset_color}    ${fg[blue]}Use 'latest' artifact version instead of 'release'${reset_color}
   ${fg_bold[yellow]}--help${reset_color}      ${fg[blue]}Show help (this message) and exit${reset_color}
 
 ${fg_bold[blue]}Examples:${reset_color}
-  sbtu update ${fg_bold[yellow]}--latest${reset_color}                ${fg[blue]}Perform sbt version update to 'latest' in current project${reset_color}
-  sbtu cleanup                        ${fg[blue]}Completely remove sbt cache ('.target' dirs) in current project${reset_color}
-  sbtu ideafix                        ${fg[blue]}Fix IntelliJ IDEA sbt configuration, including .sbt and .ivy dirs location move to ~/.config${reset_color}
-  sbtu version org/domain/library_x.y ${fg[blue]}Get 'release' version of library published in Maven Central${reset_color}
-  sbtu version ${fg_bold[yellow]}--latest${reset_color} scala         ${fg[blue]}Get 'latest' version of Scala Compiler published in Maven Central${reset_color}
-  sbtu version sbt                    ${fg[blue]}Get 'release' version of sbt published in Maven Central${reset_color}
+  scala update ${fg_bold[yellow]}--latest${reset_color}                ${fg[blue]}Perform sbt version update to 'latest' in current project${reset_color}
+  scala cleanup                        ${fg[blue]}Completely remove sbt cache ('.target' dirs) in current project${reset_color}
+  scala ideafix                        ${fg[blue]}Fix IntelliJ IDEA sbt configuration, including .sbt and .ivy dirs location move to ~/.config${reset_color}
+  scala version org/domain/library_x.y ${fg[blue]}Get 'release' version of library published in Maven Central${reset_color}
+  scala version ${fg_bold[yellow]}--latest${reset_color} scala         ${fg[blue]}Get 'latest' version of Scala Compiler published in Maven Central${reset_color}
+  scala version sbt                    ${fg[blue]}Get 'release' version of sbt published in Maven Central${reset_color}
 EOF
 )
 
@@ -106,7 +109,6 @@ EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ScalaSbtSettings">
-    <option name="customVMEnabled" value="true" />
     <option name="linkedExternalProjectsSettings">
       <SbtProjectSettings>
         <option name="externalProjectPath" value="\$PROJECT_DIR\$" />
@@ -123,7 +125,7 @@ EOF
       </SbtProjectSettings>
     </option>
     <option name="maximumHeapSize" value="4096" />
-    <option name="vmParameters" value="-Dsbt.global.base=$XDG_CONFIG_HOME/sbt -Dsbt.ivy.home=$XDG_CONFIG_HOME/ivy2" />
+    <option name="vmParameters" value="$SBT_OPTS" />
   </component>
 </project>
 EOF

@@ -332,7 +332,7 @@ zinit $ZINIT[LOAD_MODE] romkatv/powerlevel10k
 # ====================================================================================== #
 #                            zsh fast syntax highlighting                                #
 #   more at                                                                              #
-#    https://github.com/zdharma/fast-syntax-highlighting                                 #
+#    https://github.com/zdharma-continuum/fast-syntax-highlighting                                 #
 # ====================================================================================== #
 # Plugin home dir
 declare -gx FAST_WORK_DIR="$ZSH_CACHE_DIR/zfsh"
@@ -343,7 +343,7 @@ declare -gx FAST_THEME_NAME="default"
 
 # Load
 zinit ice wait lucid atinit"ZINIT[COMPINIT_OPTS]=-C; zpcompinit; zpcdreplay"
-zinit $ZINIT[LOAD_MODE] zdharma/fast-syntax-highlighting
+zinit $ZINIT[LOAD_MODE] zdharma-continuum/fast-syntax-highlighting
 # ====================================================================================== #
 
 

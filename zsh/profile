@@ -23,6 +23,7 @@ eval `/usr/libexec/path_helper -s`
 declare -gx HOMEBREW_NO_ANALYTICS=1
 declare -gx HOMEBREW_NO_INSTALL_CLEANUP=1
 declare -gx HOMEBREW_NO_EMOJI=1
+declare -gx HOMEBREW_GITHUB_API_TOKEN="$(security 2>&1 find-internet-password -wl github.com)"
 
 if (( $+commands[brew] )); then
   eval `brew shellenv`
