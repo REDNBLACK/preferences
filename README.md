@@ -271,7 +271,12 @@ My shell and programms settings
     # Set file association (w/o using kekadefaultapp)
     internal set-file-assoc Keka com.aone.keka $DOTPREFSDIR/keka/file-assoc.list
     ```
-3. [🆓] Setup [ForkLift](https://binarynights.com)
+3. Setup [Pictogram](https://pictogramapp.com)
+
+    ```zsh
+    brew install --cask pictogram
+    ```
+4. [🆓] Setup [ForkLift](https://binarynights.com)
 
     ```zsh
     brew install --cask forklift
@@ -281,17 +286,17 @@ My shell and programms settings
     defaults write -g NSFileViewer -string com.binarynights.ForkLift-3
     defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers -array-add '{LSHandlerContentType="public.folder";LSHandlerRoleAll="com.binarynights.ForkLift-3";}'
     ```
-4. [💰] Setup [Apple Remote Desktop](https://apps.apple.com/app/id409907375)
+5. [💰] Setup [Apple Remote Desktop](https://apps.apple.com/app/id409907375)
 
     ```zsh
     mas install 409907375
     ```
-5. Setup [OnyX](https://titanium-software.fr/en/onyx)
+6. Setup [OnyX](https://titanium-software.fr/en/onyx)
 
     ```zsh
     brew install --cask onyx
     ```
-6. ~~Setup [Clean Me](https://github.com/Kevin-De-Koninck/Clean-Me)~~ (Abandoned)
+7. ~~Setup [Clean Me](https://github.com/Kevin-De-Koninck/Clean-Me)~~ (Abandoned)
 
     ```zsh
     # brew install --cask clean-me
