@@ -27,6 +27,7 @@ declare -gx HOMEBREW_GITHUB_API_TOKEN="$(security 2>&1 find-internet-password -w
 
 if (( $+commands[brew] )); then
   eval `brew shellenv`
+  declare -gx HOMEBREW_CASKROOM="$(brew --caskroom)"
 fi
 # ====================================================================================== #
 

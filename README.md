@@ -29,7 +29,7 @@ My shell and programms settings
     brew install mas
 
     # Symlink custom Casks
-    mkdir -p /usr/local/Homebrew/Library/Taps/custom && ln -fs $DOTPREFSDIR/homebrew "$_/homebrew-custom"
+    mkdir -p $HOMEBREW_PREFIX/Homebrew/Library/Taps/custom && ln -fs $DOTPREFSDIR/homebrew "$_/homebrew-custom"
     ```
 4. Setup [Git](https://git-scm.com) [[:octocat:](https://github.com/git/git)] & [GitHub](hhttps://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 
@@ -180,7 +180,7 @@ My shell and programms settings
     ```zsh
     brew install --cask docker
     ```
-4. Setup [HELM](https://helm.sh) [[:octocat:](https://github.com/helm/helm)]
+4. Setup [Helm](https://helm.sh) [[:octocat:](https://github.com/helm/helm)]
 
     ```zsh
     brew install helm
@@ -192,7 +192,7 @@ My shell and programms settings
     brew install openjdk@17 && sudo ln -fs $HOMEBREW_PREFIX/opt/openjdk@17/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-17.jdk
     brew install --cask graalvm/tap/graalvm-ce-java17
 
-    brew install --cask jdk-mission-control
+    brew install --cask openjdk-jmc
     brew install sbt
 
     # Switch JDK version to `8` or `17` or `graal`
@@ -231,13 +231,18 @@ My shell and programms settings
     ```
 
 ##### Productivity
-1. Setup [Cheatsheet](https://cheatsheetapp.com/CheatSheet)
+1. Setup [Apple Configurator 2](https://support.apple.com/guide/apple-configurator-2/welcome/mac)
+
+    ```zsh
+    mas install 1037126344
+    ```
+2. Setup [Cheatsheet](https://cheatsheetapp.com/CheatSheet)
 
     ```zsh
     brew install --cask cheatsheet
     defaults import com.mediaatelier.CheatSheet $DOTPREFSDIR/cheatsheet/conf.plist
     ```
-2. [💰] Setup [BetterTouchTool](https://folivora.ai)
+3. [💰] Setup [BetterTouchTool](https://folivora.ai)
 
     ```zsh
     brew install --cask bettertouchtool
@@ -246,7 +251,7 @@ My shell and programms settings
     # Install license
     cp -f "**Path to license.bettertouchtool file**" ~/Library/Application\ Support/BetterTouchTool/bettertouchtool.bttlicense
     ```
-3. Setup [Touchbar Nyan Cat](https://github.com/avatsaev/touchbar_nyancat)
+4. Setup [Touchbar Nyan Cat](https://github.com/avatsaev/touchbar_nyancat)
 
     ```zsh
     brew install --cask touchbar-nyancat
@@ -316,11 +321,11 @@ My shell and programms settings
     ```zsh
     brew install --cask tor-browser
     ```
-3. Setup [Transmission](https://transmissionbt.com) [[:octocat:](https://github.com/transmission/transmission)]
+3. [🆓] Setup [Folx](https://mac.eltima.com/download-manager)
 
     ```zsh
-    brew install --cask transmission
-    defaults import org.m0k.transmission $DOTPREFSDIR/transmission/conf.plist
+    brew install --cask folx
+    defaults import com.eltima.Folx3 $DOTPREFSDIR/folx/conf.plist
     ```
 4. Setup [Wi-Fi Explorer](https://intuitibits.com/products/wifi-explorer)
 
@@ -383,18 +388,13 @@ My shell and programms settings
     ```
 
 ##### Mobile
-1. Setup [Apple Configurator 2](https://support.apple.com/guide/apple-configurator-2/welcome/mac)
-
-    ```zsh
-    mas install 1037126344
-    ```
-2. Setup [AltServer](https://altstore.io) [[:octocat:](https://github.com/rileytestut/AltStore)]
+1. Setup [AltServer](https://altstore.io) [[:octocat:](https://github.com/rileytestut/AltStore)]
 
     ```zsh
     brew install --cask altserver
     defaults import com.rileytestut.AltServer $DOTPREFSDIR/altserver/conf.plist
     ```
-3. [💰] Setup [WALTR PRO](https://softorino.com/waltr)
+2. [💰] Setup [WALTR PRO](https://softorino.com/waltr)
 
     ```zsh
     brew install --cask waltr-pro

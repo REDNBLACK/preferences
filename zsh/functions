@@ -116,7 +116,7 @@ ${fg_bold[blue]}Options:${reset_color}
 
 ${fg_bold[blue]}Setup:${reset_color}
   ${fg[blue]}Add your VPN connection credentials to secure macOS KeyChain by executing this${reset_color} ${fg[cyan]}(required step in order for this program to work):${reset_color}
-      security add-generic-password ${fg_bold[yellow]}-l${reset_color} CiscoVPN ${fg_bold[yellow]}-s${reset_color} %HOST% ${fg_bold[yellow]}-a${reset_color} %GROUP%/%USER% ${fg_bold[yellow]}-w${reset_color} %PASSWORD%
+      security add-internet-password ${fg_bold[yellow]}-l${reset_color} CiscoVPN ${fg_bold[yellow]}-r${reset_color} htps ${fg_bold[yellow]}-s${reset_color} %HOST% ${fg_bold[yellow]}-a${reset_color} %GROUP%/%USER% ${fg_bold[yellow]}-w${reset_color} %PASSWORD%
   ${fg[blue]}Install manually if you want to use native client:${reset_color}
       cisco-any-connect.pkg
   ${fg[blue]}...or execute this if you prefer openconnect$reset_color ${fg[cyan]}(depends on gmp bdw-gc libffi libtool libunistring pkg-config guile libidn2 libtasn1 nettle p11-kit libevent unbound gnutls stoken):${reset_color}
@@ -140,8 +140,8 @@ EOF
     # show -d "    '$keychain' '$secure' '$type' '$stopped'\n    '$totp'"
 
     start() {
-      local raw=$(security 2>&1 find-generic-password -gl $keychain | tr '\n' ' ')
-      local host=$(echo $raw | sed -nE 's:.*"svce"<blob>="([^"]*)".*:\1:p')
+      local raw=$(security 2>&1 find-internet-password -gl $keychain | tr '\n' ' ')
+      local host=$(echo $raw | sed -nE 's:.*"srvr"<blob>="([^"]*)".*:\1:p')
       local acc=$(echo $raw | sed -nE 's:.*"acct"<blob>="([^"]*)".*:\1:p')
       local group=$(echo $acc | cut -d'/' -f1)
       local user=$(echo $acc | cut -d'/' -f2)
@@ -150,12 +150,12 @@ EOF
       # show -d "    '$acc' '$group' '$user' '$host'\n    '$pass'"
 
       if [ $secure = 0 ]; then
-        echo "$pass\n$totp" | sudo openconnect --background --authgroup=$group --user=$user --passwd-on-stdin $host
+        printf '%s\n' $pass $totp | sudo openconnect --background --authgroup=$group --user=$user --passwd-on-stdin $host
       else
         group="0" # Always "0" for Cisco native client
 
         sudo launchctl load $vpnAgent
-        echo "connect $host\n$group\n$user\n$pass\n$totp\n" | /opt/cisco/anyconnect/bin/vpn -s
+        printf '%s\n' $group $user $pass $totp | /opt/cisco/anyconnect/bin/vpn -s connect $host
         sudo launchctl load $iseAgent
       fi
     }
