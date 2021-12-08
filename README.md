@@ -356,17 +356,27 @@ My shell and programms settings
     ```zsh
     brew install --cask spotify
     ```
-2. Setup [HandBrake](https://handbrake.fr) [[:octocat:](https://github.com/HandBrake/HandBrake)]
+2. [🆓] Setup [MP3Tag](https://mp3tag.app)
+
+    ```zsh
+    mas install 1532597159
+    ```
+3. Setup [HandBrake](https://handbrake.fr) [[:octocat:](https://github.com/HandBrake/HandBrake)]
 
     ```zsh
     brew install --cask handbrake
     ```
-3. Setup [Picktorial](https://apps.apple.com/app/id1043289526)
+4. Setup [MediaInfo](https://mediaarea.net/MediaInfo)
+
+    ```zsh
+    brew install --cask mediainfo # Or for native UI `mas install 510620098`
+    ```
+5. [🆓] Setup [Picktorial](https://apps.apple.com/app/id1043289526)
 
     ```zsh
     mas install 1043289526
     ```
-4. Setup [Abyss](https://apps.apple.com/app/id1507396839)
+6. [🆓] Setup [Abyss](https://apps.apple.com/app/id1507396839)
 
     ```zsh
     mas install 1507396839
