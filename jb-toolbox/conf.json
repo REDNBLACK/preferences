@@ -2,7 +2,8 @@
     "autostart": false,
     "channel_rollback_max_history": 1,
     "proxy": {
-        "type": "system"
+        "type": "system",
+        "enabled": false
     },
     "ui": {
         "theme": "auto"

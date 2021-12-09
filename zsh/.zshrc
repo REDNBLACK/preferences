@@ -45,6 +45,9 @@ setopt PUSHD_IGNORE_DUPS
 # Use extended globbing
 setopt EXTENDED_GLOB
 
+# Path to completions cache
+zstyle ':completion::complete:*' cache-path "$ZSH_CACHE_DIR/zcompcache"
+
 # Path to history file
 declare -gx HISTFILE="$ZSH_CACHE_DIR/.history"
 
@@ -116,12 +119,11 @@ zinit id-as'DF::core::aliases'   is-snippet for $ZDOTDIR/aliases
 zinit snippet OMZP::sudo              # Press `ESC` twice to prefix previous or current console command
 zinit snippet OMZP::alias-finder      # Learn existing aliases easily
 zinit snippet OMZP::command-not-found # Suggest packages to be installed if a command cannot be found
-zinit snippet OMZP::zsh_reload        # Reload the zsh session by typing `src`
 zinit snippet OMZP::extract           # Defines `extract` function for wide variety of archive filetypes
 zinit snippet OMZP::git               # Provides many aliases and a few useful functions for git
 zinit snippet OMZP::gitignore         # Download gitignore.io templates from the command line
-zinit ice atclone"sed -i '' -e 's/source/#/g' OMZP::osx" nocompile="!"
-zinit snippet OMZP::osx               # Control macOS from command line
+zinit ice atclone"sed -i '' -e 's/source/#/g' OMZP::macos" nocompile="!"
+zinit snippet OMZP::macos             # Control macOS from command line
 
 # Colors
 zinit snippet OMZP::colored-man-pages # Adds colors to man pages
@@ -151,6 +153,7 @@ zinit snippet OMZP::colored-man-pages # Adds colors to man pages
   declare -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
     status                  # exit code of the last command
     command_execution_time  # duration of the last command
+    rust_version            # rustc version (https://www.rust-lang.org)
     java_version            # java version (https://www.java.com/)
     time                    # current time
   )
@@ -263,6 +266,14 @@ zinit snippet OMZP::colored-man-pages # Adds colors to man pages
   # Custom icon.
   # declare -g POWERLEVEL9K_JAVA_VERSION_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
+  #################[ rust_version: rustc version (https://www.rust-lang.org) ]##################
+  # Rust version color.
+  declare -g POWERLEVEL9K_RUST_VERSION_FOREGROUND=37
+  # Show rust version only when in a rust project subdirectory.
+  declare -g POWERLEVEL9K_RUST_VERSION_PROJECT_ONLY=true
+  # Custom icon.
+  #  declare -g POWERLEVEL9K_RUST_VERSION_VISUAL_IDENTIFIER_EXPANSION='⭐'
+
   ####################################[ time: current time ]####################################
   # Current time color.
   # declare -g POWERLEVEL9K_TIME_FOREGROUND=0
@@ -313,11 +324,14 @@ zinit snippet OMZP::colored-man-pages # Adds colors to man pages
   (( ! $+functions[p10k] )) || p10k reload
 }
 
+declare -g POWERLEVEL9K_CACHE_DIR="$ZSH_CACHE_DIR/powerlevel"
+mkd -e $POWERLEVEL9K_CACHE_DIR
+
 # Tell `p10k configure` which file it should overwrite.
 declare -g POWERLEVEL9K_CONFIG_FILE=${${(%):-%x}:a}
 
 # Load theme
-zinit ice depth"1" lucid
+zinit ice depth"1" atclone"LC_ALL=C && LANG=C && sed -i '' -e 's|XDG_CACHE_HOME|POWERLEVEL9K_CACHE_DIR|g' **/*(D.)" atpull'%atclone' nocompile="!" lucid
 zinit $ZINIT[LOAD_MODE] romkatv/powerlevel10k
 # ====================================================================================== #
 
@@ -332,7 +346,7 @@ zinit $ZINIT[LOAD_MODE] romkatv/powerlevel10k
 # ====================================================================================== #
 #                            zsh fast syntax highlighting                                #
 #   more at                                                                              #
-#    https://github.com/zdharma-continuum/fast-syntax-highlighting                                 #
+#    https://github.com/zdharma-continuum/fast-syntax-highlighting                       #
 # ====================================================================================== #
 # Plugin home dir
 declare -gx FAST_WORK_DIR="$ZSH_CACHE_DIR/zfsh"
@@ -353,10 +367,7 @@ zinit $ZINIT[LOAD_MODE] zdharma-continuum/fast-syntax-highlighting
 #    https://github.com/zsh-users/zsh-autosuggestions#configuration                      #
 # ====================================================================================== #
 # Style suggestion is shown with
-declare -gx ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"
-
-# Fetch suggestions asynchronously
-declare -gx ZSH_AUTOSUGGEST_USE_ASYNC="1"
+declare -gx ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8,bold,underline"
 
 # Disable automatic widget re-binding on each precmd
 declare -gx ZSH_AUTOSUGGEST_MANUAL_REBIND="1"
@@ -385,7 +396,7 @@ zinit $ZINIT[LOAD_MODE] zsh-users/zsh-autosuggestions
 #    https://github.com/zsh-users/zsh-completions                                        #
 # ====================================================================================== #
 zinit ice as"completion"
-zinit snippet OMZP::osx/_security
+zinit snippet OMZP::macos/_security
 
 zinit ice as"completion"
 zinit snippet OMZP::docker/_docker

@@ -86,7 +86,7 @@ My shell and programms settings
         ```
     * [`man` in TL;DR variant](https://github.com/tldr-pages/tldr) (depends on `libzip`)
         ```zsh
-        brew install tldr --HEAD
+        brew install tldr
         ```
     * [Set files association](https://github.com/moretension/duti)
         ```zsh
@@ -154,6 +154,11 @@ My shell and programms settings
 
     # Allow applications downloaded from anywhere
     sudo spctl --master-disable
+
+    # Disable annoying root password request on every LaunchAgent launch
+    security authorizationdb read com.apple.system-extensions.admin > /tmp/com.apple.system-extensions.admin.plist
+    /usr/libexec/PlistBuddy -c "Set rule:0 allow" /tmp/com.apple.system-extensions.admin.plist
+    security authorizationdb write com.apple.system-extensions.admin < /tmp/com.apple.system-extensions.admin.plist
     ```
 
 ##### Development

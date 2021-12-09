@@ -717,6 +717,8 @@
 			<true/>
 			<key>Draw Powerline Glyphs</key>
 			<true/>
+			<key>Enable Triggers in Interactive Apps</key>
+			<false/>
 			<key>Flashing Bell</key>
 			<false/>
 			<key>Foreground Color</key>
@@ -1821,6 +1823,8 @@
 			<string>kNextWindowPointerAction</string>
 		</dict>
 	</dict>
+	<key>PreferredBaseDir</key>
+	<string>~/Preferences/iterm2</string>
 	<key>PreserveWindowSizeWhenTabBarVisibilityChanges</key>
 	<false/>
 	<key>Print In Black And White</key>

@@ -109,7 +109,7 @@ setopt LOCAL_OPTIONS NO_NOTIFY NO_MONITOR
 # ============================================ #
 function iterm2_set_user_var_async() {
   local scope=$([ $1 = 'Global' ] && echo 'Global' || echo $ITERM_SESSION_ID)
-  local pipe="$XDG_CONFIG_HOME/iterm2/AppSupport/Jobs/$scope-$2.pipe"
+  local pipe="$DOTPREFSDIR/iterm2/AppSupport/Jobs/$scope-$2.pipe"
   local pid="$(cat $pipe 2> /dev/null)"
   if [[ $pid -ne 0 ]] && ps -p $pid > /dev/null; then
     #
