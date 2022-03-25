@@ -1,6 +1,14 @@
 {
     "autostart": false,
     "channel_rollback_max_history": 1,
+    "ordering": {
+        "local": [
+            {
+                "application_id": "IDEA-U",
+                "channel_id": "ch-0"
+            }
+        ]
+    },
     "proxy": {
         "type": "system",
         "enabled": false
@@ -17,6 +25,6 @@
         "install_automatically": false
     },
     "jetbrains_account": {
-        "active": "966069"
+        "active": "10714046"
     }
 }

@@ -100,11 +100,28 @@ EOF
 
 # Manage connection to Cisco AnyConnect VPN
 function vpn() {
-  zparseopts -D -E -F - kc::=keychain -keychain::=keychain s=secure -secure=secure h=help -help=help
+  zparseopts -D -E -F - kc::=keychain -keychain::=keychain s=secure -secure=secure a=auto -auto=auto h=help -help=help
 
-  local totp="$1"
-  local secure=${#secure}
-  local keychain=${${keychain#(--keychain|-kc)}:-"CiscoVPN"}
+  declare -A opts=(
+    [pkg]='com.cisco.anyconnect'
+    [bin]='/opt/cisco/anyconnect/bin'
+    [apps]='/Applications/Cisco'
+    [agents]='/Library/LaunchAgents'
+    [daemons]='/Library/LaunchDaemons'
+    [totp]="$1"
+    [secure]=${#secure}
+    [auto]=${#auto}
+    [keychain]=${${keychain#(--keychain|-kc)}:-"CiscoVPN"}
+  )
+  declare -A procx=(
+    [agent]="${opts[daemons]}/${opts[pkg]}.vpnagentd.plist"
+    [ise]="${opts[agents]}/${opts[pkg]}.aciseposture.plist"
+    [notify]="${opts[agents]}/${opts[pkg]}.notification.plist"
+    [gui]="${opts[agents]}/${opts[pkg]}.gui.plist"
+    [cli]="${opts[bin]}/vpn"
+    [app]='Cisco AnyConnect Secure Mobility Client.app'
+    [ext]="${opts[pkg]}.macos.acsockext"
+  )
 
   local usage=$(cat <<EOF
 ${fg_bold[blue]}Usage:${reset_color} vpn [options…] <TOTP> ${fg[cyan]}Manage connection to Cisco AnyConnect based VPN${reset_color}
@@ -112,11 +129,15 @@ ${fg_bold[blue]}Usage:${reset_color} vpn [options…] <TOTP> ${fg[cyan]}Manage c
 ${fg_bold[blue]}Options:${reset_color}
   ${fg_bold[yellow]}--secure${reset_color}           ${fg[blue]}Connect to VPN using native Cisco AnyConnect client${reset_color} ${fg[cyan]}(without flag OpenConnect client will be used)${reset_color}
   ${fg_bold[yellow]}--keychain${reset_color} <entry> ${fg[blue]}Name of KeyChain entry to use for connection${reset_color} ${fg[cyan]}(CiscoVPN entry will be used if not set)${reset_color}
+  ${fg_bold[yellow]}--auto${reset_color}             ${fg[blue]}Automatically retrieve TOTP for VPN${reset_color} ${fg[cyan]}(Requires installed macos-totp-cli)${reset_color}
   ${fg_bold[yellow]}--help${reset_color}             ${fg[blue]}Show help (this message) and exit${reset_color}
 
 ${fg_bold[blue]}Setup:${reset_color}
-  ${fg[blue]}Add your VPN connection credentials to secure macOS KeyChain by executing this${reset_color} ${fg[cyan]}(required step in order for this program to work):${reset_color}
+  ${fg[blue]}Store your VPN connection credentials to secure macOS KeyChain by executing${reset_color} ${fg[cyan]}(required step in order for this program to work):${reset_color}
       security add-internet-password ${fg_bold[yellow]}-l${reset_color} CiscoVPN ${fg_bold[yellow]}-r${reset_color} htps ${fg_bold[yellow]}-s${reset_color} %HOST% ${fg_bold[yellow]}-a${reset_color} %GROUP%/%USER% ${fg_bold[yellow]}-w${reset_color} %PASSWORD%
+  ${fg[blue]}Store your VPN connection TOTP secret to secure macOS KeyChain by executing${reset_color} ${fg[cyan]}(OPTIONALLY, if macos-totp-cli installed):${reset_color}
+      totp add CiscoVPN
+      %TOTP Secret%
   ${fg[blue]}Install manually if you want to use native client:${reset_color}
       cisco-any-connect.pkg
   ${fg[blue]}...or execute this if you prefer openconnect$reset_color ${fg[cyan]}(depends on gmp bdw-gc libffi libtool libunistring pkg-config guile libidn2 libtasn1 nettle p11-kit libevent unbound gnutls stoken):${reset_color}
@@ -132,48 +153,112 @@ EOF
   if [ ${#help} = 1 ]; then
     echo $usage
   else
-    local iseAgent="/Library/LaunchAgents/com.cisco.anyconnect.aciseposture.plist"
-    local vpnAgent="/Library/LaunchDaemons/com.cisco.anyconnect.vpnagentd.plist"
+    local type=$([ ${opts[secure]} = 0 ] && echo 'OpenConnect' || echo 'Cisco AnyConnect')
+    # local uid=`echo "show State:/Users/ConsoleUser" | scutil | awk '/UID/ { print $3 }'`
     local stopped=$(([ -z `pgrep vpnagentd` ] && [ -z `pgrep aciseposture` ] && [ -z `pgrep openconnect` ]) && echo 1 || echo 0)
-    local type=$([ $secure = 0 ] && echo "OpenConnect" || echo "Cisco AnyConnect")
 
-    # show -d "    '$keychain' '$secure' '$type' '$stopped'\n    '$totp'"
+    # show -d "    '$keychain' '$secure' '$type' '$stopped'$EOL    '$totp'"
+
+    assert() {
+       "$@" 2>&1 | {
+         read -d "\0" err
+         [ -z "$err" ] || show -e -l 'VPN' $err
+      }
+      unset err
+    }
+
+    loop() {
+      declare -i sec=$1; shift
+      local msg="$2";    shift
+
+      while [ -n "`$@`" ];
+      do ((sec--)); sleep 1;
+        show -l 'Loop' "$sec"
+        if [ $sec -eq 0 ]; then show -e -l 'VPN' $msg; break; fi
+      done
+    }
 
     start() {
-      local raw=$(security 2>&1 find-internet-password -gl $keychain | tr '\n' ' ')
-      local host=$(echo $raw | sed -nE 's:.*"srvr"<blob>="([^"]*)".*:\1:p')
-      local acc=$(echo $raw | sed -nE 's:.*"acct"<blob>="([^"]*)".*:\1:p')
-      local group=$(echo $acc | cut -d'/' -f1)
-      local user=$(echo $acc | cut -d'/' -f2)
-      local pass=$(echo $raw | sed -nE 's:.*password\: "([^"]*)".*:\1:p')
+      local raw=$(security 2>&1 find-internet-password -gl ${opts[keychain]} | tr $EOL ' ')
+      local host=$(sed -nE 's:.*"srvr"<blob>="([^"]*)".*:\1:p' <<< $raw)
+      local acc=(${(Oas:/:)$(sed -nE 's:.*"acct"<blob>="([^"]*)".*:\1:p' <<< $raw)})
+      local pass=$(sed -nE 's:.*password\: "([^"]*)".*:\1:p' <<< $raw)
+      local totp=$([ ${opts[auto]} = 1 ] && totp get ${opts[keychain]} || echo ${opts[totp]})
 
-      # show -d "    '$acc' '$group' '$user' '$host'\n    '$pass'"
+      # show -d "    '$host'$EOL    [${#acc[@]}]: '$acc'$EOL    '$pass'"
 
-      if [ $secure = 0 ]; then
-        printf '%s\n' $pass $totp | sudo openconnect --background --authgroup=$group --user=$user --passwd-on-stdin $host
+      if [ ${opts[secure]} = 0 ]; then
+        ## OpenConnect
+        local args=(
+          '--background'
+          "--user=${acc[1]}"
+          '--passwd-on-stdin'
+        )
+        if [ ! -z "${acc[2]}" ]; then args+=("--authgroup=${acc[2]}"); fi
+
+        printf '%s\n' $pass $totp | sudo openconnect $args $host
       else
-        group="0" # Always "0" for Cisco native client
+        # Cisco AnyConnect
+        local auth=()
+        if [ ! -z "${acc[2]}" ]; then
+          ## Group always "0" for Cisco native client
+          auth+=("0" "${acc[1]}")
+        else
+          auth+=("${acc[1]}")
+        fi
 
-        sudo launchctl load $vpnAgent
-        printf '%s\n' $group $user $pass $totp | /opt/cisco/anyconnect/bin/vpn -s connect $host
-        sudo launchctl load $iseAgent
+        assert sudo launchctl bootstrap system ${procx[agent]}
+        printf '%s\n' $auth $pass $totp | ${procx[cli]} -s connect $host
+        assert sudo launchctl bootstrap system ${procx[ise]}
       fi
     }
 
     stop() {
-      sudo pkill "openconnect"
-      sudo launchctl unload $vpnAgent $iseAgent > /dev/null 2>&1
+      # OpenConnect
+      sudo pkill -2 'openconnect' 2>&1
+
+      # Cisco AnyConnect
+      ## Kill GUI & CLI
+      sudo launchctl bootout system ${procx[gui]} ${procx[notify]} > /dev/null 2>&1
+      sudo pkill -2 -f ${procx[app]} ${procx[cli]} 2>&1
+      sudo rm -f ${procx[gui]} ${procx[notify]} 2>&1
+      loop 5 'Timeout waiting for GUI to stop' pgrep -f ${procx[app]}
+
+      ## Kill Daemons
+      sudo launchctl bootout system ${procx[agent]} ${procx[ise]} > /dev/null 2>&1
+      loop 10 'Timeout waiting for Daemons to stop' pgrep -f "${opts[bin]}/vpnagentd"
+
+      ## Disable and Remove System Extensions
+      sudo pkill -9 -f ${opts[bin]} 2>&1
+      if [ -n "$(systemextensionsctl list | grep ${procx[ext]} | uniq)" ]; then
+        declare -A mode=([lock]='authenticate-admin-nonshared' [allow]='allow')
+        local before=$(/usr/libexec/PlistBuddy -c "Print rule:0" /dev/stdin <<< "$(security authorizationdb read com.apple.system-extensions.admin 2>&1)")
+
+        # Temporary allow system extensions to be uninstalled without password prompt
+        if [ $before = "${mode[lock]}" ]; then
+          security authorizationdb write com.apple.system-extensions.admin "${mode[allow]}" > /dev/null 2>&1 \
+            || show -e -l 'VPN' "Failed to update SecurityDB with allow mode, code $?"
+        fi
+
+        # Deactivate and remove Cisco System Extensions
+        sudo "/Applications/Cisco/Cisco AnyConnect Socket Filter.app/Contents/MacOS/Cisco AnyConnect Socket Filter" -deactivateExt
+        # sudo systemextensionsctl uninstall DE8Y96K9QP ${procx[ext]}
+
+        # Revert back system extensions security
+        security authorizationdb write com.apple.system-extensions.admin "$before" > /dev/null 2>&1 \
+          || show -e -l 'VPN' "Failed to revert SecurityDB with $before mode, code $?"
+      fi
     }
 
-    if [ $stopped = 1 ] && [ "$totp" = '' ]; then
+    if [ $stopped = 1 ] && [ ${opts[auto]} = 0 ] && [ "${opts[totp]}" = '' ]; then
       show -e -l 'VPN' 'TOTP is empty!'
-    elif [ $stopped = 1 ] && [ -n "$totp" ]; then
+    elif [ $stopped = 1 ] && [[ ${opts[auto]} = 1 || -n "${opts[totp]}" ]]; then
       show -l 'VPN' "Launching $type..."
       start
-    elif [ $stopped = 0 ] && [ "$totp" = '' ]; then
+    elif [ $stopped = 0 ] && [ ${opts[auto]} = 0 ] && [ "${opts[totp]}" = '' ]; then
       show -l 'VPN' 'Closing...'
       stop
-    elif [ $stopped = 0 ] && [ -n "$totp" ]; then
+    elif [ $stopped = 0 ] && [[ ${opts[auto]} = 1 || -n "${opts[totp]}" ]]; then
       show -l 'VPN' "Restarting $type..."
       stop
       start
