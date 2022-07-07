@@ -4,6 +4,7 @@
 # - show                   = formatted print                                             #
 # - mkd                    = mkdir + cd or mkdir only if dir not exists                  #
 # - vpn                    = connect to Cisco AnyConnect or OpenConnect VPN              #
+# - dns                    = reload dns, make domain alias for localhost with port       #
 # - upgrade                = update manager                                              #
 # - internal               = internal tools                                              #
 # - targz                  = -> .tar.gz                                                  #
@@ -264,6 +265,65 @@ EOF
       start
     fi
   fi
+}
+
+# Manage DNS
+function dns() {
+  local usage="Try me"
+  declare -A file=(
+    [firewall]='/etc/pf.conf'
+    [hosts]='/etc/hosts'
+    [redirect]='/etc/pf.anchors/domain.alias'
+  )
+
+  inject() {
+    local opts=($2 $3)
+    if [ "$1" = 'delete' ]; then; opts[2]=(); fi
+    sudo sed -i '' -n ${opts[@]/#/-e } $4
+  }
+
+  case $1 in
+    (reload)   # Reset DNS Cache
+      sudo killall -HUP mDNSResponder
+    ;;
+    (firewall) # Manipulate Firewall settings
+      local mode="$2"
+
+      output=("${(@f)$(sudo pfctl -q $mode -f ${file[firewall]} 2>&1)}")
+      printf '%s\n' ${output[@]:3} && if [ $mode = '-d' ]; then; sleep 3; fi
+    ;;
+    (alias)    # Alias localhost with port to domain
+      # /System/Library/LaunchDaemons/com.apple.pfctl.plist - <string>-e</string>
+      declare -A addr=([base]='127.0.0.' [domain]="$2" [port]="$3")
+      addr[all]="$(sed -nE 's#^'${addr[base]}'([0-9]+)[[:space:]]+(.+)$#\2=\1#p' ${file[hosts]})"
+      addr[local]="${addr[base]}${$([[ "${addr[all]}" =~ ${addr[domain]}=([0-9]+) ]] && echo "${match[1]}" || echo "$(echo ${addr[all]} | cut -d'=' -f2 | sort -n | tail -1 | awk '{print $1 + 1}')")}"
+
+      declare -A cmd=(
+        [expr]="rdr pass on lo0 inet proto tcp from any to ${addr[local]} port 80 -> ${addr[base]}1 port ${addr[port]}"
+        [anchor]='rdr-anchor "domain.alias"'
+        [load]='load anchor "domain.alias" from'
+      )
+
+      show -d "${addr[all]}\n${addr[local]}"
+
+      ## Create or update redirect
+      [ ! -e $file[redirect] ] && sudo tee $file[redirect] <<< "# Domain Redirect Aliases ruleset" > /dev/null
+      inject 'both' '/^.*'${addr[local]}' port 80.*$/!p' '$a\'$'\n'${cmd[expr]} ${file[redirect]}
+
+      ## Configure and load redirect
+      inject 'both' '/^'${cmd[anchor]}'$/!p' '/rdr-anchor "com.apple\/\*"/a\'$'\n'${cmd[anchor]} ${file[firewall]}
+      inject 'both' '/^'${cmd[load]}' "'$(sed 's:/:\\/:g' <<< ${file[redirect]})'"/!p' '$a\'$'\n'${cmd[load]}' "'${file[redirect]}'"' ${file[firewall]}
+      dns firewall -n && dns firewall -d && dns firewall -e
+
+      ## Create or update domain -> ip mapping in hosts and reload DNS
+      inject 'both' '/^'${addr[base]}'[0-9]* '${addr[domain]}'/!p' '$a\'$'\n'${addr[local]}' '${addr[domain]} ${file[hosts]}
+      dns reload
+
+      show -l 'DNS' "Start apps at ${addr[local]}:${addr[port]} and view them at http://${addr[domain]}/"
+    ;;
+    (-h | --help) echo $usage ;;
+    (*)           show -e 'Wrong arguments, see --help'
+  esac
 }
 
 # Update/upgrade homebrew, homebrew cask, MAS and system

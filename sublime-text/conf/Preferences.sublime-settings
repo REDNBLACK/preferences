@@ -29,7 +29,7 @@
 		"*.zip"
 	],
 	"close_windows_when_empty": true,
-	"color_scheme": "Packages/ayu/ayu-dark.sublime-color-scheme",
+	"color_scheme": "ayu-dark.sublime-color-scheme",
 	"create_window_at_startup": true,
 	"default_encoding": "UTF-8",
 	"default_line_ending": "unix",
