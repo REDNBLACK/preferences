@@ -150,7 +150,7 @@ My shell and programms settings
         ```zsh
         brew install nextdns/tap/nextdns
         ```
-4. [🆓] Setup [Lantern](https://getlantern.org) [[:octocat:](https://github.com/getlantern)]
+4. [🆓] Setup [Lantern](https://lantern.io) [[:octocat:](https://github.com/getlantern)]
 
     ```zsh
     brew install --cask lantern
@@ -326,14 +326,14 @@ My shell and programms settings
     ```
 
 ##### Network
-1. Setup [Sidekick Browser](https://meetsidekick.com)
+1. Setup [Brave Browser](https://brave.com)
 
     *
         ```zsh
-        brew install --cask pushplaylabs-sidekick
+        brew install --cask brave-browser
         ```
-    * Install [plugins, theme and StartPage search engine](/sidekick/plugins.md)
-    * Import [uBlock Origin settings](/sidekick/ublock-settings.txt)
+    * Install [plugins, theme and StartPage search engine](/brave/plugins.md)
+    * Import [uBlock Origin settings](/brave/ublock-settings.txt)
 2. Setup [TOR](https://torproject.org) [[:octocat:](https://github.com/TheTorProject)]
 
     ```zsh
@@ -362,7 +362,7 @@ My shell and programms settings
     ```zsh
     brew install --cask zoom
     ```
-4. [💰] Setup [Proton Mail - Bridge](https://protonmail.com/bridge) [[:octocat:](https://github.com/ProtonMail/proton-bridge)]
+4. [💰] Setup [Proton Mail - Bridge](https://proton.me/mail/bridge) [[:octocat:](https://github.com/ProtonMail/proton-bridge)]
 
     ```zsh
     brew install --cask protonmail-bridge
