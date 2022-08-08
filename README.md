@@ -146,7 +146,22 @@ My shell and programms settings
         rm NextDNS.mobileconfig
         ```
     * In the Profiles window press 'Install...'
-4. Setup misc
+    * OR
+        ```zsh
+        brew install nextdns/tap/nextdns
+        ```
+4. [🆓] Setup [Lantern](https://getlantern.org) [[:octocat:](https://github.com/getlantern)]
+
+    ```zsh
+    brew install --cask lantern
+    cp -f $DOTPREFSDIR/lantern/settings.yaml ~/Library/Application\ Support/Lantern/settings.yaml
+    ```
+5. [🆓] Setup [Proton VPN](https://protonvpn.com) [[:octocat:](https://github.com/ProtonVPN)]
+
+    ```zsh
+    brew install --cask protonvpn
+    ```
+6. Setup misc
 
     ```zsh
     # Enable sudo auth via Touch ID (⚠️ Must be done after every system update)
@@ -337,22 +352,17 @@ My shell and programms settings
     ```
 
 ##### Social
-1. Setup [Telegram](https://telegram.org) [[:octocat:](https://github.com/telegramdesktop/tdesktop)]
+1. Setup [Signal](https://signal.org) [[:octocat:](https://github.com/signalapp)]
 
     ```zsh
-    brew install --cask telegram
-    ```
-2. Setup [Slack](https://slack.com) [[:octocat:](https://github.com/slackhq)]
-
-    ```zsh
-    brew install --cask slack
+    brew install --cask signal
     ```
 3. Setup [Zoom](https://zoom.us) [[:octocat:](https://github.com/zoom)]
 
     ```zsh
     brew install --cask zoom
     ```
-4. [💰] Setup [ProtonMail Bridge](https://protonmail.com/bridge) [[:octocat:](https://github.com/ProtonMail/proton-bridge)]
+4. [💰] Setup [Proton Mail - Bridge](https://protonmail.com/bridge) [[:octocat:](https://github.com/ProtonMail/proton-bridge)]
 
     ```zsh
     brew install --cask protonmail-bridge
