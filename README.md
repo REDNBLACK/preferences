@@ -161,7 +161,16 @@ My shell and programms settings
     ```zsh
     brew install --cask protonvpn
     ```
-6. Setup misc
+6. Setup [GPG Suite](https://gpgtools.org) [[:octocat:](https://github.com/GPGTools)]
+
+    ```zsh
+    brew install --cask gpg-suite-no-mail
+    defaults write org.gpgtools.updater SUEnableAutomaticChecks -bool NO
+
+    # Remove bloat
+    sudo rm -rf /Library/PreferencePanes/GPGPreferences.prefPane && sudo rm -f /Library/LaunchAgents/org.gpgtools.{updater,macgpg2.fix,macgpg2.updater,Libmacgpg.xpc,gpgmail.*}.plist
+    ```
+7. Setup misc
 
     ```zsh
     # Enable sudo auth via Touch ID (⚠️ Must be done after every system update)

@@ -13,8 +13,8 @@
         "type": "system",
         "enabled": false
     },
-    "ui": {
-        "theme": "auto"
+    "shell_scripts": {
+        "location": "/usr/local/bin"
     },
     "update": {
         "filter": {
