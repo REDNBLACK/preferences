@@ -361,6 +361,9 @@ My shell and programms settings
 
     ```zsh
     brew install --cask zoom
+    
+    # Remove dangerous daemon
+    sudo launchctl bootout system /Library/LaunchDaemons/us.zoom.ZoomDaemon.plist && sudo rm -f /Library/{LaunchDaemons,PrivilegedHelperTools}/us.zoom.ZoomDaemon*
     ```
 4. [💰] Setup [Proton Mail - Bridge](https://proton.me/mail/bridge) [[:octocat:](https://github.com/ProtonMail/proton-bridge)]
 
@@ -387,7 +390,11 @@ My shell and programms settings
 4. Setup [MediaInfo](https://mediaarea.net/MediaInfo)
 
     ```zsh
-    brew install --cask mediainfo # Or for native UI `mas install 510620098`
+    # Ugly but free
+    brew install --cask mediainfo
+    
+    # For Native UI
+    mas install 510620098
     ```
 5. [🆓] Setup [Picktorial](https://apps.apple.com/app/id1043289526)
 

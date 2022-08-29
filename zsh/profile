@@ -6,14 +6,18 @@
 # ====================================================================================== #
 #                                Global settings                                         #
 # ====================================================================================== #
-declare -gx LC_CTYPE='UTF-8'
-declare -gx LC_ALL="en_US.$LC_CTYPE"
-declare -gx LANG=$LC_ALL
-declare -gx EOL='\n'
-declare -gx XDG_CACHE_HOME="$HOME/Library/Caches"
-declare -gx XDG_CONFIG_HOME="$HOME/.config"
+declare -gx LC_CTYPE='UTF-8' # SYS #
+declare -gx LC_ALL="en_US.$LC_CTYPE" # SYS #
+declare -gx LANG=$LC_ALL # SYS #
+declare -gx EOL='\n' # SYS #
+declare -gx XDG_CACHE_HOME="$HOME/Library/Caches" # SYS #
+declare -gx XDG_CONFIG_HOME="$HOME/.config" # SYS #
 
 eval `/usr/libexec/path_helper -s`
+path+=(
+  "/Library/Developer/CommandLineTools/usr/bin"
+  "$HOME/Library/Python/3.8/bin"                # Fix it
+)
 # ====================================================================================== #
 
 
@@ -24,11 +28,24 @@ declare -gx HOMEBREW_NO_ANALYTICS=1
 declare -gx HOMEBREW_NO_INSTALL_CLEANUP=1
 declare -gx HOMEBREW_NO_EMOJI=1
 declare -gx HOMEBREW_GITHUB_API_TOKEN="$(security 2>&1 find-internet-password -ws github.com)"
+declare -gx HOMEBREW_PREFIX="$([[ $(uname -m) == 'arm64' ]] && echo '/opt/homebrew' || echo '/usr/local')"
+declare -gx HOMEBREW_CELLAR="$HOMEBREW_PREFIX/Cellar"
+declare -gx HOMEBREW_REPOSITORY="$HOMEBREW_PREFIX/Homebrew"
+declare -gx HOMEBREW_CASKROOM="$HOMEBREW_PREFIX/Caskroom"
+# ====================================================================================== #
 
-if (( $+commands[brew] )); then
-  eval `brew shellenv`
-  declare -gx HOMEBREW_CASKROOM="$(brew --caskroom)"
-fi
+# ====================================================================================== #
+#                               GnuPG settings                                           #
+# ====================================================================================== #
+declare -gx GNUPGHOME="$XDG_CONFIG_HOME/pgp" # SYS #
+# ====================================================================================== #
+
+
+# ====================================================================================== #
+#                               Docker & K8S                                             #
+# ====================================================================================== #
+declare -gx DOCKER_CONFIG="$XDG_CONFIG_HOME/docker" # SYS #
+declare -gx KUBECONFIG="$XDG_CONFIG_HOME/k8s" # SYS #
 # ====================================================================================== #
 
 

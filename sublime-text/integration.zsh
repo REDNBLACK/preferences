@@ -4,7 +4,8 @@ emulate -LR zsh
 # ====================================================================================== #
 #                          Sublime Text integrations                                     #
 # ====================================================================================== #
-# Depends on .zshrc                                                                      #
+# Depends on:  .zshrc                                                                    #
+# Global vars: EDITOR                                                                    #
 # ====================================================================================== #
 if ! internal app-installed 'Sublime Text'; then
   return 0
@@ -21,7 +22,7 @@ fi
 
   # Set as default editor
   if [[ -e $bin ]]; then
-    declare -gx EDITOR='subl -w'
+    declare -gx EDITOR='subl -w' # SYS #
   fi
 
   # Install PackageControl

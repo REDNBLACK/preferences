@@ -115,6 +115,9 @@ defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 # Enable the warning before emptying the Trash
 defaults write com.apple.finder WarnOnEmptyTrash -bool true
 
+# Disable Discrete GPU both when charging OR on battery
+sudo pmset -a gpuswitch 0
+
 # Disable backup While on Battery
 # defaults write /Library/Preferences/com.apple.TimeMachine RequiresACPower -bool false
 # ====================================================================================== #

@@ -4,11 +4,16 @@ emulate -LR zsh
 # ====================================================================================== #
 #                          JDK, JVM and sbt integrations                                 #
 # ====================================================================================== #
-# Depends on .zshrc                                                                      #
+# Depends on:  .zshrc                                                                    #
+# Global vars: PATH; JAVA_HOME; SBT_OPTS                                                 #
 # ====================================================================================== #
 #  - jdk   = get or set current Java version                                             #
 #  - scala = various sbt tools                                                           #
 # ====================================================================================== #
+
+# Initialize JAVA_HOME and SBT_OPTS
+declare -gx JAVA_HOME="$(/usr/libexec/java_home)" # SYS #
+declare -gx SBT_OPTS="-Xmx4G -Xss2M -Dsbt.global.base=$XDG_CONFIG_HOME/sbt -Dsbt.ivy.home=$XDG_CONFIG_HOME/ivy2" # SYS #
 
 # Java JDK utils
 function jdk() {
@@ -50,12 +55,6 @@ EOF
     (*)           java -version ;;
   esac
 }
-
-# Initialize JAVA_HOME and PATH
-jdk --init
-
-# Initialize SBT_OPTS
-declare -gx SBT_OPTS="-Xmx4G -Xss2M -Dsbt.global.base=$XDG_CONFIG_HOME/sbt -Dsbt.ivy.home=$XDG_CONFIG_HOME/ivy2"
 
 # Utils for Scala & sbt
 function scala() {
