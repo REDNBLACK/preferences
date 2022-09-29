@@ -199,6 +199,11 @@ My shell and programms settings
     brew install --cask jetbrains-toolbox
     ln -fs $DOTPREFSDIR/jb-toolbox/conf.json ~/Library/Application\ Support/JetBrains/Toolbox/.settings.json
     ```
+    <!--
+        Crack, just out of spite, get fucking owned JB 🖕
+        Repo:   https://github.com/libin9iOak/ja-netfilter-all
+        Mirror: https://jetbra.in
+    -->
 3. Setup [Docker](https://docs.docker.com/docker-for-mac) [[:octocat:](https://github.com/docker/for-mac)]
 
     ```zsh

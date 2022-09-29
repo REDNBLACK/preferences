@@ -14,7 +14,11 @@
         "enabled": false
     },
     "shell_scripts": {
+        "enabled": false,
         "location": "/usr/local/bin"
+    },
+    "tools": {
+        "localize_tools": true
     },
     "update": {
         "filter": {
