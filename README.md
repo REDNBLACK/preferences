@@ -111,15 +111,21 @@ My shell and programms settings
     ```
 
 ##### Security
-1. [💰] Setup [1Password](https://1password.com) [[:octocat:](https://github.com/1Password)]
+1. [💰] Setup [Strongbox](https://strongboxsafe.com) [[:octocat:](https://github.com/strongbox-password-safe)]
 
     ```zsh
-    brew install --cask 1password
-
-    # Install license
-    cp -f "**Path to 1Password 7 License.onepassword7-license-mac**" ~/Library/Group\ Containers/2BUA8C4S2C.com.agilebits/License/1Password\ 7\ License.onepassword7-license-mac
+    mas install 1481853033
     ```
-2. Setup [DNS over HTTPS/TLS](https://github.com/paulmillr/encrypted-dns)
+2. Setup [GPG Suite](https://gpgtools.org) [[:octocat:](https://github.com/GPGTools)]
+
+    ```zsh
+    brew install --cask gpg-suite-no-mail
+    defaults write org.gpgtools.updater SUEnableAutomaticChecks -bool NO
+
+    # Remove bloat
+    sudo rm -rf /Library/PreferencePanes/GPGPreferences.prefPane && sudo rm -f /Library/LaunchAgents/org.gpgtools.{updater,macgpg2.fix,macgpg2.updater,Libmacgpg.xpc,gpgmail.*}.plist
+    ```
+3. Setup [DNS over HTTPS/TLS](https://github.com/paulmillr/encrypted-dns)
     * Set var `config` to config name from [repo](https://github.com/paulmillr/encrypted-dns/tree/master/profiles) (for example `cloudflare-https`)
     *
         ```zsh
@@ -129,7 +135,7 @@ My shell and programms settings
         rm DoH.mobileconfig
         ```
     * In the Profiles window press 'Install...'
-3. [🆓] Setup [NextDNS](https://nextdns.io) [[:octocat:](https://github.com/nextdns)]
+4. [🆓] Setup [NextDNS](https://nextdns.io) [[:octocat:](https://github.com/nextdns)]
     * Set vars `id` - to your configuration id, `name` - to device name and `model` - to one of values from [here](https://apple.nextdns.io) (for example `Apple MacBookPro11,1`)
     *
         ```zsh
@@ -150,25 +156,16 @@ My shell and programms settings
         ```zsh
         brew install nextdns/tap/nextdns
         ```
-4. [🆓] Setup [Lantern](https://lantern.io) [[:octocat:](https://github.com/getlantern)]
+5. [🆓] Setup [Lantern](https://lantern.io) [[:octocat:](https://github.com/getlantern)]
 
     ```zsh
     brew install --cask lantern
     cp -f $DOTPREFSDIR/lantern/settings.yaml ~/Library/Application\ Support/Lantern/settings.yaml
     ```
-5. [🆓] Setup [Proton VPN](https://protonvpn.com) [[:octocat:](https://github.com/ProtonVPN)]
+6. [🆓] Setup [Proton VPN](https://protonvpn.com) [[:octocat:](https://github.com/ProtonVPN)]
 
     ```zsh
     brew install --cask protonvpn
-    ```
-6. Setup [GPG Suite](https://gpgtools.org) [[:octocat:](https://github.com/GPGTools)]
-
-    ```zsh
-    brew install --cask gpg-suite-no-mail
-    defaults write org.gpgtools.updater SUEnableAutomaticChecks -bool NO
-
-    # Remove bloat
-    sudo rm -rf /Library/PreferencePanes/GPGPreferences.prefPane && sudo rm -f /Library/LaunchAgents/org.gpgtools.{updater,macgpg2.fix,macgpg2.updater,Libmacgpg.xpc,gpgmail.*}.plist
     ```
 7. Setup misc
 
