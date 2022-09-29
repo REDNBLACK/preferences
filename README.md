@@ -209,11 +209,10 @@ My shell and programms settings
     ```zsh
     brew install helm
     ```
-5. Setup Java [OpenJDK](https://openjdk.java.net) [[:octocat:](https://github.com/openjdk)] & [GraalVM](https://graalvm.org) [[:octocat:](https://github.com/graalvm)] & [JMC](https://oracle.com/java/technologies/jdk-mission-control.html) [[:octocat:](https://github.com/openjdk/jmc)] & [sbt](https://scala-sbt.org) [[:octocat:](https://github.com/sbt/sbt)]
+5. Setup Java [Eclipse Temurin](https://adoptium.net) [[:octocat:](https://github.com/adoptium)] & [GraalVM](https://graalvm.org) [[:octocat:](https://github.com/graalvm)] & [JMC](https://oracle.com/java/technologies/jdk-mission-control.html) [[:octocat:](https://github.com/openjdk/jmc)] & [sbt](https://scala-sbt.org) [[:octocat:](https://github.com/sbt/sbt)]
 
     ```zsh
-    brew install openjdk@8 && sudo ln -fs $HOMEBREW_PREFIX/opt/openjdk@8/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-8.jdk
-    brew install openjdk@17 && sudo ln -fs $HOMEBREW_PREFIX/opt/openjdk@17/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-17.jdk
+    brew install --cask temurin{8,17}
     brew install --cask graalvm/tap/graalvm-ce-java17
 
     brew install --cask openjdk-jmc
@@ -222,7 +221,7 @@ My shell and programms settings
     # Switch JDK version to `8` or `17` or `graal`
     jdk 17
     ```
-6. Setup Rust [rustup](https://rust-lang.github.io/rustup/) [[:octocat:](https://github.com/rust-lang/)]
+6. Setup Rust [rustup](https://rust-lang.github.io/rustup/) [[:octocat:](https://github.com/rust-lang)]
 
     ```zsh
     bash -c "$(curl -fsSL https://sh.rustup.rs)" -- --profile default --default-toolchain nightly -y --no-modify-path
@@ -363,13 +362,21 @@ My shell and programms settings
     ```zsh
     brew install --cask signal
     ```
-3. Setup [Zoom](https://zoom.us) [[:octocat:](https://github.com/zoom)]
+2. Setup [Zoom](https://zoom.us) [[:octocat:](https://github.com/zoom)]
 
     ```zsh
     brew install --cask zoom
     
     # Remove dangerous daemon
     sudo launchctl bootout system /Library/LaunchDaemons/us.zoom.ZoomDaemon.plist && sudo rm -f /Library/{LaunchDaemons,PrivilegedHelperTools}/us.zoom.ZoomDaemon*
+    ```
+3. [💰] Setup [Krisp](https://krisp.ai)
+
+    ```zsh
+    brew install --cask krisp
+
+    # Remove useless Camera function
+    sudo launchctl bootout system /Library/LaunchAgents/ai.krisp.krispMac.cameraAssistant.plist && sudo rm -f /Library/LaunchAgents/ai.krisp.krispMac.cameraAssistant.plist && sudo rm -rf /Library/CoreMediaIO/Plug-Ins/DAL/KrispCamera.plugin && sudo pkgutil --forget ai.krisp.krispMacVideo
     ```
 4. [💰] Setup [Proton Mail - Bridge](https://proton.me/mail/bridge) [[:octocat:](https://github.com/ProtonMail/proton-bridge)]
 
