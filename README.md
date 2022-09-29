@@ -84,9 +84,9 @@ My shell and programms settings
         ```zsh
         brew install ripgrep
         ```
-    * [`man` in TL;DR variant](https://github.com/tldr-pages/tldr) (depends on `libzip`)
+    * [`man` in TL;DR variant](https://github.com/dbrgn/tealdeer)
         ```zsh
-        brew install tldr
+        brew install tealdeer
         ```
     * [Set files association](https://github.com/moretension/duti)
         ```zsh
@@ -100,9 +100,9 @@ My shell and programms settings
         ```zsh
         brew install thefuck
         ```
-    * [Instant coding answers](https://github.com/gleitz/howdoi) (depends on `python`)
+    * [Instant coding answers](https://github.com/WindSoilder/hors)
         ```zsh
-        brew install howdoi
+        brew install hors-org/hors/hors
         ```
 9. Setup macOS
 
@@ -209,7 +209,7 @@ My shell and programms settings
     ```zsh
     brew install helm
     ```
-5. Setup Java [Eclipse Temurin](https://adoptium.net) [[:octocat:](https://github.com/adoptium)] & [GraalVM](https://graalvm.org) [[:octocat:](https://github.com/graalvm)] & [JMC](https://oracle.com/java/technologies/jdk-mission-control.html) [[:octocat:](https://github.com/openjdk/jmc)] & [sbt](https://scala-sbt.org) [[:octocat:](https://github.com/sbt/sbt)]
+5. Setup Java [Eclipse Temurin](https://adoptium.net/) [[:octocat:](https://github.com/adoptium)] & [GraalVM](https://graalvm.org) [[:octocat:](https://github.com/graalvm)] & [JMC](https://oracle.com/java/technologies/jdk-mission-control.html) [[:octocat:](https://github.com/openjdk/jmc)] & [sbt](https://scala-sbt.org) [[:octocat:](https://github.com/sbt/sbt)]
 
     ```zsh
     brew install --cask temurin{8,17}
@@ -221,7 +221,7 @@ My shell and programms settings
     # Switch JDK version to `8` or `17` or `graal`
     jdk 17
     ```
-6. Setup Rust [rustup](https://rust-lang.github.io/rustup/) [[:octocat:](https://github.com/rust-lang)]
+6. Setup Rust [rustup](https://rust-lang.github.io/rustup/) [[:octocat:](https://github.com/rust-lang/)]
 
     ```zsh
     bash -c "$(curl -fsSL https://sh.rustup.rs)" -- --profile default --default-toolchain nightly -y --no-modify-path

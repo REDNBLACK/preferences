@@ -16,7 +16,7 @@ declare -gx XDG_CONFIG_HOME="$HOME/.config" # SYS #
 eval `/usr/libexec/path_helper -s`
 path+=(
   "/Library/Developer/CommandLineTools/usr/bin"
-  "$HOME/Library/Python/3.8/bin"                # Fix it
+  "$HOME/Library/Python/3.9/bin"                # Fix it
 )
 # ====================================================================================== #
 
@@ -63,7 +63,21 @@ fi
 # ====================================================================================== #
 #                               TLDR settings                                            #
 # ====================================================================================== #
-declare -gx TLDR_CACHE_DIR=$XDG_CACHE_HOME
+declare -gx TEALDEER_CONFIG_DIR="$XDG_CONFIG_HOME/tealdeer"
+if [[ ! -e "$TEALDEER_CONFIG_DIR/config.toml" ]]; then
+  mkdir -p $TEALDEER_CONFIG_DIR
+  cat > "$TEALDEER_CONFIG_DIR/config.toml" <<EOF
+[display]
+compact = false
+use_pager = false
+
+[updates]
+auto_update = false
+
+[directories]
+custom_pages_dir = "$TEALDEER_CONFIG_DIR/pages/"
+EOF
+fi
 # ====================================================================================== #
 
 
