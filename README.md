@@ -72,9 +72,9 @@ My shell and programms settings
     defaults write com.googlecode.iterm2 PrefsCustomFolder "$DOTPREFSDIR/iterm2"
     ```
 8. Setup Tools
-    * [`cat` with rainbows!](https://github.com/jaseg/lolcat)
+    * [`cat` with rainbows!](https://github.com/ur0/lolcat)
         ```zsh
-        brew install lolcat-c --HEAD
+        brew install lolcat-rust
         ```
     * [`ls` on steroids](https://github.com/ogham/exa)
         ```zsh

@@ -53,7 +53,7 @@ declare -gx KUBECONFIG="$XDG_CONFIG_HOME/k8s" # SYS #
 #                               LOLCat settings                                          #
 # ====================================================================================== #
 if (( $+commands[lolcat] )); then
-  alias lolcat='lolcat -h 0.4 -v 0.3'
+  alias lolcat='lolcat -f 0.23'
 else
   alias lolcat='cat'
 fi
