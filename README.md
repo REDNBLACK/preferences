@@ -37,8 +37,8 @@ My shell and programms settings
     brew install git
     ln -fs $DOTPREFSDIR/git ~/.config/git
 
-    # After generation of Personal Access Token
-    security add-internet-password -s github.com -r htps -a %GitHub Account Name% -w %GitHub Account Token%
+    # After generation of Personal Access Token (Classic)
+    security add-internet-password -l GitHub -s github.com -r htps -a %GitHub Account Name% -w %GitHub Account Token%
     ```
 5. Setup [Fira Code (+Nerd)](https://github.com/tonsky/FiraCode) & [Meslo Nerd](https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/Meslo)
 
@@ -208,6 +208,9 @@ My shell and programms settings
 
     ```zsh
     brew install --cask docker
+
+    # After generation of Access Token
+    security add-internet-password -l Docker\ Hub -s docker.com -r htps -a %Docker Account Name% -w %Docker Account Token%
     ```
 4. Setup [Helm](https://helm.sh) [[:octocat:](https://github.com/helm/helm)]
 
@@ -375,7 +378,12 @@ My shell and programms settings
     # Remove dangerous daemon
     sudo launchctl bootout system /Library/LaunchDaemons/us.zoom.ZoomDaemon.plist && sudo rm -f /Library/{LaunchDaemons,PrivilegedHelperTools}/us.zoom.ZoomDaemon*
     ```
-3. [💰] Setup [Krisp](https://krisp.ai)
+3. Setup [KTalk](https://kontur.ru/talk)
+
+    ```zsh
+    brew install --cask ktalk
+    ```
+4. [💰] Setup [Krisp](https://krisp.ai)
 
     ```zsh
     brew install --cask krisp
@@ -383,7 +391,7 @@ My shell and programms settings
     # Remove useless Camera function
     sudo launchctl bootout system /Library/LaunchAgents/ai.krisp.krispMac.cameraAssistant.plist && sudo rm -f /Library/LaunchAgents/ai.krisp.krispMac.cameraAssistant.plist && sudo rm -rf /Library/CoreMediaIO/Plug-Ins/DAL/KrispCamera.plugin && sudo pkgutil --forget ai.krisp.krispMacVideo
     ```
-4. [💰] Setup [Proton Mail - Bridge](https://proton.me/mail/bridge) [[:octocat:](https://github.com/ProtonMail/proton-bridge)]
+5. [💰] Setup [Proton Mail - Bridge](https://proton.me/mail/bridge) [[:octocat:](https://github.com/ProtonMail/proton-bridge)]
 
     ```zsh
     brew install --cask protonmail-bridge
