@@ -122,6 +122,9 @@ My shell and programms settings
     brew install --cask gpg-suite-no-mail
     defaults write org.gpgtools.updater SUEnableAutomaticChecks -bool NO
 
+    # Secure ssh
+    . $DOTPREFSDIR/pgp/secure-ssh.zsh
+
     # Remove bloat
     sudo rm -rf /Library/PreferencePanes/GPGPreferences.prefPane && sudo rm -f /Library/LaunchAgents/org.gpgtools.{updater,macgpg2.fix,macgpg2.updater,Libmacgpg.xpc,gpgmail.*}.plist
     ```
