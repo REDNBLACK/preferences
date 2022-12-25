@@ -63,7 +63,7 @@ fi
 # ====================================================================================== #
 #                               TLDR settings                                            #
 # ====================================================================================== #
-declare -gx TEALDEER_CONFIG_DIR="$XDG_CONFIG_HOME/tealdeer"
+declare -gx TEALDEER_CONFIG_DIR="$XDG_CONFIG_HOME/tldr"
 if [[ ! -e "$TEALDEER_CONFIG_DIR/config.toml" ]]; then
   mkdir -p $TEALDEER_CONFIG_DIR
   cat > "$TEALDEER_CONFIG_DIR/config.toml" <<EOF

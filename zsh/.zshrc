@@ -45,6 +45,9 @@ setopt PUSHD_IGNORE_DUPS
 # Use extended globbing
 setopt EXTENDED_GLOB
 
+# Do not confirm twice on rm with glob pattern
+setopt RM_STAR_SILENT
+
 # Path to completions cache
 zstyle ':completion::complete:*' cache-path "$ZSH_CACHE_DIR/zcompcache"
 
@@ -112,6 +115,7 @@ ZPFX="${ZINIT[HOME_DIR]}/polaris"
 . $ZDOTDIR/zinit/zinit.zsh
 
 # Load the shell dotfiles
+# rm -rf "${ZINIT[HOME_DIR]}/snippets/DF::core::functions"
 zinit id-as'DF::core::functions' is-snippet for $ZDOTDIR/functions
 zinit id-as'DF::core::aliases'   is-snippet for $ZDOTDIR/aliases
 
