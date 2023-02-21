@@ -102,9 +102,10 @@ EOF
 
 # Manage connection to Cisco AnyConnect VPN
 function vpn() {
-  zparseopts -D -E -F - kc::=keychain -keychain::=keychain s=secure -secure=secure a=auto -auto=auto h=help -help=help
+  zparseopts -D -E -F - kc::=keychain -keychain::=keychain s=secure -secure=secure a=auto -auto=auto f=force -force=force h=help -help=help
 
   declare -A opts=(
+    [label]='VPN'
     [pkg]='com.cisco.anyconnect'
     [bin]='/opt/cisco/anyconnect/bin'
     [apps]='/Applications/Cisco'
@@ -112,6 +113,7 @@ function vpn() {
     [daemons]='/Library/LaunchDaemons'
     [totp]="$1"
     [secure]=${#secure}
+    [force]=${#force}
     [auto]=${#auto}
     [keychain]=${${keychain#(--keychain|-kc)}:-"CiscoVPN"}
   )
@@ -122,6 +124,7 @@ function vpn() {
     [gui]="${opts[agents]}/${opts[pkg]}.gui.plist"
     [cli]="${opts[bin]}/vpn"
     [app]='Cisco AnyConnect Secure Mobility Client.app'
+    [filter]='Cisco AnyConnect Socket Filter.app'
     [ext]="${opts[pkg]}.macos.acsockext"
   )
 
@@ -159,12 +162,12 @@ EOF
     # local uid=`echo "show State:/Users/ConsoleUser" | scutil | awk '/UID/ { print $3 }'`
     local stopped=$(([ -z `pgrep vpnagentd` ] && [ -z `pgrep aciseposture` ] && [ -z `pgrep openconnect` ]) && echo 1 || echo 0)
 
-    # show -d "    '$keychain' '$secure' '$type' '$stopped'$EOL    '$totp'"
+    # show -l $opts[label] -d "    '$keychain' '$secure' '$type' '$stopped'$EOL    '$totp'"
 
     assert() {
        "$@" 2>&1 | {
          read -d "\0" err
-         [ -z "$err" ] || show -e -l 'VPN' $err
+         [ -z "$err" ] || show -l $opts[label] -e $err
       }
       unset err
     }
@@ -176,7 +179,7 @@ EOF
       while [ -n "`$@`" ];
       do ((sec--)); sleep 1;
         show -l 'Loop' "$sec"
-        if [ $sec -eq 0 ]; then show -e -l 'VPN' $msg; break; fi
+        if [ $sec -eq 0 ]; then show -l $opts[label] -e $msg; break; fi
       done
     }
 
@@ -187,7 +190,7 @@ EOF
       local pass=$(sed -nE 's:.*password\: "([^"]*)".*:\1:p' <<< $raw)
       local totp=$([ ${opts[auto]} = 1 ] && totp get ${opts[keychain]} || echo ${opts[totp]})
 
-      # show -d "    '$host'$EOL    [${#acc[@]}]: '$acc'$EOL    '$pass'"
+      # show -l $opts[label] -d "    '$host'$EOL    [${#acc[@]}]: '$acc'$EOL    '$pass'"
 
       if [ ${opts[secure]} = 0 ]; then
         ## OpenConnect
@@ -216,7 +219,6 @@ EOF
     }
 
     stop() {
-      # OpenConnect
       sudo pkill -2 'openconnect' 2>&1
 
       # Cisco AnyConnect
@@ -232,37 +234,39 @@ EOF
 
       ## Disable and Remove System Extensions
       sudo pkill -9 -f ${opts[bin]} 2>&1
-      if [ -n "$(systemextensionsctl list | grep ${procx[ext]} | uniq)" ]; then
-        declare -A mode=([lock]='authenticate-admin-nonshared' [allow]='allow')
-        local before=$(/usr/libexec/PlistBuddy -c "Print rule:0" /dev/stdin <<< "$(security authorizationdb read com.apple.system-extensions.admin 2>&1)")
+      if [ ${opts[force]} = 1 ]; then
+        if [ -n "$(systemextensionsctl list | grep ${procx[ext]} | uniq)" ]; then
+          declare -A mode=([lock]='authenticate-admin-nonshared' [allow]='allow')
+          local before=$(/usr/libexec/PlistBuddy -c "Print rule:0" /dev/stdin <<< "$(security authorizationdb read com.apple.system-extensions.admin 2>&1)")
 
-        # Temporary allow system extensions to be uninstalled without password prompt
-        if [ $before = "${mode[lock]}" ]; then
-          security authorizationdb write com.apple.system-extensions.admin "${mode[allow]}" > /dev/null 2>&1 \
-            || show -e -l 'VPN' "Failed to update SecurityDB with allow mode, code $?"
+          # Temporary allow system extensions to be uninstalled without password prompt
+          if [ $before = "${mode[lock]}" ]; then
+            security authorizationdb write com.apple.system-extensions.admin "${mode[allow]}" > /dev/null 2>&1 \
+              || show -l $opts[label] -e "Failed to update SecurityDB with allow mode, code $?"
+          fi
+
+          # Deactivate and remove Cisco System Extensions
+          sudo "${opts[apps]}/${procx[filter]}/Contents/MacOS/Cisco AnyConnect Socket Filter" -deactivateExt
+          # sudo systemextensionsctl uninstall DE8Y96K9QP ${procx[ext]}
+
+          # Revert back system extensions security
+          security authorizationdb write com.apple.system-extensions.admin "$before" > /dev/null 2>&1 \
+            || show -l $opts[label] -e "Failed to revert SecurityDB with $before mode, code $?"
         fi
-
-        # Deactivate and remove Cisco System Extensions
-        sudo "/Applications/Cisco/Cisco AnyConnect Socket Filter.app/Contents/MacOS/Cisco AnyConnect Socket Filter" -deactivateExt
-        # sudo systemextensionsctl uninstall DE8Y96K9QP ${procx[ext]}
-
-        # Revert back system extensions security
-        security authorizationdb write com.apple.system-extensions.admin "$before" > /dev/null 2>&1 \
-          || show -e -l 'VPN' "Failed to revert SecurityDB with $before mode, code $?"
       fi
     }
 
     if [ $stopped = 1 ] && [ ${opts[auto]} = 0 ] && [ "${opts[totp]}" = '' ]; then
-      show -e -l 'VPN' 'TOTP is empty!'
+      show -l $opts[label] -e 'TOTP is empty!'
     elif [ $stopped = 1 ] && [[ ${opts[auto]} = 1 || -n "${opts[totp]}" ]]; then
-      show -l 'VPN' "Launching $type..."
+      show -l $opts[label] "Launching $type..."
       start
     elif [ $stopped = 0 ] && [ ${opts[auto]} = 0 ] && [ "${opts[totp]}" = '' ]; then
-      show -l 'VPN' 'Closing...'
-      stop
+      show -l $opts[label] 'Closing...'
+      stop $opts[force]
     elif [ $stopped = 0 ] && [[ ${opts[auto]} = 1 || -n "${opts[totp]}" ]]; then
-      show -l 'VPN' "Restarting $type..."
-      stop
+      show -l $opts[label] "Restarting $type..."
+      stop $opts[force]
       start
     fi
   fi
