@@ -405,14 +405,16 @@ EOF
   esac
 }
 
+# Mirror load of special options from ENV to lauchctl setenv
 function osx-env() {
   local usage=$(cat <<EOF
 ${fg_bold[blue]}Usage:${reset_color} osx-env <command> ${fg[cyan]}${reset_color}
 
 ${fg_bold[blue]}Commands:${reset_color}
-  ${fg_bold[yellow]}install${reset_color}      ${fg[blue]}Do them${reset_color}
-  ${fg_bold[yellow]}uninstall${reset_color}      ${fg[blue]}Do it${reset_color}
-  ${fg_bold[yellow]}sync${reset_color}      ${fg[blue]}Do shit${reset_color}
+  ${fg_bold[yellow]}install${reset_color}   ${fg[blue]}Install and Load Agent${reset_color}
+  ${fg_bold[yellow]}uninstall${reset_color} ${fg[blue]}Uninstall and Unload Agent${reset_color}
+  ${fg_bold[yellow]}status${reset_color}    ${fg[blue]}Check Installation Status${reset_color}
+  ${fg_bold[yellow]}sync${reset_color}      ${fg[blue]}Reload Installed Agent${reset_color}
 
 ${fg_bold[blue]}Examples:${reset_color}
   osx-env sync
@@ -433,7 +435,7 @@ EOF
 
     sed -E -n 's/^declare -gx ([^ =]+)=(.+) +# +SYS +#$/\1'${opts[sep]}'\2/p' ${opts[profile]} | while IFS=${opts[sep]} read -r k v
     do
-      show -l $opts[label] "[$k] -> ($v)"
+      show -l $opts[label] -d "[$k] -> ($v)"
       tee -a ${opts[load]}   <<< "launchctl setenv $k $v" > /dev/null
       tee -a ${opts[unload]} <<< "launchctl unsetenv $k"  > /dev/null
     done
@@ -463,18 +465,24 @@ EOF
 
   destroy() {
     launchctl unload ${opts[agent]} > /dev/null 2>&1
-    rm -f ${opts[agent]} ${opts[load]} ${opts[unload]}
+    rm -f ${opts[agent]} ${opts[load]} ${opts[unload]} && rm -rf $OSXENVDIR
   }
 
   case $1 in
+    (status)
+      local installed=$([[ -f ${opts[load]} || -f ${opts[unload]} ]] && echo 'YES' || echo 'NO')
+      local running=$([ -f ${opts[agent]} ] && echo 'YES' || echo 'NO')
+      show -l $opts[label] "Installed: $installed, Running: $running"
+    ;;
     (install)  # Generate script and load to LaunchAgents
       if [[ -f ${opts[agent]} ]]; then
         show -l $opts[label] -e 'LaunchAgent already installed and running, run uninstall before proceeding'
       elif [[ -f ${opts[load]} || -f ${opts[unload]} ]]; then
         show -l $opts[label] -e 'Sync script corrupted, run uninstall before proceeding'
       else
+        show -l $opts[label] 'Installing...'
         make
-        show -l $opts[label] 'Sucessfully Loaded'
+        show -l $opts[label] 'Sucessfully Installed'
       fi
     ;;
     (uninstall) # Unload script from LaunchAgents and remove all generated files
