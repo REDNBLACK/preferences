@@ -373,20 +373,12 @@ My shell and programms settings
     ```zsh
     brew install --cask signal
     ```
-2. Setup [Zoom](https://zoom.us) [[:octocat:](https://github.com/zoom)]
-
-    ```zsh
-    brew install --cask zoom
-    
-    # Remove dangerous daemon
-    sudo launchctl bootout system /Library/LaunchDaemons/us.zoom.ZoomDaemon.plist && sudo rm -f /Library/{LaunchDaemons,PrivilegedHelperTools}/us.zoom.ZoomDaemon*
-    ```
-3. Setup [KTalk](https://kontur.ru/talk)
+2. Setup [KTalk](https://kontur.ru/talk)
 
     ```zsh
     brew install --cask ktalk
     ```
-4. [💰] Setup [Krisp](https://krisp.ai)
+3. [💰] Setup [Krisp](https://krisp.ai)
 
     ```zsh
     brew install --cask krisp
@@ -394,7 +386,7 @@ My shell and programms settings
     # Remove useless Camera function
     sudo launchctl bootout system /Library/LaunchAgents/ai.krisp.krispMac.cameraAssistant.plist && sudo rm -f /Library/LaunchAgents/ai.krisp.krispMac.cameraAssistant.plist && sudo rm -rf /Library/CoreMediaIO/Plug-Ins/DAL/KrispCamera.plugin && sudo pkgutil --forget ai.krisp.krispMacVideo
     ```
-5. [💰] Setup [Proton Mail - Bridge](https://proton.me/mail/bridge) [[:octocat:](https://github.com/ProtonMail/proton-bridge)]
+4. [💰] Setup [Proton Mail - Bridge](https://proton.me/mail/bridge) [[:octocat:](https://github.com/ProtonMail/proton-bridge)]
 
     ```zsh
     brew install --cask protonmail-bridge
