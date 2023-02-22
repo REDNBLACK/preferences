@@ -219,6 +219,7 @@ EOF
     }
 
     stop() {
+      # OpenConnect
       sudo pkill -2 'openconnect' 2>&1
 
       # Cisco AnyConnect
@@ -234,25 +235,30 @@ EOF
 
       ## Disable and Remove System Extensions
       sudo pkill -9 -f ${opts[bin]} 2>&1
-      if [ ${opts[force]} = 1 ]; then
-        if [ -n "$(systemextensionsctl list | grep ${procx[ext]} | uniq)" ]; then
-          declare -A mode=([lock]='authenticate-admin-nonshared' [allow]='allow')
-          local before=$(/usr/libexec/PlistBuddy -c "Print rule:0" /dev/stdin <<< "$(security authorizationdb read com.apple.system-extensions.admin 2>&1)")
-
-          # Temporary allow system extensions to be uninstalled without password prompt
-          if [ $before = "${mode[lock]}" ]; then
-            security authorizationdb write com.apple.system-extensions.admin "${mode[allow]}" > /dev/null 2>&1 \
-              || show -l $opts[label] -e "Failed to update SecurityDB with allow mode, code $?"
+      local team="$(systemextensionsctl list | grep activated | grep ${procx[ext]} | awk '{print $3}')"
+      if [ ${opts[force]} = 1 ] && [ -n $team ]; then
+        declare -A mode=([lock]='authenticate-admin-nonshared' [allow]='allow')
+        authdb() {
+          if [ -n "$1" ]; then
+            echo "Writing $1"
+            security authorizationdb write com.apple.system-extensions.admin "$1" > /dev/null 2>&1 \
+              || show -l $opts[label] -e "Failed to update SecurityDB with $1 mode, code $?"
+          else
+            echo "$(security authorizationdb read com.apple.system-extensions.admin > /dev/null 2>&1 | plutil -extract "rule.0" raw -)"
           fi
+        }
 
-          # Deactivate and remove Cisco System Extensions
-          sudo "${opts[apps]}/${procx[filter]}/Contents/MacOS/Cisco AnyConnect Socket Filter" -deactivateExt
-          # sudo systemextensionsctl uninstall DE8Y96K9QP ${procx[ext]}
+        local prev=$(authdb)
 
-          # Revert back system extensions security
-          security authorizationdb write com.apple.system-extensions.admin "$before" > /dev/null 2>&1 \
-            || show -l $opts[label] -e "Failed to revert SecurityDB with $before mode, code $?"
-        fi
+        # Temporary allow system extensions to be uninstalled without password prompt
+        [ $prev = ${mode[lock]} ] && authdb ${mode[allow]}
+
+        # Deactivate and remove Cisco System Extensions
+        sudo "${opts[apps]}/${procx[filter]}/Contents/MacOS/Cisco AnyConnect Socket Filter" -deactivateExt
+        # sudo systemextensionsctl uninstall $team ${procx[ext]}
+
+        # Revert back system extensions security
+        [ $prev != ${mode[allow]} ] && authdb $prev
       fi
     }
 
@@ -426,57 +432,70 @@ EOF
 )
 
   declare -A opts=(
-    [label]='OSXEnvSync'
+    [label]='OSX Env Sync'
+    [pkg]='osx.env.sync'
+    [script]="$OSXENVDIR/OSX Env Sync"
+    [agent]=~/Library/LaunchAgents/osx.env.sync.plist
+    [log]="$OSXENVDIR/output.log"
     [sep]='±'
+    [uid]=$(echo "show State:/Users/ConsoleUser" | scutil | awk '/UID/ { print $3 }')
     [profile]="$ZDOTDIR/profile"
-    [agent]=~/Library/LaunchAgents/osx-env.sync.plist
-    [load]="$OSXENVDIR/load.sh"
-    [unload]="$OSXENVDIR/unload.sh"
   )
+
+  check() {
+    echo $([ -f ${opts[script]} ] && echo 1 || echo 0)
+    echo $([ -f ${opts[agent]} ] && echo 1 || echo 0)
+    echo $(launchctl print gui/${opts[uid]}/${opts[pkg]} > /dev/null 2>&1 && echo 1 || echo 0)
+  }
 
   make() {
     mkd -e -s $OSXENVDIR
 
+    declare -A data=()
     sed -E -n 's/^declare -gx ([^ =]+)=(.+) +# +SYS +#$/\1'${opts[sep]}'\2/p' ${opts[profile]} | while IFS=${opts[sep]} read -r k v
     do
       show -l $opts[label] -d "[$k] -> ($v)"
-      tee -a ${opts[load]}   <<< "launchctl setenv $k $v" > /dev/null
-      tee -a ${opts[unload]} <<< "launchctl unsetenv $k"  > /dev/null
+      data[$k]="$(eval echo -e \"$v\")"
     done
-    chmod +x ${opts[load]} ${opts[unload]}
 
-    cat > ${opts[agent]} <<EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-  <key>Label</key>
-  <string>osx-env.sync</string>
-  <key>ProgramArguments</key>
-  <array>
-    <string>bash</string>
-    <string>-l</string>
-    <string>-c</string>
-    <string>${opts[load]}</string>
-  </array>
-  <key>RunAtLoad</key>
-  <true/>
-</dict>
-</plist>
+    cat > ${opts[script]} <<EOF
+#!/bin/bash
+
+if [ "\$1" = 'load' ]; then
+  echo "Loading..."
+$(for k v in ${(@kv)data}; do; echo "  launchctl setenv $k $v"; done)
+elif [ "\$1" = 'unload' ]; then
+  echo "Unloading..."
+$(printf "  launchctl unsetenv %s\n" ${(k)data})
+else
+  echo "Wrong mode: \$1"
+fi
 EOF
-    launchctl load ${opts[agent]}
+    chmod +x ${opts[script]}
+
+    /usr/libexec/PlistBuddy \
+      -c 'Add Label string osx.env.sync' \
+      -c 'Add ProgramArguments array' \
+      -c "Add ProgramArguments:0 string ${opts[script]}" \
+      -c 'Add ProgramArguments:1 string load' \
+      -c "Add StandardOutPath string ${opts[log]}" \
+      -c "Add StandardErrorPath string ${opts[log]}" \
+      -c 'Add RunAtLoad bool true' \
+      ${opts[agent]} > /dev/null
+
+    launchctl bootstrap gui/${opts[uid]} ${opts[agent]}
   }
 
   destroy() {
-    launchctl unload ${opts[agent]} > /dev/null 2>&1
-    rm -f ${opts[agent]} ${opts[load]} ${opts[unload]} && rm -rf $OSXENVDIR
+    launchctl bootout gui/${opts[uid]} ${opts[agent]} > /dev/null 2>&1
+    [ -x ${opts[script]} ] && . ${opts[script]} unload
+    rm -rf ${opts[agent]} $OSXENVDIR
   }
 
   case $1 in
     (status)
-      local installed=$([[ -f ${opts[load]} || -f ${opts[unload]} ]] && echo 'YES' || echo 'NO')
-      local running=$([ -f ${opts[agent]} ] && echo 'YES' || echo 'NO')
-      show -l $opts[label] "Installed: $installed, Running: $running"
+      local info=($(check))
+      show -l $opts[label] "Binary: ${info[1]}, Agent: ${info[2]}, Loaded: ${info[3]}"
     ;;
     (install)  # Generate script and load to LaunchAgents
       if [[ -f ${opts[agent]} ]]; then

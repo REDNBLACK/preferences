@@ -8,7 +8,7 @@
 # ====================================================================================== #
 declare -gx LC_CTYPE='UTF-8' # SYS #
 declare -gx LC_ALL="en_US.$LC_CTYPE" # SYS #
-declare -gx LANG=$LC_ALL # SYS #
+declare -gx LANG="$LC_ALL" # SYS #
 declare -gx EOL='\n' # SYS #
 declare -gx XDG_CACHE_HOME="$HOME/Library/Caches" # SYS #
 declare -gx XDG_CONFIG_HOME="$HOME/.config" # SYS #
