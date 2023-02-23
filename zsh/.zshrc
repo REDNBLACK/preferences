@@ -51,6 +51,9 @@ setopt RM_STAR_SILENT
 # Path to completions cache
 zstyle ':completion::complete:*' cache-path "$ZSH_CACHE_DIR/zcompcache"
 
+# Path to LESS history file
+declare -gx LESSHISTFILE="$ZSH_CACHE_DIR/.less_history"
+
 # Path to history file
 declare -gx HISTFILE="$ZSH_CACHE_DIR/.history"
 

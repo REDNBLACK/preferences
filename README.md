@@ -384,7 +384,7 @@ My shell and programms settings
     brew install --cask krisp
 
     # Remove useless Camera function
-    sudo launchctl bootout system /Library/LaunchAgents/ai.krisp.krispMac.cameraAssistant.plist && sudo rm -f /Library/LaunchAgents/ai.krisp.krispMac.cameraAssistant.plist && sudo rm -rf /Library/CoreMediaIO/Plug-Ins/DAL/KrispCamera.plugin && sudo pkgutil --forget ai.krisp.krispMacVideo
+    sudo launchctl bootout system /Library/LaunchAgents/ai.krisp.krispMac.cameraAssistant.plist > /dev/null 2>&1 && sudo rm -f /Library/LaunchAgents/ai.krisp.krispMac.cameraAssistant.plist && sudo rm -rf /Library/CoreMediaIO/Plug-Ins/DAL/KrispCamera.plugin && sudo pkgutil --forget ai.krisp.krispMacVideo
     ```
 4. [💰] Setup [Proton Mail - Bridge](https://proton.me/mail/bridge) [[:octocat:](https://github.com/ProtonMail/proton-bridge)]
 

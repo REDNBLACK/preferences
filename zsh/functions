@@ -5,16 +5,14 @@
 # - mkd                    = mkdir + cd or mkdir only if dir not exists                  #
 # - vpn                    = connect to Cisco AnyConnect or OpenConnect VPN              #
 # - dns                    = reload dns, make domain alias for localhost with port       #
-# - osx-env                = manipulate macOS launchctl env                              #
 # - upgrade                = update manager                                              #
 # - internal               = internal tools                                              #
-# - targz                  = -> .tar.gz                                                  #
 # - fs                     = du [with options]                                           #
 # ====================================================================================== #
 
 # Print formatted info/error/debug
 function show() {
-  zparseopts -D -E -F - l::=label r=rainbow e=error d=debug h=help -help=help
+  zparseopts -D -E -F - l::=label n::=newline r=rainbow e=error d=debug h=help -help=help
 
   local usage=$(cat <<EOF
 ${fg_bold[blue]}Usage:${reset_color} show [options…] <text> ${fg[cyan]}Pretty printing and show${reset_color}
@@ -23,6 +21,7 @@ ${fg_bold[blue]}Options:${reset_color}
   ${fg_bold[yellow]}-r${reset_color}                 ${fg[blue]}Show message text with rainbow color${reset_color}
   ${fg_bold[yellow]}-e${reset_color}                 ${fg[blue]}Set message level to Error${reset_color}
   ${fg_bold[yellow]}-d${reset_color}                 ${fg[blue]}Set message level to Debug${reset_color}
+  ${fg_bold[yellow]}-n <times>${reset_color}         ${fg[blue]}Prepend NewLine Symbol for <times>${reset_color}
   ${fg_bold[yellow]}-l <label>${reset_color}         ${fg[blue]}Prepend label before message (always shown after message level, if set)${reset_color}
   ${fg_bold[yellow]}--help${reset_color}             ${fg[blue]}Show help (this message) and exit${reset_color}
 
@@ -32,18 +31,21 @@ ${fg_bold[blue]}Examples:${reset_color}
   show ${fg_bold[yellow]}-d${reset_color} "Debugging" "Here" ${fg[blue]}Show debug message${reset_color}
 EOF
 )
-  local label=$([ ! -z "$label" ] && echo "[${label#-l}]" || echo '')
+  local label=$([ ! -z "$label" ] && echo "[${label#-l}] " || echo '')
+  prefix() { for ((i = 0; i < $((${newline#-n})); i++)); do echo; done }
 
   if [[ ${#help} = 1 ]]; then
     echo $usage
   elif [[ ${#error} = 1 ]]; then
-    echo -e $fg_bold[red]"[Error]"${label}" $@"$reset_color
+    prefix
+    echo -e $fg_bold[red]"[Error]"${label}"$@"$reset_color
   elif [[ ${#debug} = 1 ]]; then
+    prefix
     echo -e $fg_bold[yellow]"[Debug]"${label}${EOL}"$@"$reset_color
   else
-    [[ ! -z $label ]] && label+=' '
+    prefix
     if [[ ${#rainbow} = 1 ]]; then
-      echo -e "$(echo -n ${label}"$@" | lolcat -f)"
+      echo -n ${label}"$@" | lolcat -F
     else
       echo -e $fg_bold[blue]${label}"$@"$reset_color
     fi
@@ -116,16 +118,19 @@ function vpn() {
     [force]=${#force}
     [auto]=${#auto}
     [keychain]=${${keychain#(--keychain|-kc)}:-"CiscoVPN"}
+    [type]=$([ ${#secure} = 0 ] && echo 'OpenConnect' || echo 'Cisco AnyConnect')
   )
-  declare -A procx=(
+  declare -A X=(
+    [bins]="${opts[bin]}/vpnagentd|${opts[bin]}/aciseposture|openconnect"
     [agent]="${opts[daemons]}/${opts[pkg]}.vpnagentd.plist"
     [ise]="${opts[agents]}/${opts[pkg]}.aciseposture.plist"
     [notify]="${opts[agents]}/${opts[pkg]}.notification.plist"
     [gui]="${opts[agents]}/${opts[pkg]}.gui.plist"
     [cli]="${opts[bin]}/vpn"
-    [app]='Cisco AnyConnect Secure Mobility Client.app'
-    [filter]='Cisco AnyConnect Socket Filter.app'
+    [app]="${opts[apps]}/Cisco AnyConnect Secure Mobility Client.app"
+    [filter]="${opts[apps]}/Cisco AnyConnect Socket Filter.app"
     [ext]="${opts[pkg]}.macos.acsockext"
+    [team]='DE8Y96K9QP' # Or execute `systemextensionsctl list | grep activated | grep ${X[ext]} | awk '{print $3}'`
   )
 
   local usage=$(cat <<EOF
@@ -135,12 +140,13 @@ ${fg_bold[blue]}Options:${reset_color}
   ${fg_bold[yellow]}--secure${reset_color}           ${fg[blue]}Connect to VPN using native Cisco AnyConnect client${reset_color} ${fg[cyan]}(without flag OpenConnect client will be used)${reset_color}
   ${fg_bold[yellow]}--keychain${reset_color} <entry> ${fg[blue]}Name of KeyChain entry to use for connection${reset_color} ${fg[cyan]}(CiscoVPN entry will be used if not set)${reset_color}
   ${fg_bold[yellow]}--auto${reset_color}             ${fg[blue]}Automatically retrieve TOTP for VPN${reset_color} ${fg[cyan]}(Requires installed macos-totp-cli)${reset_color}
+  ${fg_bold[yellow]}--force${reset_color}            ${fg[blue]}Forcefully Unload and Disable Cisco Kernel Network Extensions${reset_color}
   ${fg_bold[yellow]}--help${reset_color}             ${fg[blue]}Show help (this message) and exit${reset_color}
 
 ${fg_bold[blue]}Setup:${reset_color}
   ${fg[blue]}Store your VPN connection credentials to secure macOS KeyChain by executing${reset_color} ${fg[cyan]}(required step in order for this program to work):${reset_color}
       security add-internet-password ${fg_bold[yellow]}-l${reset_color} CiscoVPN ${fg_bold[yellow]}-r${reset_color} htps ${fg_bold[yellow]}-s${reset_color} %HOST% ${fg_bold[yellow]}-a${reset_color} %GROUP%/%USER% ${fg_bold[yellow]}-w${reset_color} %PASSWORD%
-  ${fg[blue]}Store your VPN connection TOTP secret to secure macOS KeyChain by executing${reset_color} ${fg[cyan]}(OPTIONALLY, if macos-totp-cli installed):${reset_color}
+  ${fg[blue]}Store your VPN connection TOTP secret to secure macOS KeyChain by executing${reset_color} ${fg[cyan]}(OPTIONALLY, if simnalamburt/macos-totp-cli installed):${reset_color}
       totp add CiscoVPN
       %TOTP Secret%
   ${fg[blue]}Install manually if you want to use native client:${reset_color}
@@ -158,29 +164,17 @@ EOF
   if [ ${#help} = 1 ]; then
     echo $usage
   else
-    local type=$([ ${opts[secure]} = 0 ] && echo 'OpenConnect' || echo 'Cisco AnyConnect')
-    # local uid=`echo "show State:/Users/ConsoleUser" | scutil | awk '/UID/ { print $3 }'`
-    local stopped=$(([ -z `pgrep vpnagentd` ] && [ -z `pgrep aciseposture` ] && [ -z `pgrep openconnect` ]) && echo 1 || echo 0)
+    # show -l $opts[label] -d "    '$keychain' '$secure' ${opts[type]} '$stopped'$EOL    '$totp'"
 
-    # show -l $opts[label] -d "    '$keychain' '$secure' '$type' '$stopped'$EOL    '$totp'"
-
-    assert() {
-       "$@" 2>&1 | {
-         read -d "\0" err
-         [ -z "$err" ] || show -l $opts[label] -e $err
-      }
-      unset err
-    }
-
-    loop() {
-      declare -i sec=$1; shift
-      local msg="$2";    shift
-
-      while [ -n "`$@`" ];
-      do ((sec--)); sleep 1;
-        show -l 'Loop' "$sec"
-        if [ $sec -eq 0 ]; then show -l $opts[label] -e $msg; break; fi
-      done
+    otp() {
+      if [ ${opts[auto]} = 0 ] && [ "${opts[totp]}" = '' ]; then
+        echo 0   # Nothing Passed
+      elif [ ${opts[auto]} = 1 ]; then
+        if (( $+commands[totp] )); then echo 1 # Passed --auto
+        else                            echo 2 # Passed --auto, but TOTP CLI not installed
+        fi
+      elif [ -n "${opts[totp]}" ]; then echo 1 # Passed TOTP directly
+      fi
     }
 
     start() {
@@ -193,87 +187,90 @@ EOF
       # show -l $opts[label] -d "    '$host'$EOL    [${#acc[@]}]: '$acc'$EOL    '$pass'"
 
       if [ ${opts[secure]} = 0 ]; then
-        ## OpenConnect
+        ####################
+        #   OpenConnect    #
+        ####################
         local args=(
           '--background'
           "--user=${acc[1]}"
           '--passwd-on-stdin'
         )
-        if [ ! -z "${acc[2]}" ]; then args+=("--authgroup=${acc[2]}"); fi
+        if [ ! -z ${acc[2]} ]; then
+          args+=("--authgroup=${acc[2]}")
+        fi
 
         printf '%s\n' $pass $totp | sudo openconnect $args $host
       else
-        # Cisco AnyConnect
-        local auth=()
-        if [ ! -z "${acc[2]}" ]; then
+        ####################
+        # Cisco AnyConnect #
+        ####################
+        local args=()
+        if [ ! -z ${acc[2]} ]; then
           ## Group always "0" for Cisco native client
-          auth+=("0" "${acc[1]}")
+          args+=("0" ${acc[1]})
         else
-          auth+=("${acc[1]}")
+          args+=(${acc[1]})
         fi
 
-        assert sudo launchctl bootstrap system ${procx[agent]}
-        printf '%s\n' $auth $pass $totp | ${procx[cli]} -s connect $host
-        assert sudo launchctl bootstrap system ${procx[ise]}
+        @assert sudo launchctl bootstrap system ${X[agent]}
+        printf '%s\n' $args $pass $totp | ${X[cli]} -s connect $host
+        @assert sudo launchctl bootstrap system ${X[ise]}
       fi
     }
 
     stop() {
-      # OpenConnect
+      ####################
+      #   OpenConnect    #
+      ####################
       sudo pkill -2 'openconnect' 2>&1
 
-      # Cisco AnyConnect
+      ####################
+      # Cisco AnyConnect #
+      ####################
       ## Kill GUI & CLI
-      sudo launchctl bootout system ${procx[gui]} ${procx[notify]} > /dev/null 2>&1
-      sudo pkill -2 -f ${procx[app]} ${procx[cli]} 2>&1
-      sudo rm -f ${procx[gui]} ${procx[notify]} 2>&1
-      loop 5 'Timeout waiting for GUI to stop' pgrep -f ${procx[app]}
+      sudo launchctl bootout system ${X[gui]} ${X[notify]} > /dev/null 2>&1
+      sudo pkill -2 -f ${X[app]} ${X[cli]} 2>&1
+      sudo rm -f ${X[gui]} ${X[notify]} 2>&1
+      @loop 5 'Timeout waiting for GUI to stop' pgrep -f ${X[app]}
 
       ## Kill Daemons
-      sudo launchctl bootout system ${procx[agent]} ${procx[ise]} > /dev/null 2>&1
-      loop 10 'Timeout waiting for Daemons to stop' pgrep -f "${opts[bin]}/vpnagentd"
+      sudo launchctl bootout system ${X[agent]} ${X[ise]} > /dev/null 2>&1
+      @loop 10 'Timeout waiting for Daemons to stop' pgrep -f ${X[bins]}
 
       ## Disable and Remove System Extensions
       sudo pkill -9 -f ${opts[bin]} 2>&1
-      local team="$(systemextensionsctl list | grep activated | grep ${procx[ext]} | awk '{print $3}')"
-      if [ ${opts[force]} = 1 ] && [ -n $team ]; then
-        declare -A mode=([lock]='authenticate-admin-nonshared' [allow]='allow')
-        authdb() {
-          if [ -n "$1" ]; then
-            echo "Writing $1"
-            security authorizationdb write com.apple.system-extensions.admin "$1" > /dev/null 2>&1 \
-              || show -l $opts[label] -e "Failed to update SecurityDB with $1 mode, code $?"
-          else
-            echo "$(security authorizationdb read com.apple.system-extensions.admin > /dev/null 2>&1 | plutil -extract "rule.0" raw -)"
-          fi
-        }
-
-        local prev=$(authdb)
-
+      if [ ${opts[force]} = 1 ]; then
         # Temporary allow system extensions to be uninstalled without password prompt
-        [ $prev = ${mode[lock]} ] && authdb ${mode[allow]}
+        local prev=`internal security`
+        [ $prev = 'authenticate-admin-nonshared' ] && internal security 'allow'
 
         # Deactivate and remove Cisco System Extensions
-        sudo "${opts[apps]}/${procx[filter]}/Contents/MacOS/Cisco AnyConnect Socket Filter" -deactivateExt
-        # sudo systemextensionsctl uninstall $team ${procx[ext]}
+        sudo "${X[filter]}/Contents/MacOS/Cisco AnyConnect Socket Filter" -deactivateExt
+        # Same, but when SIP disabled or in later macOS versions)
+        # sudo systemextensionsctl uninstall ${X[team]} ${X[ext]}
 
-        # Revert back system extensions security
-        [ $prev != ${mode[allow]} ] && authdb $prev
+        # Revert back System Extensions Security
+        [ $prev != 'allow' ] && internal security $prev
       fi
     }
 
-    if [ $stopped = 1 ] && [ ${opts[auto]} = 0 ] && [ "${opts[totp]}" = '' ]; then
+    local stopped=$([ -z "$(pgrep -f ${X[bins]})" ] && echo 1 || echo 0)
+    local twofa=`otp`
+
+    if [ $stopped = 1 ] && [ $twofa = 0 ]; then
       show -l $opts[label] -e 'TOTP is empty!'
-    elif [ $stopped = 1 ] && [[ ${opts[auto]} = 1 || -n "${opts[totp]}" ]]; then
-      show -l $opts[label] "Launching $type..."
+    elif [ $stopped = 1 ] && [[ $twofa = 1 ]]; then
+      show -l $opts[label] "Launching ${opts[type]}..."
       start
-    elif [ $stopped = 0 ] && [ ${opts[auto]} = 0 ] && [ "${opts[totp]}" = '' ]; then
+    elif [ $stopped = 0 ] && [ $twofa = 0 ]; then
       show -l $opts[label] 'Closing...'
       stop $opts[force]
-    elif [ $stopped = 0 ] && [[ ${opts[auto]} = 1 || -n "${opts[totp]}" ]]; then
-      show -l $opts[label] "Restarting $type..."
+    elif [ $stopped = 0 ] && [ $twofa = 1 ]; then
+      show -l $opts[label] "Restarting ${opts[type]}..."
       stop $opts[force]
       start
+    elif [ $twofa = 2 ]; then
+      show -l $opts[label] -e 'Usage of flag -auto requires TOTP CLI. Install via `brew install simnalamburt/x/totp`'
     fi
   fi
 }
@@ -339,40 +336,42 @@ function dns() {
 
 # Update/upgrade homebrew, homebrew cask, MAS and system
 function upgrade() {
-  show '[Brew Formula]'
-  brew update | lolcat
+  show -l 'Brew Formula' -n 1
+  brew update 2>&1 | lolcat
   brew upgrade --display-times --formula 2>&1 | lolcat
-  brew cleanup formula -s --prune 1 2>&1 | lolcat
+  brew cleanup formula --prune 1 -s 2>&1 | lolcat
 
-  show $EOL'[Brew Cask]'
-  brew cu -a -y --no-brew-update --no-quarantine --cleanup 2>&1 | lolcat
-
+  show -l 'Brew Cask' -n 1
   if (( $+commands[mas] )); then
-    show $EOL'[AppStore]'
-    mas upgrade 2>&1 | lolcat
+    local mas='--include-mas';
   fi
+  brew cu -a -y $mas --no-brew-update --no-quarantine --cleanup 2>&1 | lolcat
 
-  show $EOL'[System]'
+  show -l 'System' -n 1
   softwareupdate -ia 2>&1 | lolcat
 
-  show $EOL'[ZInit]'
+  show -l 'ZInit' -n 1
   zinit self-update 2>&1 | lolcat
   zinit update -q --plugins 2>&1 | lolcat
 
   if (( $+commands[tldr] )); then
-    show $EOL$EOL'[TLDR]'
+    show -l 'TLDR' -n 2
     tldr -u 2>&1 | lolcat
   fi
 }
 
 function internal() {
+  local baseDir="$ZSH_CACHE_DIR/osx"
   local usage=$(cat <<EOF
 ${fg_bold[blue]}Usage:${reset_color} internal <command> ${fg[cyan]}Execute internal helper function${reset_color}
 
 ${fg_bold[blue]}Commands:${reset_color}
+  ${fg_bold[yellow]}uid${reset_color}      ${fg[blue]}Get current user UID${reset_color}
   ${fg_bold[yellow]}app-installed <app-name>${reset_color}      ${fg[blue]}Check if macOS app installed in Applications folder${reset_color}
   ${fg_bold[yellow]}set-file-assoc <app-name> <handler> <path to file w/ assoc>${reset_color}      ${fg[blue]}Set files association for app${reset_color}
   ${fg_bold[yellow]}download <uri> <save path> <app-name>${reset_color}      ${fg[blue]}Download and save file to directory${reset_color}
+  ${fg_bold[yellow]}security <mode?>${reset_color}      ${fg[blue]}Get Current or Set New com.apple.system-extensions.admin Mode${reset_color}
+  ${fg_bold[yellow]}env-sync status|install|remove${reset_color}   ${fg[blue]}Show Current Status; Install and Load; or Remove and Stop Env Synchronisation${reset_color}
 
 ${fg_bold[blue]}Examples:${reset_color}
   internal --init  ${fg[blue]}Do something${reset_color}
@@ -410,152 +409,127 @@ EOF
       show -l $label "Downloading $(basename $dest | cut -d. -f1)..."
       curl -sSL $uri -o $dest --create-dirs
     ;;
-    (-h | --help) echo $usage ;;
-    (*)           show -e 'Wrong arguments, see --help'
-  esac
-}
-
-# Mirror load of special options from ENV to lauchctl setenv
-function osx-env() {
-  local usage=$(cat <<EOF
-${fg_bold[blue]}Usage:${reset_color} osx-env <command> ${fg[cyan]}${reset_color}
-
-${fg_bold[blue]}Commands:${reset_color}
-  ${fg_bold[yellow]}install${reset_color}   ${fg[blue]}Install and Load Agent${reset_color}
-  ${fg_bold[yellow]}uninstall${reset_color} ${fg[blue]}Uninstall and Unload Agent${reset_color}
-  ${fg_bold[yellow]}status${reset_color}    ${fg[blue]}Check Installation Status${reset_color}
-  ${fg_bold[yellow]}sync${reset_color}      ${fg[blue]}Reload Installed Agent${reset_color}
-
-${fg_bold[blue]}Examples:${reset_color}
-  osx-env sync
-EOF
-)
-
-  declare -A opts=(
-    [label]='OSX Env Sync'
-    [pkg]='osx.env.sync'
-    [script]="$OSXENVDIR/OSX Env Sync"
-    [agent]=~/Library/LaunchAgents/osx.env.sync.plist
-    [log]="$OSXENVDIR/output.log"
-    [sep]='±'
-    [uid]=$(echo "show State:/Users/ConsoleUser" | scutil | awk '/UID/ { print $3 }')
-    [profile]="$ZDOTDIR/profile"
-  )
-
-  check() {
-    echo $([ -f ${opts[script]} ] && echo 1 || echo 0)
-    echo $([ -f ${opts[agent]} ] && echo 1 || echo 0)
-    echo $(launchctl print gui/${opts[uid]}/${opts[pkg]} > /dev/null 2>&1 && echo 1 || echo 0)
-  }
-
-  make() {
-    mkd -e -s $OSXENVDIR
-
-    declare -A data=()
-    sed -E -n 's/^declare -gx ([^ =]+)=(.+) +# +SYS +#$/\1'${opts[sep]}'\2/p' ${opts[profile]} | while IFS=${opts[sep]} read -r k v
-    do
-      show -l $opts[label] -d "[$k] -> ($v)"
-      data[$k]="$(eval echo -e \"$v\")"
-    done
-
-    cat > ${opts[script]} <<EOF
-#!/bin/bash
-
-if [ "\$1" = 'load' ]; then
-  echo "Loading..."
-$(for k v in ${(@kv)data}; do; echo "  launchctl setenv $k $v"; done)
-elif [ "\$1" = 'unload' ]; then
-  echo "Unloading..."
-$(printf "  launchctl unsetenv %s\n" ${(k)data})
-else
-  echo "Wrong mode: \$1"
-fi
-EOF
-    chmod +x ${opts[script]}
-
-    /usr/libexec/PlistBuddy \
-      -c 'Add Label string osx.env.sync' \
-      -c 'Add ProgramArguments array' \
-      -c "Add ProgramArguments:0 string ${opts[script]}" \
-      -c 'Add ProgramArguments:1 string load' \
-      -c "Add StandardOutPath string ${opts[log]}" \
-      -c "Add StandardErrorPath string ${opts[log]}" \
-      -c 'Add RunAtLoad bool true' \
-      ${opts[agent]} > /dev/null
-
-    launchctl bootstrap gui/${opts[uid]} ${opts[agent]}
-  }
-
-  destroy() {
-    launchctl bootout gui/${opts[uid]} ${opts[agent]} > /dev/null 2>&1
-    [ -x ${opts[script]} ] && . ${opts[script]} unload
-    rm -rf ${opts[agent]} $OSXENVDIR
-  }
-
-  case $1 in
-    (status)
-      local info=($(check))
-      show -l $opts[label] "Binary: ${info[1]}, Agent: ${info[2]}, Loaded: ${info[3]}"
+    (uid)
+      scutil <<< 'show State:/Users/ConsoleUser' | awk '/UID/ { print $3 }'
     ;;
-    (install)  # Generate script and load to LaunchAgents
-      if [[ -f ${opts[agent]} ]]; then
-        show -l $opts[label] -e 'LaunchAgent already installed and running, run uninstall before proceeding'
-      elif [[ -f ${opts[load]} || -f ${opts[unload]} ]]; then
-        show -l $opts[label] -e 'Sync script corrupted, run uninstall before proceeding'
+    (security)
+      local mode=$2
+      local cmd=(
+        security
+        authorizationdb
+        "$([ -z $mode ] && echo 'read' || echo 'write')"
+        com.apple.system-extensions.admin
+        $mode
+      )
+
+      if [ -z $mode ]; then
+        ${cmd[@]} > /dev/null 2>&1 | plutil -extract "rule.0" raw -
       else
-        show -l $opts[label] 'Installing...'
-        make
-        show -l $opts[label] 'Sucessfully Installed'
+        ${cmd[@]} > /dev/null 2>&1 || show -l "AuthDB" -e "Failed to update com.apple.system-extensions.admin with $mode mode, code $?"
       fi
     ;;
-    (uninstall) # Unload script from LaunchAgents and remove all generated files
-      destroy
-      show -l $opts[label] 'Sucessfully Uninstalled'
-    ;;
-    (sync)      # Regenerate file and restart agent
-      destroy
-      make
-      show -l $opts[label] 'Sucessfully Synced'
+    (env-sync)       # Generate and Manage autolaunch script for sync between console ENV and launchctl ENV
+      mkd -e -s $baseDir
+
+      declare -A opts=(
+        [label]='OSX Env Sync'
+        [pkg]='osx.env.sync'
+        [agent]=~/Library/LaunchAgents/osx.env.sync.plist
+        [script]="$baseDir/OSX Env Sync"
+        [log]="$baseDir/sync.log"
+        [uid]=$(internal uid)
+      )
+      local files=("$ZDOTDIR/profile")
+
+      check() {
+        [ -f ${opts[script]} ] && echo 1 || echo 0
+        [ -f ${opts[agent]} ] && echo 1 || echo 0
+        launchctl print gui/${opts[uid]}/${opts[pkg]} > /dev/null 2>&1 && echo 1 || echo 0
+      }
+
+      make() {
+        local sep='±'
+        declare -A data=()
+        sed -E -n 's/^declare -gx ([^ =]+)=(.+) +# +SYS +#$/\1'$sep'\2/p' ${files[1]} | while IFS=$sep read -r k v
+        do
+          show -l $opts[label] -d "[$k] -> ($v)"
+          data[$k]="$(eval echo -e \"$v\")"
+        done
+
+        cat > ${opts[script]} <<EOF
+#!/bin/bash
+
+LOG="${opts[log]}"
+touch \$LOG
+function LOG(){
+  echo "[\`date -u '+%Y-%m-%dT%H:%M:%SZ'\`] [\$1] \$2" >> \$LOG
+}
+
+case \$1 in
+  (load)
+    LOG 'INFO' 'Loading...'
+$(for k v in ${(@kv)data}; do
+  echo "    launchctl setenv $k $v; LOG 'DEBUG' 'Set $k -> $v'"
+done)
+    LOG 'INFO' 'Finished Loading'
+  ;;
+  (unload)
+    LOG 'INFO' 'Unloading...'
+$(for k in ${(k)data}; do
+  echo "    launchctl unsetenv $k; LOG 'DEBUG' 'Unset $k'"
+done)
+    LOG 'INFO' 'Finished Unloading'
+  ;;
+  (*) LOG 'ERROR' "Wrong mode \$1"
+esac
+EOF
+        chmod +x ${opts[script]}
+
+        /usr/libexec/PlistBuddy \
+          -c "Add Label string ${opts[pkg]}" \
+          -c 'Add ProgramArguments array' \
+          -c "Add ProgramArguments:0 string ${opts[script]}" \
+          -c 'Add ProgramArguments:1 string load' \
+          -c 'Add RunAtLoad bool true' \
+          ${opts[agent]} > /dev/null
+
+        launchctl bootstrap gui/${opts[uid]} ${opts[agent]}
+      }
+
+      destroy() {
+        launchctl bootout gui/${opts[uid]} ${opts[agent]} > /dev/null 2>&1
+        [ -x ${opts[script]} ] && . ${opts[script]} unload
+        rm -f ${opts[agent]} ${opts[script]}
+      }
+
+      case $2 in
+        (status)
+          local info=($(check))
+          show -l $opts[label] "Binary: ${info[1]}, Agent: ${info[2]}, Loaded: ${info[3]}"
+        ;;
+        (install)  # Generate script and load to LaunchAgents
+          local info=($(check))
+          if [ ${info[1]} = 1 ] || [ ${info[2]} = 1 ] || [ ${info[3]} = 1 ]; then
+            show -l $opts[label] -e 'LaunchAgent already installed and running, run uninstall before proceeding'
+          else
+            show -l $opts[label] 'Installing...'
+            make
+            show -l $opts[label] 'Sucessfully Installed'
+          fi
+        ;;
+        (remove) # Unload script from LaunchAgents and remove all generated files
+          destroy
+          show -l $opts[label] 'Sucessfully Uninstalled'
+        ;;
+        (-h | --help) echo $usage ;;
+        (*)           show -e "Wrong command \`internal env-sync $2\`, see --help"
+      esac
     ;;
     (-h | --help) echo $usage ;;
     (*)           show -e 'Wrong arguments, see --help'
   esac
 }
 
-# Create a .tar.gz archive, using `zopfli`, `pigz` or `gzip` for compression
-function targz() {
-  local tmpFile="${@%/}.tar"
-  tar -cvf "${tmpFile}" --exclude=".DS_Store" "${@}" || return 1
-
-  size=$(
-    stat -f"%z" "${tmpFile}" 2> /dev/null; # macOS `stat`
-    stat -c"%s" "${tmpFile}" 2> /dev/null;  # GNU `stat`
-  )
-
-  local cmd="";
-  if (( size < 52428800 )) && hash zopfli 2> /dev/null; then
-    # the .tar file is smaller than 50 MB and Zopfli is available; use it
-    cmd="zopfli"
-  else
-    if hash pigz 2> /dev/null; then
-      cmd="pigz"
-    else
-      cmd="gzip"
-    fi
-  fi
-
-  show "Compressing .tar ($((size / 1000)) kB) using \`${cmd}\`…"
-
-  "${cmd}" -v "${tmpFile}" || return 1;
-  [ -f "${tmpFile}" ] && rm "${tmpFile}";
-
-  zippedSize=$(
-    stat -f"%z" "${tmpFile}.gz" 2> /dev/null; # macOS `stat`
-    stat -c"%s" "${tmpFile}.gz" 2> /dev/null; # GNU `stat`
-  )
-
-  show "${tmpFile}.gz ($((zippedSize / 1000)) kB) created successfully"
-}
 
 # Determine size of a file or total size of a directory
 function fs() {
@@ -569,4 +543,23 @@ function fs() {
   else
     du $cmd .[^.]* ./*;
   fi
+}
+
+function @assert() {
+  "$@" 2>&1 | {
+    read -d "\0" err
+    [ -z "$err" ] || show -l 'Assert' -e $err
+  }
+  unset err
+}
+
+function @loop() {
+  declare -i sec=$1; shift
+  local msg="$1";    shift
+
+  while [ -n "`$@`" ];
+  do ((sec--)); sleep 1;
+    # show -l 'Loop' -d "$sec"
+    [ $sec -eq 0 ] && { show -l 'Loop' -e $msg; break }
+  done
 }
