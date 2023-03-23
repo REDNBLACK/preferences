@@ -159,18 +159,18 @@ My shell and programms settings
         ```zsh
         brew install nextdns/tap/nextdns
         ```
+4. Setup [Orbot](https://orbot.app) [[:octocat:](hhttps://github.com/guardianproject/orbot-apple)]
+
+    ```zsh
+    mas install 1609461599
+    ```
 5. [🆓] Setup [Lantern](https://lantern.io) [[:octocat:](https://github.com/getlantern)]
 
     ```zsh
     brew install --cask lantern
     cp -f $DOTPREFSDIR/lantern/settings.yaml ~/Library/Application\ Support/Lantern/settings.yaml
     ```
-6. [🆓] Setup [Proton VPN](https://protonvpn.com) [[:octocat:](https://github.com/ProtonVPN)]
-
-    ```zsh
-    brew install --cask protonvpn
-    ```
-7. Setup misc
+6. Setup misc
 
     ```zsh
     # Enable sudo auth via Touch ID (⚠️ Must be done after every system update)
@@ -224,7 +224,7 @@ My shell and programms settings
 
     ```zsh
     brew install --cask temurin{8,17}
-    brew install --cask graalvm/tap/graalvm-ce-java17
+    brew install --cask graalvm/tap/graalvm-ce-java19
 
     brew install --cask openjdk-jmc
     brew install sbt
@@ -335,11 +335,6 @@ My shell and programms settings
     ```zsh
     brew install --cask onyx
     ```
-7. ~~Setup [Clean Me](https://github.com/Kevin-De-Koninck/Clean-Me)~~ (Abandoned)
-
-    ```zsh
-    # brew install --cask clean-me
-    ```
 
 ##### Network
 1. Setup [Brave Browser](https://brave.com)
@@ -350,18 +345,13 @@ My shell and programms settings
         ```
     * Install [plugins, theme and StartPage search engine](/brave/plugins.md)
     * Import [uBlock Origin settings](/brave/ublock-settings.txt)
-2. Setup [TOR](https://torproject.org) [[:octocat:](https://github.com/TheTorProject)]
-
-    ```zsh
-    brew install --cask tor-browser
-    ```
-3. [🆓] Setup [Folx](https://mac.eltima.com/download-manager)
+2. [🆓] Setup [Folx](https://mac.eltima.com/download-manager)
 
     ```zsh
     brew install --cask folx
     defaults import com.eltima.Folx3 $DOTPREFSDIR/folx/conf.plist
     ```
-4. Setup [Wi-Fi Explorer](https://intuitibits.com/products/wifi-explorer)
+3. [🆓] Setup [Wi-Fi Explorer](https://intuitibits.com/products/wifi-explorer)
 
     ```zsh
     brew install --cask wifi-explorer
