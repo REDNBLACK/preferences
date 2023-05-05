@@ -181,6 +181,9 @@ My shell and programms settings
 
     # Disable annoying root password request on every LaunchAgent launch
     security authorizationdb write com.apple.system-extensions.admin allow
+
+    # Cleanup conflicting configs for bash/zsh
+    sudo rm -f /etc/zshrc_Apple_Terminal /etc/zshrc /etc/zprofile /etc/bashrc_Apple_Terminal /etc/bashrc /etc/profile
     ```
 
 ##### Development
