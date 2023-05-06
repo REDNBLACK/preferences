@@ -8,6 +8,7 @@
 # ====================================================================================== #
 zinit id-as'DF::integration::jvm'  is-snippet for $DOTPREFSDIR/jvm/integration.zsh
 zinit id-as'DF::integration::rust' is-snippet for $DOTPREFSDIR/rust/integration.zsh
+zinit id-as'DF::integration::node' is-snippet for $DOTPREFSDIR/node/integration.zsh
 
 
 # ====================================================================================== #
