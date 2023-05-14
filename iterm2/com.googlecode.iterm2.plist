@@ -644,7 +644,7 @@
 			<key>Blink Allowed</key>
 			<false/>
 			<key>Blinking Cursor</key>
-			<false/>
+			<true/>
 			<key>Blur</key>
 			<true/>
 			<key>Blur Radius</key>
@@ -1086,7 +1086,7 @@
 			<key>Non-ASCII Anti Aliased</key>
 			<true/>
 			<key>Normal Font</key>
-			<string>FiraCodeNerdFontComplete-Retina 11</string>
+			<string>FiraCodeNFM-Ret 12</string>
 			<key>Open Toolbelt</key>
 			<false/>
 			<key>Option Key Sends</key>
@@ -1252,7 +1252,7 @@
 					<key>auto-rainbow style</key>
 					<integer>0</integer>
 					<key>font</key>
-					<string>MesloLGMDZNerdFontComplete-Bold 12</string>
+					<string>MesloLGMDZNFM-Bold 12</string>
 					<key>remove empty components</key>
 					<true/>
 				</dict>
@@ -1309,7 +1309,7 @@
 								<key>auto-rainbow style</key>
 								<integer>0</integer>
 								<key>font</key>
-								<string>MesloLGMDZNerdFontComplete-Bold 12</string>
+								<string>MesloLGMDZNFM-Bold 12</string>
 								<key>remove empty components</key>
 								<true/>
 							</dict>
@@ -1337,26 +1337,26 @@
 									<key>Alpha Component</key>
 									<real>1</real>
 									<key>Blue Component</key>
-									<real>0.7803921568627451</real>
+									<real>0.78039216995239258</real>
 									<key>Color Space</key>
 									<string>sRGB</string>
 									<key>Green Component</key>
-									<real>0.39215686274509803</real>
+									<real>0.39215686917304993</real>
 									<key>Red Component</key>
-									<real>0.27450980392156865</real>
+									<real>0.27450981736183167</real>
 								</dict>
 								<key>shared text color</key>
 								<dict>
 									<key>Alpha Component</key>
 									<real>1</real>
 									<key>Blue Component</key>
-									<real>1</real>
+									<real>0.0</real>
 									<key>Color Space</key>
 									<string>sRGB</string>
 									<key>Green Component</key>
-									<real>1</real>
+									<real>0.0</real>
 									<key>Red Component</key>
-									<real>1</real>
+									<real>0.0</real>
 								</dict>
 							</dict>
 							<key>layout advanced configuration dictionary value</key>
@@ -1366,7 +1366,7 @@
 								<key>auto-rainbow style</key>
 								<integer>0</integer>
 								<key>font</key>
-								<string>MesloLGMDZNerdFontComplete-Bold 12</string>
+								<string>MesloLGMDZNFM-Bold 12</string>
 								<key>remove empty components</key>
 								<true/>
 							</dict>
@@ -1423,7 +1423,7 @@
 								<key>auto-rainbow style</key>
 								<integer>0</integer>
 								<key>font</key>
-								<string>MesloLGMDZNerdFontComplete-Bold 12</string>
+								<string>MesloLGMDZNFM-Bold 12</string>
 								<key>remove empty components</key>
 								<true/>
 							</dict>
@@ -1480,7 +1480,7 @@
 								<key>auto-rainbow style</key>
 								<integer>0</integer>
 								<key>font</key>
-								<string>MesloLGMDZNerdFontComplete-Bold 12</string>
+								<string>MesloLGMDZNFM-Bold 12</string>
 								<key>remove empty components</key>
 								<true/>
 							</dict>
@@ -1537,7 +1537,7 @@
 								<key>auto-rainbow style</key>
 								<integer>0</integer>
 								<key>font</key>
-								<string>MesloLGMDZNerdFontComplete-Bold 12</string>
+								<string>MesloLGMDZNFM-Bold 12</string>
 								<key>remove empty components</key>
 								<true/>
 							</dict>
@@ -1552,6 +1552,19 @@
 							<dict>
 								<key>iTermStatusBarSpringComponentSpringConstantKey</key>
 								<real>0.01</real>
+								<key>shared text color</key>
+								<dict>
+									<key>Alpha Component</key>
+									<real>1</real>
+									<key>Blue Component</key>
+									<real>0.90000000000000002</real>
+									<key>Color Space</key>
+									<string>sRGB</string>
+									<key>Green Component</key>
+									<real>0.89100000000000001</real>
+									<key>Red Component</key>
+									<real>0.63</real>
+								</dict>
 							</dict>
 							<key>layout advanced configuration dictionary value</key>
 							<dict>
@@ -1560,7 +1573,7 @@
 								<key>auto-rainbow style</key>
 								<integer>0</integer>
 								<key>font</key>
-								<string>MesloLGMDZNerdFontComplete-Bold 12</string>
+								<string>MesloLGMDZNFM-Bold 12</string>
 								<key>remove empty components</key>
 								<true/>
 							</dict>
@@ -1581,6 +1594,19 @@
 								<real>20</real>
 								<key>minwidth</key>
 								<integer>0</integer>
+								<key>shared text color</key>
+								<dict>
+									<key>Alpha Component</key>
+									<real>1</real>
+									<key>Blue Component</key>
+									<real>0.90000000000000002</real>
+									<key>Color Space</key>
+									<string>sRGB</string>
+									<key>Green Component</key>
+									<real>0.72719999999999996</real>
+									<key>Red Component</key>
+									<real>0.63</real>
+								</dict>
 							</dict>
 							<key>layout advanced configuration dictionary value</key>
 							<dict>
@@ -1589,7 +1615,7 @@
 								<key>auto-rainbow style</key>
 								<integer>0</integer>
 								<key>font</key>
-								<string>MesloLGMDZNerdFontComplete-Bold 12</string>
+								<string>MesloLGMDZNFM-Bold 12</string>
 								<key>remove empty components</key>
 								<true/>
 							</dict>
@@ -1609,13 +1635,13 @@
 									<key>Alpha Component</key>
 									<real>1</real>
 									<key>Blue Component</key>
-									<real>0.0</real>
+									<real>0.90000000000000002</real>
 									<key>Color Space</key>
 									<string>sRGB</string>
 									<key>Green Component</key>
-									<real>0.730560302734375</real>
+									<real>0.63</real>
 									<key>Red Component</key>
-									<real>0.0</real>
+									<real>0.69660000000000011</real>
 								</dict>
 							</dict>
 							<key>layout advanced configuration dictionary value</key>
@@ -1625,7 +1651,7 @@
 								<key>auto-rainbow style</key>
 								<integer>0</integer>
 								<key>font</key>
-								<string>MesloLGMDZNerdFontComplete-Bold 12</string>
+								<string>MesloLGMDZNFM-Bold 12</string>
 								<key>remove empty components</key>
 								<true/>
 							</dict>
@@ -1645,13 +1671,13 @@
 									<key>Alpha Component</key>
 									<real>1</real>
 									<key>Blue Component</key>
-									<real>0.82709997892379761</real>
+									<real>0.90000000000000002</real>
 									<key>Color Space</key>
 									<string>sRGB</string>
 									<key>Green Component</key>
-									<real>0.89999997615814209</real>
+									<real>0.63</real>
 									<key>Red Component</key>
-									<real>0.62999999523162842</real>
+									<real>0.86040000000000005</real>
 								</dict>
 							</dict>
 							<key>layout advanced configuration dictionary value</key>
@@ -1661,7 +1687,7 @@
 								<key>auto-rainbow style</key>
 								<integer>0</integer>
 								<key>font</key>
-								<string>MesloLGMDZNerdFontComplete-Bold 12</string>
+								<string>MesloLGMDZNFM-Bold 12</string>
 								<key>remove empty components</key>
 								<true/>
 							</dict>
@@ -1683,7 +1709,7 @@
 									<key>Alpha Component</key>
 									<real>1</real>
 									<key>Blue Component</key>
-									<real>0.77580000000000005</real>
+									<real>0.77579999999999982</real>
 									<key>Color Space</key>
 									<string>sRGB</string>
 									<key>Green Component</key>
@@ -1699,7 +1725,7 @@
 								<key>auto-rainbow style</key>
 								<integer>0</integer>
 								<key>font</key>
-								<string>MesloLGMDZNerdFontComplete-Bold 12</string>
+								<string>MesloLGMDZNFM-Bold 12</string>
 								<key>remove empty components</key>
 								<true/>
 							</dict>

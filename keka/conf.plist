@@ -2,14 +2,26 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>7zzComposeOnCompression</key>
+	<true/>
+	<key>7zzDecomposeOnExtraction</key>
+	<true/>
 	<key>AlreadyLovedKeka</key>
 	<integer>1</integer>
+	<key>AppearanceCustomDockTile</key>
+	<true/>
+	<key>AppearanceDifferentiateTasksCountInDock</key>
+	<true/>
+	<key>AppearanceSquishFaceInDock</key>
+	<true/>
 	<key>ApplyQuarantineAfterExtraction</key>
 	<false/>
 	<key>ArchiveSingle</key>
 	<false/>
 	<key>AskZipUsingAES</key>
 	<true/>
+	<key>BackgroundQoSOnBattery</key>
+	<false/>
 	<key>CalculateMD5</key>
 	<false/>
 	<key>CloseController</key>
@@ -21,7 +33,7 @@
 	<key>CustomNameSingleFile</key>
 	<string></string>
 	<key>DefaultActionToPerform</key>
-	<integer>2</integer>
+	<integer>0</integer>
 	<key>DefaultAppDialog</key>
 	<false/>
 	<key>DefaultExtractLocationController</key>
@@ -97,11 +109,7 @@
 	<key>KekaFirstStart</key>
 	<false/>
 	<key>KekaLaunchTimes</key>
-	<integer>91</integer>
-	<key>LastLogsCompressionDate</key>
-	<date>2021-08-27T16:07:39Z</date>
-	<key>LastUsedLocalization</key>
-	<string>en-GB</string>
+	<integer>577</integer>
 	<key>LetsMoveDialog</key>
 	<false/>
 	<key>LimitThreads</key>
@@ -110,6 +118,8 @@
 	<integer>0</integer>
 	<key>OldServicesChecked</key>
 	<true/>
+	<key>QoS</key>
+	<integer>-1</integer>
 	<key>QueueCompression</key>
 	<true/>
 	<key>QueueCompressionLimit</key>
@@ -154,6 +164,8 @@
 	<true/>
 	<key>SetModificationDateAfterExtraction</key>
 	<false/>
+	<key>SkipQuarantineSlowdownDetection</key>
+	<false/>
 	<key>SolidArchive</key>
 	<true/>
 	<key>SparkleDialog</key>
@@ -166,14 +178,26 @@
 	<false/>
 	<key>UnzipWithUNAR</key>
 	<true/>
+	<key>Use7zz</key>
+	<true/>
 	<key>UseBip2DMG</key>
 	<true/>
 	<key>UseCustomNameWithMultipleFiles</key>
 	<true/>
+	<key>UseDefaultPasswordOnAdvancedWindow</key>
+	<true/>
+	<key>UseDefaultPasswordOnCompressions</key>
+	<false/>
+	<key>UseDefaultPasswordOnExtractions</key>
+	<true/>
 	<key>UseGrowl</key>
+	<true/>
+	<key>UseHapticFeedback</key>
+	<true/>
+	<key>UseISO9660</key>
 	<false/>
 	<key>UseLongTarballExtension</key>
-	<false/>
+	<true/>
 	<key>UseMultithreadLzip</key>
 	<true/>
 	<key>UseMultithreadPbzip2</key>

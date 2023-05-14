@@ -190,7 +190,7 @@
 		<key>StoreTorrentsEnable</key>
 		<true/>
 		<key>StoreTorrentsPath</key>
-		<string>/Users/rb/Downloads/Torrent</string>
+		<string>~/Downloads/Torrent</string>
 		<key>SwitchToAllTasks</key>
 		<true/>
 		<key>SсhedulerEnabled</key>

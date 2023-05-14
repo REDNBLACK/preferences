@@ -70,6 +70,9 @@ My shell and programms settings
     # Variant 2
     defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool YES
     defaults write com.googlecode.iterm2 PrefsCustomFolder "$DOTPREFSDIR/iterm2"
+
+    # Set files association
+    internal set-file-assoc iTerm com.googlecode.iterm2 $DOTPREFSDIR/iterm2/file-assoc.list
     ```
 8. Setup Tools
     * [`cat` with rainbows!](https://github.com/ur0/lolcat)
@@ -121,6 +124,7 @@ My shell and programms settings
     ```zsh
     brew install --cask gpg-suite-no-mail
     defaults write org.gpgtools.updater SUEnableAutomaticChecks -bool NO
+    defaults write org.gpgtools.gpgkeychain DoNotShowUploadDialogAgain -bool YES
 
     # Secure ssh
     . $DOTPREFSDIR/pgp/secure-ssh.zsh
@@ -176,13 +180,13 @@ My shell and programms settings
     # Enable sudo auth via Touch ID (⚠️ Must be done after every system update)
     sudo sed -i '.old' -e '2s;^;auth       sufficient     pam_tid.so\n;' /etc/pam.d/sudo
 
-    # Allow applications downloaded from anywhere
+    # Allow applications downloaded from anywhere (⚠️ Must be done after every system update)
     sudo spctl --master-disable
 
-    # Disable annoying root password request on every LaunchAgent launch
+    # Disable annoying root password request on every LaunchAgent launch (⚠️ Must be done after every system update)
     security authorizationdb write com.apple.system-extensions.admin allow
 
-    # Cleanup conflicting configs for bash/zsh
+    # Cleanup conflicting configs for bash/zsh (⚠️ Must be done after every system update)
     sudo rm -f /etc/zshrc_Apple_Terminal /etc/zshrc /etc/zprofile /etc/bashrc_Apple_Terminal /etc/bashrc /etc/profile
     ```
 
@@ -201,15 +205,21 @@ My shell and programms settings
     ```
 2. [🆓] Setup [JetBrains Toolbox](https://jetbrains.com/toolbox-app) [[:octocat:](https://github.com/JetBrains)]
 
-    ```zsh
-    brew install --cask jetbrains-toolbox
-    ln -fs $DOTPREFSDIR/jb-toolbox/conf.json ~/Library/Application\ Support/JetBrains/Toolbox/.settings.json
-    ```
-    <!--
-        Crack, just out of spite, get fucking owned JB 🖕
-        Repo:   https://github.com/libin9iOak/ja-netfilter-all
-        Mirror: https://jetbra.in
-    -->
+    *
+        ```zsh
+        brew install --cask jetbrains-toolbox
+        ln -fs $DOTPREFSDIR/jb-toolbox/conf.json ~/Library/Application\ Support/JetBrains/Toolbox/.settings.json
+        ln -fs $DOTPREFSDIR/jb-toolbox/storage.json ~/Library/Application\ Support/JetBrains/Toolbox/.storage.json
+        ```
+    * Next download `IntelliJ IDEA Ultimate`
+    * Install [plugins for IntelliJ IDEA](/jb-toolbox/IDEA/plugins.md)
+    * ¯\_(ツ)_/¯
+        <!--
+            Crack, just out of spite, get fucking owned JB 🖕
+            Repo:   https://github.com/libin9iOak/ja-netfilter-all
+            Mirror: https://jetbra.in
+        -->
+
 3. Setup [Docker](https://docs.docker.com/docker-for-mac) [[:octocat:](https://github.com/docker/for-mac)]
 
     ```zsh
@@ -318,15 +328,15 @@ My shell and programms settings
     ```zsh
     brew install --cask pictogram
     ```
-4. [🆓] Setup [ForkLift](https://binarynights.com)
+4. [🆓] Setup [Commander One](https://mac.eltima.com/file-manager.html)
 
     ```zsh
-    brew install --cask forklift
-    defaults import com.binarynights.ForkLift-3 $DOTPREFSDIR/forklift/conf.plist
+    brew install --cask commander-one
+    defaults import com.eltima.cmd1 $DOTPREFSDIR/forklift/cmd1.plist
 
     # Set as default file viewer
-    defaults write -g NSFileViewer -string com.binarynights.ForkLift-3
-    defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers -array-add '{LSHandlerContentType="public.folder";LSHandlerRoleAll="com.binarynights.ForkLift-3";}'
+    defaults write -g NSFileViewer -string com.eltima.cmd1
+    defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers -array-add '{LSHandlerContentType="public.folder";LSHandlerRoleAll="com.eltima.cmd1";}'
     ```
 5. [💰] Setup [Apple Remote Desktop](https://apps.apple.com/app/id409907375)
 
@@ -422,11 +432,10 @@ My shell and programms settings
     ```
 
 ##### Mobile
-1. Setup [AltServer](https://altstore.io) [[:octocat:](https://github.com/rileytestut/AltStore)]
+1. Setup [Sideloadly](https://sideloadly.io)
 
     ```zsh
-    brew install --cask altserver
-    defaults import com.rileytestut.AltServer $DOTPREFSDIR/altserver/conf.plist
+    brew install --cask sideloadly
     ```
 2. [💰] Setup [WALTR PRO](https://softorino.com/waltr)
 
