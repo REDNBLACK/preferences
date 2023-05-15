@@ -389,10 +389,10 @@ My shell and programms settings
     # Remove useless Camera function
     sudo launchctl bootout system /Library/LaunchAgents/ai.krisp.krispMac.cameraAssistant.plist > /dev/null 2>&1 && sudo rm -f /Library/LaunchAgents/ai.krisp.krispMac.cameraAssistant.plist && sudo rm -rf /Library/CoreMediaIO/Plug-Ins/DAL/KrispCamera.plugin && sudo pkgutil --forget ai.krisp.krispMacVideo
     ```
-4. [💰] Setup [Proton Mail - Bridge](https://proton.me/mail/bridge) [[:octocat:](https://github.com/ProtonMail/proton-bridge)]
+4. [💰] Setup [Proton Mail - Bridge](https://proton.me/mail/bridge) Headless, with [patched hostname resolve](https://github.com/ProtonMail/proton-bridge/pull/270/commits/1e85c8d057b245f77d21ff7376621739b019832a) [[:octocat:](https://github.com/ProtonMail/proton-bridge)]
 
     ```zsh
-    brew install --cask protonmail-bridge
+    cd $DOTPREFSDIR/protonmail-bridge && ./install.zsh
     ```
 
 ##### Entertainment
