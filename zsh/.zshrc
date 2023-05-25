@@ -158,6 +158,8 @@ ZPFX="${ZINIT[HOME_DIR]}/polaris"
 
 # Load
 . $ZDOTDIR/zinit/zinit.zsh
+zinit ice pick"async.zsh"
+zinit $ZINIT[LOAD_MODE] mafredri/zsh-async
 
 # Load the shell dotfiles
 # rm -rf "${ZINIT[HOME_DIR]}/snippets/DF::core::functions"

@@ -125,9 +125,16 @@ My shell and programms settings
     brew install --cask gpg-suite-no-mail
     defaults write org.gpgtools.updater SUEnableAutomaticChecks -bool NO
     defaults write org.gpgtools.gpgkeychain DoNotShowUploadDialogAgain -bool YES
+    defaults write org.gpgtools.common UseKeychain -bool YES
+
+    # Enable Touch ID
+    ln -fs $DOTPREFSDIR/pgp/gpg-agent.conf ~/.config/pgp/gpg-agent.conf
+    curl -LSs https://github.com/jorgelbg/pinentry-touchid/releases/download/v0.0.3/pinentry-touchid_0.0.3_macos_amd64.tar.gz | tar -xzf - -C /usr/local/bin pinentry-touchid
 
     # Secure ssh
-    . $DOTPREFSDIR/pgp/secure-ssh.zsh
+    ln -fs $DOTPREFSDIR/pgp/ssh.conf ~/.config/ssh/config
+    sudo sed -i '' -n -e '/^Include \/Users\/'`whoami`'\/.*$/!p' -e '$a\'$'\n'"Include $HOME/.config/ssh/config" /etc/ssh/ssh_config
+    sudo sed -i '' -n -e '/^[# ]*AuthorizedKeysFile .*$/!p' -e '$a\'$'\n'"AuthorizedKeysFile $HOME/.config/ssh/authorized_keys" /etc/ssh/sshd_config
 
     # Remove bloat
     sudo rm -rf /Library/PreferencePanes/GPGPreferences.prefPane && sudo rm -f /Library/LaunchAgents/org.gpgtools.{updater,macgpg2.fix,macgpg2.updater,Libmacgpg.xpc,gpgmail.*}.plist
