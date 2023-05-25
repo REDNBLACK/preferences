@@ -38,6 +38,11 @@ declare -gx HOMEBREW_CASKROOM="$HOMEBREW_PREFIX/Caskroom"
 #                               GnuPG settings                                           #
 # ====================================================================================== #
 declare -gx GNUPGHOME="$XDG_CONFIG_HOME/pgp" # SYS #
+declare -gx GPG_TTY=$(tty)
+if [ `gpgconf --list-options gpg-agent | grep 'enable-ssh-support' | tail -c 2` = "1" ]; then
+  declare -gx SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+  gpgconf --reload gpg-agent
+fi
 # ====================================================================================== #
 
 
