@@ -355,6 +355,11 @@ My shell and programms settings
     ```zsh
     brew install --cask onyx
     ```
+7. Setup [Wineskin](https://github.com/Gcenx/WineskinServer)
+
+    ```zsh
+    brew install --cask gcenx/wine/unofficial-wineskin
+    ```
 
 ##### Network
 1. Setup [Brave Browser](https://brave.com)
@@ -427,12 +432,17 @@ My shell and programms settings
     # For Native UI
     mas install 510620098
     ```
-5. [🆓] Setup [Picktorial](https://apps.apple.com/app/id1043289526)
+5. Setup [Subler](https://subler.org/)
+
+    ```zsh
+    brew install --cask subler
+    ```
+6. [🆓] Setup [Picktorial](https://apps.apple.com/app/id1043289526)
 
     ```zsh
     mas install 1043289526
     ```
-6. [🆓] Setup [Abyss](https://apps.apple.com/app/id1507396839)
+7. [🆓] Setup [Abyss](https://apps.apple.com/app/id1507396839)
 
     ```zsh
     mas install 1507396839
