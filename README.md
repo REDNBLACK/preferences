@@ -129,7 +129,8 @@ My shell and programms settings
 
     # Enable Touch ID
     ln -fs $DOTPREFSDIR/pgp/gpg-agent.conf ~/.config/pgp/gpg-agent.conf
-    curl -LSs https://github.com/jorgelbg/pinentry-touchid/releases/download/v0.0.3/pinentry-touchid_0.0.3_macos_amd64.tar.gz | tar -xzf - -C /usr/local/bin pinentry-touchid
+    curl -LSs https://github.com/jorgelbg/pinentry-touchid/releases/download/v0.0.3/pinentry-touchid_0.0.3_macos_amd64.tar.gz | tar -xzf - -C $HOMEBREW_PREFIX/bin pinentry-touchid
+    pkill -9 -f pinentry-swift 2> /dev/null || true && swiftc $DOTPREFSDIR/pgp/pinentry-swift.swift -enable-bare-slash-regex -o $HOMEBREW_PREFIX/bin/pinentry-swift
 
     # Secure ssh
     ln -fs $DOTPREFSDIR/pgp/ssh.conf ~/.config/ssh/config
@@ -260,8 +261,8 @@ My shell and programms settings
 7. Setup [Python 3](https://python.org) [[:octocat:](https://github.com/python)]
 
     ```zsh
-    ln -fs /Library/Developer/CommandLineTools/usr/bin/python3 /usr/local/bin/python
-    ln -fs /Library/Developer/CommandLineTools/usr/bin/pip3 /usr/local/bin/pip
+    ln -fs /Library/Developer/CommandLineTools/usr/bin/python3 $HOMEBREW_PREFIX/bin/python
+    ln -fs /Library/Developer/CommandLineTools/usr/bin/pip3 $HOMEBREW_PREFIX/bin/pip
     ```
 8. Setup [Postgres App](http://postgresapp.com) [[:octocat:](https://github.com/PostgresApp/PostgresApp)]
 
