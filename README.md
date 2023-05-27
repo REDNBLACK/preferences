@@ -34,7 +34,7 @@ My shell and programms settings
 4. Setup [Git](https://git-scm.com) [[:octocat:](https://github.com/git/git)] & [GitHub](hhttps://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 
     ```zsh
-    brew install git
+    brew install git git-lfs
     ln -fs $DOTPREFSDIR/git ~/.config/git
 
     # After generation of Personal Access Token (Classic)
@@ -103,9 +103,6 @@ My shell and programms settings
         ```zsh
         brew install thefuck
         ```
-    * [Instant coding answers](https://github.com/WindSoilder/hors)
-        ```zsh
-        brew install hors-org/hors/hors
         ```
 9. Setup macOS
 

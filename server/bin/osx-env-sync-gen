@@ -1,0 +1,93 @@
+declare -A opts=(
+  [label]='OSX Env Sync'
+  [pkg]='osx.env-sync.agent'
+  [agent]=~/Library/LaunchAgents/osx.env-sync.agent.plist
+  [script]="$baseDir/osx-env-sync"
+  [log]="$baseDir/osx.env-sync.log"
+  [uid]=$(internal uid)
+)
+local files=("$ZDOTDIR/profile")
+
+check() {
+  [ -f ${opts[script]} ] && echo 1 || echo 0
+  [ -f ${opts[agent]} ] && echo 1 || echo 0
+  launchctl print gui/${opts[uid]}/${opts[pkg]} > /dev/null 2>&1 && echo 1 || echo 0
+}
+
+make() {
+  local sep='±'
+  declare -A data=()
+  sed -E -n 's/^declare -gx ([^ =]+)=(.+) +# +SYS +#$/\1'$sep'\2/p' ${files[1]} | while IFS=$sep read -r k v
+  do
+    show -l $opts[label] -d "[$k] -> ($v)"
+    data[$k]="$(eval echo -e \"$v\")"
+  done
+
+  cat > ${opts[script]} <<EOF
+#!/bin/bash
+
+LOG="${opts[log]}"
+touch \$LOG
+function LOG(){
+echo "[\`date -u '+%Y-%m-%dT%H:%M:%SZ'\`] [\$1] \$2" >> \$LOG
+}
+
+case \$1 in
+(load)
+LOG 'INFO' 'Loading...'
+$(for k v in ${(@kv)data}; do
+echo "    launchctl setenv $k $v; LOG 'DEBUG' 'Set $k -> $v'"
+done)
+LOG 'INFO' 'Finished Loading'
+;;
+(unload)
+LOG 'INFO' 'Unloading...'
+$(for k in ${(k)data}; do
+echo "    launchctl unsetenv $k; LOG 'DEBUG' 'Unset $k'"
+done)
+LOG 'INFO' 'Finished Unloading'
+;;
+(*) LOG 'ERROR' "Wrong mode \$1"
+esac
+EOF
+  chmod +x ${opts[script]}
+
+  /usr/libexec/PlistBuddy \
+    -c "Add Label string ${opts[pkg]}" \
+    -c 'Add ProgramArguments array' \
+    -c "Add ProgramArguments:0 string ${opts[script]}" \
+    -c 'Add ProgramArguments:1 string load' \
+    -c 'Add RunAtLoad bool true' \
+    ${opts[agent]} > /dev/null
+
+  launchctl bootstrap gui/${opts[uid]} ${opts[agent]}
+}
+
+destroy() {
+  launchctl bootout gui/${opts[uid]} ${opts[agent]} > /dev/null 2>&1
+  [ -x ${opts[script]} ] && . ${opts[script]} unload
+  rm -f ${opts[agent]} ${opts[script]}
+}
+
+case $2 in
+  (status)
+    local info=($(check))
+    show -l $opts[label] "Binary: ${info[1]}, Agent: ${info[2]}, Loaded: ${info[3]}"
+  ;;
+  (install)  # Generate script and load to LaunchAgents
+    local info=($(check))
+    if [ ${info[1]} = 1 ] || [ ${info[2]} = 1 ] || [ ${info[3]} = 1 ]; then
+      show -l $opts[label] -e 'LaunchAgent already installed and running, run uninstall before proceeding'
+    else
+      show -l $opts[label] 'Installing...'
+      make
+      show -l $opts[label] 'Sucessfully Installed'
+    fi
+  ;;
+  (remove) # Unload script from LaunchAgents and remove all generated files
+    destroy
+    show -l $opts[label] 'Sucessfully Uninstalled'
+  ;;
+  (-h | --help) echo "HZ" ;;
+  (*)           show -e "Wrong command \`internal env-sync $2\`, see --help"
+esac
