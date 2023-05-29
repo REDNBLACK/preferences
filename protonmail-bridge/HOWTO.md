@@ -12,11 +12,28 @@ KeyChainName = "bridge-v3"                                                      
 ```
 And then build bridge without gui as per this instruction [build-bridge-without-gui](https://github.com/ProtonMail/proton-bridge/blob/master/BUILDS.md#build-bridge-without-gui)
 
-### Check Connection
+### Configure
+
+```zsh
+/usr/local/bin/bridge --cli
+
+proxy allow     # Allow Connect via Proxy if Main Server is Blocked by ISP
+add             # Interactively Login and Add User to Bridge DB
+info            # Display Credentials for Connection to Server
+export-tls-cert # Export TLS cert which you will need to install to Client Machine
+```
+
+### Check Connection (or show cert like from `export-tls-cert` output)
 
 ```zsh
 openssl s_client -connect {IP}:1025 -starttls smtp
 openssl s_client -starttls imap -connect {IP}:1143 -showcerts
+```
+
+### Run as Daemon
+
+```zsh
+launchctl bootstrap "gui/{UID}" /Library/LaunchDaemons/com.proton.mail.bridge.plist
 ```
 
 ### Useful Links

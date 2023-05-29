@@ -1,10 +1,13 @@
 [user]
 	name = REDNBLACK
 	email = boris.p@protonmail.com
-[core]
-	autocrlf = input
+	signingkey = 80CBC40B
 [credential]
 	helper = osxkeychain
+[gpg]
+	program = /usr/local/bin/gpg
+[core]
+	autocrlf = input
 [push]
 	default = simple
 [color]
