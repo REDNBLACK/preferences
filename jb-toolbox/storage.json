@@ -6,7 +6,7 @@
     "dataloreConnected": false,
     "displayAutomaticallyInstalledTools": true,
     "displayAvailableServices": true,
-    "displayAvailableTools": true,
+    "displayAvailableTools": false,
     "displayManuallyInstalledTools": true,
     "displayOnlineTools": true,
     "displayProjectLists":
@@ -28,7 +28,7 @@
     },
     "preferredKeychain": "macos-system",
     "selectedMainPageTab": "Tools",
-    "skipUpdatePreviewFeedUntil": 0,
+    "skipUpdatePreviewFeedUntil": 1687706453118,
     "toolFreshness":
     {
         "Aqua":
