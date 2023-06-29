@@ -31,7 +31,7 @@ My shell and programms settings
     # Symlink custom Casks
     mkdir -p $HOMEBREW_PREFIX/Homebrew/Library/Taps/custom && ln -fs $DOTPREFSDIR/homebrew "$_/homebrew-custom"
     ```
-4. Setup [Git](https://git-scm.com) [[:octocat:](https://github.com/git/git)] & [GitHub](hhttps://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
+4. Setup [Git](https://git-scm.com) [[:octocat:](https://github.com/git/git)] & [Git LFS](https://git-lfs.com) [[:octocat:](https://github.com/git-lfs/git-lfs)] & [GitHub](hhttps://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 
     ```zsh
     brew install git git-lfs
@@ -225,24 +225,20 @@ My shell and programms settings
             Mirror: https://jetbra.in
         -->
 
-3. Setup [Docker](https://docs.docker.com/docker-for-mac) [[:octocat:](https://github.com/docker/for-mac)]
+3. Setup [Docker](https://docs.docker.com/docker-for-mac) [[:octocat:](https://github.com/docker/for-mac)] & [Helm](https://helm.sh) [[:octocat:](https://github.com/helm/helm)]
 
     ```zsh
     brew install --cask docker
+    brew install helm
 
     # After generation of Access Token
     security add-internet-password -l Docker\ Hub -s docker.com -r htps -a %Docker Account Name% -w %Docker Account Token%
     ```
-4. Setup [Helm](https://helm.sh) [[:octocat:](https://github.com/helm/helm)]
-
-    ```zsh
-    brew install helm
-    ```
-5. Setup Java [Eclipse Temurin](https://adoptium.net/) [[:octocat:](https://github.com/adoptium)] & [GraalVM](https://graalvm.org) [[:octocat:](https://github.com/graalvm)] & [JMC](https://oracle.com/java/technologies/jdk-mission-control.html) [[:octocat:](https://github.com/openjdk/jmc)] & [sbt](https://scala-sbt.org) [[:octocat:](https://github.com/sbt/sbt)]
+4. Setup Java [Eclipse Temurin](https://adoptium.net/) [[:octocat:](https://github.com/adoptium)] & [GraalVM](https://graalvm.org) [[:octocat:](https://github.com/graalvm)] & [JMC](https://oracle.com/java/technologies/jdk-mission-control.html) [[:octocat:](https://github.com/openjdk/jmc)] & [sbt](https://scala-sbt.org) [[:octocat:](https://github.com/sbt/sbt)]
 
     ```zsh
     brew install --cask temurin{8,17}
-    brew install --cask graalvm/tap/graalvm-ce-java19
+    brew install --cask graalvm/tap/graalvm-jdk20
 
     brew install --cask openjdk-jmc
     brew install sbt
@@ -250,36 +246,28 @@ My shell and programms settings
     # Switch JDK version to `8` or `17` or `graal`
     jdk 17
     ```
-6. Setup Rust [rustup](https://rust-lang.github.io/rustup/) [[:octocat:](https://github.com/rust-lang/)]
-
-    ```zsh
-    bash -c "$(curl -fsSL https://sh.rustup.rs)" -- --profile default --default-toolchain nightly -y --no-modify-path
-    ```
-7. Setup [Python 3](https://python.org) [[:octocat:](https://github.com/python)]
+5. Setup [Python](https://python.org) [[:octocat:](https://github.com/python)]
 
     ```zsh
     ln -fs /Library/Developer/CommandLineTools/usr/bin/python3 $HOMEBREW_PREFIX/bin/python
     ln -fs /Library/Developer/CommandLineTools/usr/bin/pip3 $HOMEBREW_PREFIX/bin/pip
     ```
+6. Setup Rust [rustup](https://rust-lang.github.io/rustup/) [[:octocat:](https://github.com/rust-lang/)]
+
+    ```zsh
+    bash -c "$(curl -fsSL https://sh.rustup.rs)" -- --profile default --default-toolchain nightly -y --no-modify-path
+    ```
+7. Setup [RapidAPI](https://paw.cloud) & [grpcurl](https://github.com/fullstorydev/grpcurl) & [ngrok](https://ngrok.com)
+
+    ```zsh
+    brew install --cask rapidapi
+    brew install grpcurl
+    brew install --cask ngrok
+    ```
 8. Setup [Postgres App](http://postgresapp.com) [[:octocat:](https://github.com/PostgresApp/PostgresApp)]
 
     ```zsh
     brew install --cask postgres
-    ```
-9. [💰] Setup [Paw](https://paw.cloud) [[:octocat:](https://github.com/luckymarmot)]
-
-    ```zsh
-    brew install --cask paw
-    ```
-10. Setup [grpcurl](https://github.com/fullstorydev/grpcurl)
-
-    ```zsh
-    brew install grpcurl
-    ```
-11. Setup [ngrok](https://ngrok.com)
-
-    ```zsh
-    brew install --cask ngrok
     ```
 
 ##### Productivity
@@ -310,14 +298,19 @@ My shell and programms settings
     ```
 
 ##### System
-1. [💰] Setup [iStat Menus](https://bjango.com/mac/istatmenus) [[:octocat:](https://github.com/bjango)]
+1. [🆓] Setup [Nimble Commander](https://magnumbytes.com)
 
     ```zsh
-    brew install --cask istat-menus
-    defaults import com.bjango.istatmenus6.extras $DOTPREFSDIR/istat-menus/conf.plist
+    brew install --cask nimble-commander
+    ln -fs $DOTPREFSDIR/nimble-commander/conf.json ~/Library/Application\ Support/Nimble\ Commander/Config/Config.json
+    defaults import info.filesmanager.Files $DOTPREFSDIR/nimble-commander/conf.plist
+
+    # Set as default file viewer
+    defaults write -g NSFileViewer -string info.filesmanager.Files
+    defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers -array-add '{LSHandlerContentType="public.folder";LSHandlerRoleAll="info.filesmanager.Files";}'
 
     # Install license
-    defaults write com.bjango.istatmenus license6 -dict email '**License email**' serial '**License serial key**'
+    cp -f "**Path to License.nimblecommanderlicense file**" ~/Library/Application\ Support/Nimble\ Commander/registration.nimblecommanderlicense
     ```
 2. Setup [Keka](https://keka.io) [[:octocat:](https://github.com/aonez/Keka)]
 
@@ -328,35 +321,34 @@ My shell and programms settings
     # Set file association (w/o using kekadefaultapp)
     internal set-file-assoc Keka com.aone.keka $DOTPREFSDIR/keka/file-assoc.list
     ```
-3. Setup [Pictogram](https://pictogramapp.com)
+3. [💰] Setup [iStat Menus](https://bjango.com/mac/istatmenus) [[:octocat:](https://github.com/bjango)]
 
     ```zsh
-    brew install --cask pictogram
-    ```
-4. [🆓] Setup [Commander One](https://mac.eltima.com/file-manager.html)
+    brew install --cask istat-menus
+    defaults import com.bjango.istatmenus6.extras $DOTPREFSDIR/istat-menus/conf.plist
 
-    ```zsh
-    brew install --cask commander-one
-    defaults import com.eltima.cmd1 $DOTPREFSDIR/forklift/cmd1.plist
-
-    # Set as default file viewer
-    defaults write -g NSFileViewer -string com.eltima.cmd1
-    defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers -array-add '{LSHandlerContentType="public.folder";LSHandlerRoleAll="com.eltima.cmd1";}'
+    # Install license
+    defaults write com.bjango.istatmenus license6 -dict email '**License email**' serial '**License serial key**'
     ```
-5. [💰] Setup [Apple Remote Desktop](https://apps.apple.com/app/id409907375)
-
-    ```zsh
-    mas install 409907375
-    ```
-6. Setup [OnyX](https://titanium-software.fr/en/onyx)
+4. Setup [OnyX](https://titanium-software.fr/en/onyx)
 
     ```zsh
     brew install --cask onyx
     ```
-7. Setup [Wineskin](https://github.com/Gcenx/WineskinServer)
+5. Setup [Wineskin](https://github.com/Gcenx/WineskinServer)
 
     ```zsh
     brew install --cask gcenx/wine/unofficial-wineskin
+    ```
+6. Setup [Pictogram](https://pictogramapp.com)
+
+    ```zsh
+    brew install --cask pictogram
+    ```
+7. [💰] Setup [Apple Remote Desktop](https://apps.apple.com/app/id409907375)
+
+    ```zsh
+    mas install 409907375
     ```
 
 ##### Network
@@ -368,11 +360,11 @@ My shell and programms settings
         ```
     * Install [plugins, theme and StartPage search engine](/brave/plugins.md)
     * Import [uBlock Origin settings](/brave/ublock-settings.txt)
-2. [🆓] Setup [Folx](https://mac.eltima.com/download-manager)
+2. Setup [Transmission](https://transmissionbt.com) [[:octocat:](https://github.com/transmission/transmission)]
 
     ```zsh
-    brew install --cask folx
-    defaults import com.eltima.Folx3 $DOTPREFSDIR/folx/conf.plist
+    brew install --cask transmission
+    defaults import org.m0k.transmission $DOTPREFSDIR/transmission/conf.plist
     ```
 3. [🆓] Setup [Wi-Fi Explorer](https://intuitibits.com/products/wifi-explorer)
 
@@ -416,10 +408,13 @@ My shell and programms settings
     ```zsh
     mas install 1532597159
     ```
-3. Setup [HandBrake](https://handbrake.fr) [[:octocat:](https://github.com/HandBrake/HandBrake)]
+3. Setup [Subler](https://subler.org) & [HandBrake](https://handbrake.fr) [[:octocat:](https://github.com/HandBrake/HandBrake)] & [FFmpeg](https://ffmpeg.org) & [MKVToolNix](https://mkvtoolnix.download)
 
     ```zsh
+    brew install --cask subler
     brew install --cask handbrake
+    brew install ffmpeg
+    brew install mkvtoolnix
     ```
 4. Setup [MediaInfo](https://mediaarea.net/MediaInfo)
 
@@ -430,20 +425,15 @@ My shell and programms settings
     # For Native UI
     mas install 510620098
     ```
-5. Setup [Subler](https://subler.org/)
+5. [🆓] Setup [Abyss](https://apps.apple.com/app/id1507396839)
 
     ```zsh
-    brew install --cask subler
+    mas install 1507396839
     ```
 6. [🆓] Setup [Picktorial](https://apps.apple.com/app/id1043289526)
 
     ```zsh
     mas install 1043289526
-    ```
-7. [🆓] Setup [Abyss](https://apps.apple.com/app/id1507396839)
-
-    ```zsh
-    mas install 1507396839
     ```
 
 ##### Mobile
