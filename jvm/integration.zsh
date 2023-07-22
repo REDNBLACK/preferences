@@ -12,7 +12,7 @@ emulate -LR zsh
 # ====================================================================================== #
 
 # Initialize JAVA_HOME and SBT_OPTS
-declare -gx JAVA_HOME="$(/usr/libexec/java_home)" # SYS #
+declare -gx JAVA_HOME="$(/usr/libexec/java_home 2> /dev/null)" # SYS #
 declare -gx SBT_OPTS="-Xmx4G -Xss2M -Dsbt.global.base=$XDG_CONFIG_HOME/sbt -Dsbt.ivy.home=$XDG_CONFIG_HOME/ivy2" # SYS #
 
 # Java JDK utils
