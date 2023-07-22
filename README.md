@@ -129,10 +129,14 @@ My shell and programms settings
     curl -LSs https://github.com/jorgelbg/pinentry-touchid/releases/download/v0.0.3/pinentry-touchid_0.0.3_macos_amd64.tar.gz | tar -xzf - -C $HOMEBREW_PREFIX/bin pinentry-touchid
     pkill -9 -f pinentry-swift 2> /dev/null || true && swiftc $DOTPREFSDIR/pgp/pinentry-swift.swift -enable-bare-slash-regex -o $HOMEBREW_PREFIX/bin/pinentry-swift
 
-    # Secure ssh
-    ln -fs $DOTPREFSDIR/pgp/ssh.conf ~/.config/ssh/config
-    sudo sed -i '' -n -e '/^Include \/Users\/'`whoami`'\/.*$/!p' -e '$a\'$'\n'"Include $HOME/.config/ssh/config" /etc/ssh/ssh_config
-    sudo sed -i '' -n -e '/^[# ]*AuthorizedKeysFile .*$/!p' -e '$a\'$'\n'"AuthorizedKeysFile $HOME/.config/ssh/authorized_keys" /etc/ssh/sshd_config
+    # Secure SSH (w/ 2FA)
+    brew install --ignore-dependencies google-authenticator-libpam
+    google-authenticator -t -D -Cfq -w 17 -r 3 -R 30 -s ~/.config/ssh/google_authenticator
+    sudo sed -i '.old' -e '6s;^;auth       required       /usr/local/opt/google-authenticator-libpam/lib/security/pam_google_authenticator.so secret=/Users/${USER}/.config/ssh/google_authenticator\n;' /etc/pam.d/sshd
+    ln -fs $DOTPREFSDIR/pgp/ssh.conf ~/.config/ssh/client_config
+    ln -fs $DOTPREFSDIR/pgp/sshd.conf ~/.config/ssh/daemon_config
+    sudo sed -i '' -n -e '/^Include \/Users\/\*\*\/.*$/!p' -e '$a\'$'\n\\\n# Load Custom Config. DO NOT EDIT\\\nInclude /Users/**/.config/ssh/client_config' /etc/ssh/ssh_config
+    sudo sed -i '' -n -e '/^Include \/Users\/\*\*\/.*$/!p' -e '$a\'$'\n\\\n# Load Custom Config. DO NOT EDIT\\\nInclude /Users/**/.config/ssh/daemon_config' /etc/ssh/sshd_config
 
     # Remove bloat
     sudo rm -rf /Library/PreferencePanes/GPGPreferences.prefPane && sudo rm -f /Library/LaunchAgents/org.gpgtools.{updater,macgpg2.fix,macgpg2.updater,Libmacgpg.xpc,gpgmail.*}.plist

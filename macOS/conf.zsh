@@ -33,6 +33,8 @@ defaults write -g NSQuitAlwaysKeepsWindows -bool false
 
 # Disable the crash reporter
 defaults write com.apple.CrashReporter DialogType -string "none"
+launchctl unload -w /System/Library/LaunchAgents/com.apple.ReportCrash.plist
+sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.ReportCrash.Root.plist
 
 # Prefer tabs when opening documents
 defaults write -g AppleWindowTabbingMode -string 'always'
@@ -94,7 +96,7 @@ defaults write com.apple.finder _FXSortFoldersFirst -bool true
 defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
 
 # Show 'Quit' menu item
-# defaults write com.apple.finder QuitMenuItem -bool true
+defaults write com.apple.finder QuitMenuItem -bool true
 
 # Show path bar
 defaults write com.apple.finder ShowPathbar -bool true
