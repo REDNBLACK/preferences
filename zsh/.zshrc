@@ -172,6 +172,7 @@ zinit snippet OMZP::alias-finder      # Learn existing aliases easily
 zinit snippet OMZP::command-not-found # Suggest packages to be installed if a command cannot be found
 zinit snippet OMZP::extract           # Defines `extract` function for wide variety of archive filetypes
 zinit snippet OMZP::git               # Provides many aliases and a few useful functions for git
+zinit snippet OMZP::git-lfs           # Provides aliases and functions for git-lfs.
 zinit snippet OMZP::gitignore         # Download gitignore.io templates from the command line
 zinit ice atclone"sed -i '' -e 's/source/#/g' OMZP::macos" nocompile="!"
 zinit snippet OMZP::macos             # Control macOS from command line
@@ -205,7 +206,8 @@ zinit snippet OMZP::colored-man-pages # Adds colors to man pages
     status                  # exit code of the last command
     command_execution_time  # duration of the last command
     rust_version            # rustc version (https://www.rust-lang.org)
-    java_version            # java version (https://www.java.com/)
+    java_version            # java version (https://www.java.com)
+    # node_version            # node.js version (https://nodejs.org)
     time                    # current time
   )
 
@@ -450,7 +452,7 @@ zinit ice as"completion"
 zinit snippet OMZP::macos/_security
 
 zinit ice as"completion"
-zinit snippet OMZP::docker/_docker
+zinit snippet OMZP::docker/completions/_docker
 
 zinit ice blockf atpull'zinit creinstall -q .'
 zinit $ZINIT[LOAD_MODE] zsh-users/zsh-completions

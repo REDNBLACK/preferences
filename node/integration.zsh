@@ -18,5 +18,5 @@ fi
 
 # Mirror to global config
 if [[ ! -f "/usr/local/etc/npmrc" ]]; then
-  ln -fs $DOTPREFSDIR/node/npmrc /usr/local/etc/npmrc
+  sudo ln -fs $DOTPREFSDIR/node/npmrc /usr/local/etc/npmrc
 fi
