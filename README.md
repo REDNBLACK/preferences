@@ -25,7 +25,7 @@ My shell and programms settings
     ```zsh
     bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     brew analytics off
-    brew tap buo/cask-upgrade
+    brew tap {homebrew/cask-versions,buo/cask-upgrade}
     brew install mas
 
     # Symlink custom Casks
@@ -417,10 +417,7 @@ My shell and programms settings
 3. Setup [Subler](https://subler.org) & [HandBrake](https://handbrake.fr) [[:octocat:](https://github.com/HandBrake/HandBrake)] & [FFmpeg](https://ffmpeg.org) & [MKVToolNix](https://mkvtoolnix.download)
 
     ```zsh
-    brew install --cask subler
-    brew install --cask handbrake
-    brew install ffmpeg
-    brew install mkvtoolnix
+    brew install --cask video-toolbox
     ```
 4. Setup [MediaInfo](https://mediaarea.net/MediaInfo)
 
@@ -430,16 +427,6 @@ My shell and programms settings
     
     # For Native UI
     mas install 510620098
-    ```
-5. [🆓] Setup [Abyss](https://apps.apple.com/app/id1507396839)
-
-    ```zsh
-    mas install 1507396839
-    ```
-6. [🆓] Setup [Picktorial](https://apps.apple.com/app/id1043289526)
-
-    ```zsh
-    mas install 1043289526
     ```
 
 ##### Mobile

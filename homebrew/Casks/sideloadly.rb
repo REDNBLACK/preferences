@@ -1,6 +1,6 @@
 cask "sideloadly" do
-  version "0.42.0"
-  sha256 "24b4f4e06dfe9eb5cd87a8e3392fdf90255016a910cd51461582e56127d84b87"
+  version "0.43.0"
+  sha256 "d4102ed425d0ad0a7a6ccddd5efb31bc594c40e6f51c90edcc366950a9ef5628"
 
   url "https://sideloadly.io/SideloadlySetup.dmg"
   name "Sideloadly"
@@ -9,7 +9,15 @@ cask "sideloadly" do
 
   app "Sideloadly.app"
 
-  uninstall quit: "org.sideloadly.sideloadly"
+  uninstall launchctl: "io.sideloadly.daemon",
+            quit:      [
+              "io.sideloadly.sideloadly",
+              "com.apple.mail"
+            ],
+            delete:    [
+              "~/Library/Application Support/Mail/Plug-ins/Bundles/Library/Mail/Bundles/SideloadlyPlugin.mailbundle",
+              "/Library/Mail/Bundles/SideloadlyPlugin.mailbundle"
+            ]
 
   zap trash: [
     "~/Library/Application Support/CrashReporter/sideloadly_*",
@@ -17,8 +25,6 @@ cask "sideloadly" do
     "~/Library/Logs/sideloadly",
     "~/Library/Preferences/io.sideloadly.sideloadly.plist",
     "~/Library/Saved Application State/io.sideloadly.sideloadly.savedState",
-    "~/Library/Application Support/Mail/Plug-ins/Bundles/Library/Mail/Bundles/SideloadlyPlugin.mailbundle",
-    "/Library/Mail/Bundles/SideloadlyPlugin.mailbundle",
     "/Library/Logs/DiagnosticReports/Sideloadly_*"
   ]
 end
