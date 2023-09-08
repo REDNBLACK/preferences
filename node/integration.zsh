@@ -8,8 +8,14 @@ emulate -LR zsh
 # Global vars: PATH; NPM_CONFIG_USERCONFIG                                               #
 # ====================================================================================== #
 
+declare -gx N_CACHE_PREFIX="$XDG_CACHE_HOME/node"
+[[ ! -d $N_CACHE_PREFIX ]] && mkdir -p "$N_CACHE_PREFIX/n/versions"
+
 # Homedir for config
 declare -gx NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/node/npmrc"
+
+# REPL history file
+declare -gx NODE_REPL_HISTORY="$N_CACHE_PREFIX/.repl_history"
 
 # Mirror to user config
 if [[ ! -f "$NPM_CONFIG_USERCONFIG" ]]; then
