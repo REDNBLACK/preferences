@@ -347,6 +347,38 @@ function upgrade() {
   fi
   brew cu -a -y $mas --no-brew-update --no-quarantine --cleanup 2>&1 | lolcat
 
+  show -l 'Apps Icons' -n 1
+  for icon in $DOTPREFSDIR/macOS/icons/*.icns; do
+    local app_fck="$([[ $icon =~ .*\\[fck\\].icns$ ]] && echo 'true' || echo 'false')"
+    local app_name="${${$(basename $icon)%.*}// \[fck\]}"
+    local app_path=$(internal app-installed "$app_name" 1)
+
+    show -r "$app_name : $app_fck ($app_path)\n"
+
+    if [[ ! -z "$app_path" ]]; then
+      if [[ "$app_fck" = 'true' ]]; then
+        local icns="$(mktemp -u).icns"
+        local rsrc="$(mktemp -u).rsrc"
+        local out="$app_path"/$'Icon\r'
+
+        sips -i "$icon" -o $icns
+        DeRez -only icns $icns > $rsrc
+        sudo Rez -append $rsrc -o "$out"
+
+        sudo SetFile -a C "$app_path"
+        sudo SetFile -a V "$out"
+        rm -rf $icns $rsrc
+      else
+        local out=${"$(defaults read $app_path/Contents/Info.plist 'CFBundleIconFile')"%.icns}
+
+        sudo cp "$icon" "$app_path/Contents/Resources/$out.icns"
+      fi
+
+      sudo touch "$app_path"
+    fi
+  done
+  internal respring
+
   show -l 'System' -n 1
   softwareupdate -ia 2>&1 | lolcat
 
@@ -367,6 +399,7 @@ ${fg_bold[blue]}Usage:${reset_color} internal <command> ${fg[cyan]}Execute inter
 
 ${fg_bold[blue]}Commands:${reset_color}
   ${fg_bold[yellow]}uid${reset_color}      ${fg[blue]}Get current user UID${reset_color}
+  ${fg_bold[yellow]}respring${reset_color} ${fg[blue]}Reset icon cache, reload Dock and Finder${reset_color}
   ${fg_bold[yellow]}app-installed <app-name>${reset_color}      ${fg[blue]}Check if macOS app installed in Applications folder${reset_color}
   ${fg_bold[yellow]}set-file-assoc <app-name> <handler> <path to file w/ assoc>${reset_color}      ${fg[blue]}Set files association for app${reset_color}
   ${fg_bold[yellow]}download <uri> <save path> <app-name>${reset_color}      ${fg[blue]}Download and save file to directory${reset_color}
@@ -381,11 +414,26 @@ EOF
   case $1 in
     (app-installed)  # Check if Mac App installed
       local app=$2
+      local return_path="$3"
 
-      if [[ ! -d ~/Applications/"$app".app && ! -d /Applications/"$app".app ]]; then
-        return 1
+      if [[ "$return_path" -ge 1 ]]; then
+        local result=(/Applications/**/"$app".app/(N))
+        if [[ ${#result} -eq 1 ]]; then
+          echo "$result[1]"
+        else
+          result=(~/Applications/**/"$app".app/(N))
+          if [[ ${#result} -eq 1 ]]; then
+            echo "$result[1]"
+          else
+            return 1
+          fi
+        fi
+      else
+        if [[ ! -d ~/Applications/"$app".app && ! -d /Applications/"$app".app ]]; then
+          return 1
+        fi
+        return 0
       fi
-      return 0
     ;;
     (set-file-assoc) # Set files association
       local label=$2
@@ -411,6 +459,9 @@ EOF
     ;;
     (uid)
       scutil <<< 'show State:/Users/ConsoleUser' | awk '/UID/ { print $3 }'
+    ;;
+    (respring)
+      sudo rm -rf /Library/Caches/com.apple.iconservices.store && sudo killall Dock && sudo killall Finder
     ;;
     (security)
       local mode=$2
