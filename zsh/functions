@@ -353,21 +353,15 @@ function upgrade() {
     local app_name="${${$(basename $icon)%.*}// \[fck\]}"
     local app_path=$(internal app-installed "$app_name" 1)
 
-    show -r "$app_name : $app_fck ($app_path)\n"
+    show -r "$app_name : $app_fck ($app_path)$EOL"
 
     if [[ ! -z "$app_path" ]]; then
       if [[ "$app_fck" = 'true' ]]; then
-        local icns="$(mktemp -u).icns"
-        local rsrc="$(mktemp -u).rsrc"
-        local out="$app_path"/$'Icon\r'
-
-        sips -i "$icon" -o $icns
-        DeRez -only icns $icns > $rsrc
-        sudo Rez -append $rsrc -o "$out"
-
-        sudo SetFile -a C "$app_path"
-        sudo SetFile -a V "$out"
-        rm -rf $icns $rsrc
+        sudo osascript <<EOF > /dev/null || die
+    use framework "Cocoa"
+    set imageData to (current application's NSImage's alloc()'s initWithContentsOfFile:"$icon")
+    (current application's NSWorkspace's sharedWorkspace()'s setIcon:imageData forFile:"$app_path" options:2)
+EOF
       else
         local out=${"$(defaults read $app_path/Contents/Info.plist 'CFBundleIconFile')"%.icns}
 
