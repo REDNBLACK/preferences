@@ -103,7 +103,6 @@ My shell and programms settings
         ```zsh
         brew install thefuck
         ```
-        ```
 9. Setup macOS
 
     ```zsh
@@ -347,15 +346,15 @@ My shell and programms settings
     ```zsh
     brew install --cask onyx
     ```
-5. Setup [Wineskin](https://github.com/Gcenx/WineskinServer)
+5. [💰] Setup [DaisyDisk](https://daisydiskapp.com)
+
+    ```zsh
+    brew install --cask daisydisk
+    ```
+6. Setup [Wineskin](https://github.com/Gcenx/WineskinServer)
 
     ```zsh
     brew install --cask gcenx/wine/wineskin
-    ```
-6. Setup [Pictogram](https://pictogramapp.com)
-
-    ```zsh
-    brew install --cask pictogram
     ```
 7. [💰] Setup [Apple Remote Desktop](https://apps.apple.com/app/id409907375)
 

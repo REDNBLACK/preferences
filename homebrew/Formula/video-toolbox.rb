@@ -4,15 +4,15 @@ class VideoToolbox < Formula
   version "1.0.0"
 
   resource "ffmpeg" do
-    version "111772-g8653dcaf7d"
+    version "112061-g654e4b00e2"
     url "https://evermeet.cx/ffmpeg/ffmpeg-#{version}.zip"
-    sha256 "f62bea50cf29d2deee5ee4641b1eeeaf3cd0b777ddcbae83957ec2094983050a"
+    sha256 "de002f07a22cfb8a979b045fb6e069a981c9e69bc9fb1b174481c708201774df"
   end
 
   resource "mkvtoolnix" do
-    version "78.0"
+    version "79.0"
     url "https://mkvtoolnix.download/macos/MKVToolNix-#{version}.dmg"
-    sha256 "6be03a526bbf4673575b0639bce28ec9a02c122195e2134596da26cd31922b8e"
+    sha256 "93f69fb341f5384475b2c4ded26f2dc990f273a4e95cbca5729a9b87d967be18"
   end
 
   resource "subler" do
