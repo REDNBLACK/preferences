@@ -28,8 +28,8 @@ My shell and programms settings
     brew tap {homebrew/cask-versions,buo/cask-upgrade}
     brew install mas
 
-    # Symlink custom Casks (Different path for M1 Macs!!!)
-    mkdir -p $HOMEBREW_PREFIX/Homebrew/Library/Taps/rednblack && ln -fs $DOTPREFSDIR/homebrew "$_/homebrew-tap"
+    # Symlink custom Formulaes, Casks and Patches
+    mkdir -p $HOMEBREW_REPOSITORY/Library/Taps/rednblack && ln -fs $DOTPREFSDIR/homebrew "$_/homebrew-tap"
     ```
 4. Setup [Git](https://git-scm.com) [[:octocat:](https://github.com/git/git)] & [Git LFS](https://git-lfs.com) [[:octocat:](https://github.com/git-lfs/git-lfs)] & [GitHub](hhttps://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 

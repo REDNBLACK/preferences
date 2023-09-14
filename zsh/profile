@@ -30,8 +30,8 @@ declare -gx HOMEBREW_NO_INSTALL_CLEANUP=1
 declare -gx HOMEBREW_NO_EMOJI=1
 declare -gx HOMEBREW_GITHUB_API_TOKEN="$(security 2>&1 find-internet-password -ws github.com)"
 declare -gx HOMEBREW_PREFIX="$([[ $(uname -m) == 'arm64' ]] && echo '/opt/homebrew' || echo '/usr/local')"
+declare -gx HOMEBREW_REPOSITORY="$([[ $(uname -m) == 'arm64' ]] && echo $HOMEBREW_PREFIX || echo $HOMEBREW_PREFIX/Homebrew)"
 declare -gx HOMEBREW_CELLAR="$HOMEBREW_PREFIX/Cellar"
-declare -gx HOMEBREW_REPOSITORY="$HOMEBREW_PREFIX/Homebrew"
 declare -gx HOMEBREW_CASKROOM="$HOMEBREW_PREFIX/Caskroom"
 # ====================================================================================== #
 
