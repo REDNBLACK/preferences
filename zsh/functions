@@ -349,25 +349,19 @@ function upgrade() {
 
   show -l 'Apps Icons' -n 1
   for icon in $DOTPREFSDIR/macOS/icons/*.icns; do
-    local app_fck="$([[ $icon =~ .*\\[fck\\].icns$ ]] && echo 'true' || echo 'false')"
-    local app_name="${${$(basename $icon)%.*}// \[fck\]}"
+    local app_name=${$(basename $icon)%.*}
     local app_path=$(internal app-installed "$app_name" 1)
+    local app_installed="$([[ ! -z "$app_path" ]] && echo 1 || echo 0)"
+    local app_custom_icon="$([[ -f "$app_path"/$'Icon\r' ]] && echo 1 || echo 0)"
 
-    show -r "$app_name : $app_fck ($app_path)$EOL"
+    show -r "$app_name [$app_installed-$app_custom_icon] $app_path$EOL"
 
-    if [[ ! -z "$app_path" ]]; then
-      if [[ "$app_fck" = 'true' ]]; then
-        sudo osascript <<EOF > /dev/null || die
+    if (( $app_installed == 1 )) && (( $app_custom_icon == 0 )); then
+      sudo osascript <<EOF > /dev/null || die
     use framework "Cocoa"
     set imageData to (current application's NSImage's alloc()'s initWithContentsOfFile:"$icon")
     (current application's NSWorkspace's sharedWorkspace()'s setIcon:imageData forFile:"$app_path" options:2)
 EOF
-      else
-        local out=${"$(defaults read $app_path/Contents/Info.plist 'CFBundleIconFile')"%.icns}
-
-        sudo cp "$icon" "$app_path/Contents/Resources/$out.icns"
-      fi
-
       sudo touch "$app_path"
     fi
   done
