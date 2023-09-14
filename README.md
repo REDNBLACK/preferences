@@ -261,16 +261,22 @@ My shell and programms settings
 6. Setup Rust [rustup](https://rust-lang.github.io/rustup/) [[:octocat:](https://github.com/rust-lang/)]
 
     ```zsh
-    bash -c "$(curl -fsSL https://sh.rustup.rs)" -- --profile default --default-toolchain nightly -y --no-modify-path
+    curl -L https://sh.rustup.rs | bash -s -- --profile default --default-toolchain nightly -y --no-modify-path
     ```
-7. Setup [RapidAPI](https://paw.cloud) & [grpcurl](https://github.com/fullstorydev/grpcurl) & [ngrok](https://ngrok.com)
+7. Setup Node.js [n](https://github.com/tj/n) [[:octocat:](https://github.com/tj/n)] & [pnpm](https://pnpm.io) [[:octocat:](https://github.com/pnpm/pnpm)]
+
+    ```zsh
+    curl -L https://raw.githubusercontent.com/mklement0/n-install/stable/bin/n-install | bash -s -- -n -y latest
+    corepack enable
+    ```
+8. Setup [RapidAPI](https://paw.cloud) & [grpcurl](https://github.com/fullstorydev/grpcurl) & [ngrok](https://ngrok.com)
 
     ```zsh
     brew install --cask rapidapi
     brew install grpcurl
     brew install --cask ngrok
     ```
-8. Setup [Postgres App](http://postgresapp.com) [[:octocat:](https://github.com/PostgresApp/PostgresApp)]
+9. Setup [Postgres App](http://postgresapp.com) [[:octocat:](https://github.com/PostgresApp/PostgresApp)]
 
     ```zsh
     brew install --cask postgres
