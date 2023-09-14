@@ -32,8 +32,8 @@ alias chromekill="ps ux | grep '[C]hrome Helper --type=renderer' | grep -v exten
 alias grep='grep --color=auto'
 alias duh="du -d 1 -h"
 alias dua="du -ah"
-if (( $+commands[exa] )); then
-  alias ls='exa --long --header --classify --group-directories-first --icons --all --git'
+if (( $+commands[eza] )); then
+  alias ls='eza --long --header --classify --group-directories-first --icons --all --git'
 else
   export LSCOLORS='Gxfxcxdxbxegedabagacad'
   alias ls="ls -lah"

@@ -1,0 +1,20 @@
+diff --git a/Users/rb/Desktop/jq-raw.rb b/Users/rb/Desktop/jq.rb
+index 2000d13..0cc23be 100644
+--- a/Users/rb/Desktop/jq-raw.rb
++++ b/Users/rb/Desktop/jq.rb
+@@ -30,13 +30,12 @@ class Jq < Formula
+     depends_on "libtool" => :build
+   end
+ 
+-  depends_on "oniguruma"
+-
+   def install
+     system "autoreconf", "--force", "--install", "--verbose" if build.head?
+     system "./configure", *std_configure_args,
+                           "--disable-silent-rules",
+-                          "--disable-maintainer-mode"
++                          "--disable-maintainer-mode",
++                          "--with-oniguruma=builtin"
+     system "make", "install"
+   end
+ 

@@ -1,0 +1,27 @@
+diff --git a/eza.rb b/eza.rb
+index 08d27de..de585c4 100644
+--- a/eza.rb
++++ b/eza.rb
+@@ -15,22 +15,10 @@ class Eza < Formula
+     sha256 cellar: :any_skip_relocation, x86_64_linux:   "a635d47ccfa3b78e80e72e7dab8389e9f7b4145964aa6bd19932e333fe3161a2"
+   end
+ 
+-  depends_on "just" => :build
+-  depends_on "pandoc" => :build
+-  depends_on "pkg-config" => :build
+   depends_on "rust" => :build
+-  depends_on "libgit2"
+ 
+   def install
+     system "cargo", "install", *std_cargo_args
+-
+-    bash_completion.install "completions/bash/eza"
+-    zsh_completion.install  "completions/zsh/_eza"
+-    fish_completion.install "completions/fish/eza.fish"
+-
+-    system "just", "man"
+-    man1.install (buildpath/"target/man").glob("*.1")
+-    man5.install (buildpath/"target/man").glob("*.5")
+   end
+ 
+   test do

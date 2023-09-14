@@ -28,13 +28,17 @@ My shell and programms settings
     brew tap {homebrew/cask-versions,buo/cask-upgrade}
     brew install mas
 
-    # Symlink custom Casks
-    mkdir -p $HOMEBREW_PREFIX/Homebrew/Library/Taps/custom && ln -fs $DOTPREFSDIR/homebrew "$_/homebrew-custom"
+    # Symlink custom Casks (Different path for M1 Macs!!!)
+    mkdir -p $HOMEBREW_PREFIX/Homebrew/Library/Taps/rednblack && ln -fs $DOTPREFSDIR/homebrew "$_/homebrew-tap"
     ```
 4. Setup [Git](https://git-scm.com) [[:octocat:](https://github.com/git/git)] & [Git LFS](https://git-lfs.com) [[:octocat:](https://github.com/git-lfs/git-lfs)] & [GitHub](hhttps://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 
     ```zsh
-    brew install git git-lfs
+    # Patch git formula, removing gettext and pcre2 dependencies and install
+    brew patch rednblack/tap git
+    brew install rednblack/tap/git --build-from-source
+
+    brew install git-lfs
     ln -fs $DOTPREFSDIR/git ~/.config/git
 
     # After generation of Personal Access Token (Classic)
@@ -79,9 +83,11 @@ My shell and programms settings
         ```zsh
         brew install lolcat-rust
         ```
-    * [`ls` on steroids](https://github.com/ogham/exa)
+    * [`ls` on steroids](https://github.com/eza-community/eza)
         ```zsh
-        brew install exa
+        # Patch eza formula, removing libgit2, libssh2, openssl@3 dependencies and install
+        brew patch rednblack/tap eza
+        brew install rednblack/tap/eza --build-from-source
         ```
     * [`grep` modern alternative](https://github.com/BurntSushi/ripgrep) (depends on `pcre2`)
         ```zsh
@@ -95,9 +101,11 @@ My shell and programms settings
         ```zsh
         brew install duti
         ```
-    * [Process JSON via CLI](https://github.com/stedolan/jq) (depends on `oniguruma`)
+    * [Process JSON via CLI](https://github.com/stedolan/jq)
         ```zsh
-        brew install jq
+        # Patch jq formula, removing oniguruma dependencies and install
+        brew patch rednblack/tap jq
+        brew install rednblack/tap/jq --build-from-source
         ```
     * [Correct errors in previous commands](https://github.com/nvbn/thefuck) (depends on `python`)
         ```zsh

@@ -1,8 +1,8 @@
 cask "openjdk-jmc" do
-  version "8.1.0,07"
-  sha256 "6719d9e9e22e3d456994e398c47b280090c2eff58dc4cb69f8b3d45713dfc29c"
+  version "8.3.1,05"
+  sha256 "07fd19be68fe7357c745f0a87ffb860d7ac92ae4e94fce9f79e07ac375fb8576"
 
-  url "https://download.java.net/java/GA/jmc#{version.major}/#{version.after_comma}/binaries/jmc-#{version.before_comma}_osx-x64.tar.gz"
+  url "https://download.java.net/java/GA/jmc#{version.major}/#{version.after_comma}/binaries/jmc-#{version.before_comma}_macos-x64.tar.gz"
   name "JDK Mission Control"
   desc "Tools to manage, monitor, profile and troubleshoot Java applications"
   homepage "https://jdk.java.net/jmc/8"
@@ -10,14 +10,14 @@ cask "openjdk-jmc" do
   livecheck do
     url :homepage
     strategy :page_match do |page|
-      match = page.match(%r{href=.*?/(\d+)/binaries/jmc-(\d+(?:\.\d+)*)_osx-x64.tar\.gz}i)
+      match = page.match(%r{href=.*?/(\d+)/binaries/jmc-(\d+(?:\.\d+)*)_macos-x64.tar\.gz}i)
       next if match.blank?
 
       "#{match[2]},#{match[1]}"
     end
   end
 
-  target_app = "jmc-#{version.before_comma}_osx-x64/JDK Mission Control.app".freeze
+  target_app = "jmc-#{version.before_comma}_macos-x64/JDK Mission Control.app".freeze
 
   binary "#{target_app}/Contents/MacOS/jmc"
 
@@ -32,6 +32,6 @@ cask "openjdk-jmc" do
   ]
 
   caveats do
-    depends_on_java "11"
+    depends_on_java "17"
   end
 end
