@@ -204,6 +204,9 @@ My shell and programms settings
     # Disable annoying root password request on every LaunchAgent launch (⚠️ Must be done after every system update)
     security authorizationdb write com.apple.system-extensions.admin allow
 
+    # Disable library validation (⚠️ USE YOUR BRAIN, also must be done after every system update)
+    sudo defaults write /Library/Preferences/com.apple.security.libraryvalidation.plist DisableLibraryValidation -bool true
+
     # Cleanup conflicting configs for bash/zsh (⚠️ Must be done after every system update)
     sudo rm -f /etc/zshrc_Apple_Terminal /etc/zshrc /etc/zprofile /etc/bashrc_Apple_Terminal /etc/bashrc /etc/profile
     ```
@@ -250,9 +253,7 @@ My shell and programms settings
 4. Setup Java [Eclipse Temurin](https://adoptium.net/) [[:octocat:](https://github.com/adoptium)] & [GraalVM](https://graalvm.org) [[:octocat:](https://github.com/graalvm)] & [JMC](https://oracle.com/java/technologies/jdk-mission-control.html) [[:octocat:](https://github.com/openjdk/jmc)] & [sbt](https://scala-sbt.org) [[:octocat:](https://github.com/sbt/sbt)]
 
     ```zsh
-    brew install --cask temurin{8,17}
-    brew install --cask graalvm/tap/graalvm-jdk20
-
+    brew install --cask temurin{8,17} graalvm-jdk
     brew install --cask openjdk-jmc
     brew install sbt
 
@@ -408,7 +409,7 @@ My shell and programms settings
     brew install --cask krisp
 
     # Remove useless Camera function
-    sudo launchctl bootout system /Library/LaunchAgents/ai.krisp.krispMac.cameraAssistant.plist > /dev/null 2>&1 && sudo rm -f /Library/LaunchAgents/ai.krisp.krispMac.cameraAssistant.plist && sudo rm -rf /Library/CoreMediaIO/Plug-Ins/DAL/KrispCamera.plugin && sudo pkgutil --forget ai.krisp.krispMacVideo
+    sudo launchctl bootout system /Library/LaunchAgents/ai.krisp.krispMac.cameraAssistant.plist > /dev/null 2>&1 && sudo rm -f /Library/LaunchAgents/ai.krisp.krispMac.cameraAssistant.plist && sudo rm -rf /Library/CoreMediaIO/Plug-Ins/DAL/KrispCamera.plugin && sudo pkgutil --forget ai.krisp.krispMacVideo && rm -f ~/Library/LaunchAgents/krisp.plist
     ```
 4. [💰] Setup [Proton Mail - Bridge](https://proton.me/mail/bridge) Headless, with [patched hostname resolve](https://github.com/ProtonMail/proton-bridge/pull/270/commits/1e85c8d057b245f77d21ff7376621739b019832a) [[:octocat:](https://github.com/ProtonMail/proton-bridge)]
 

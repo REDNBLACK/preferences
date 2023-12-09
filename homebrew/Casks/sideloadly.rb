@@ -1,6 +1,6 @@
 cask "sideloadly" do
-  version "0.43.0"
-  sha256 "d4102ed425d0ad0a7a6ccddd5efb31bc594c40e6f51c90edcc366950a9ef5628"
+  version "0.50.1"
+  sha256 "37de6a5b627e433623d6d082c7a1fa3e0b9d3f3e54519fe69b56c4ca01725f3c"
 
   url "https://sideloadly.io/SideloadlySetup.dmg"
   name "Sideloadly"

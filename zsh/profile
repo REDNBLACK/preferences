@@ -1,6 +1,7 @@
 # ====================================================================================== #
 #                                profile                                                 #
 # ====================================================================================== #
+# ====================================================================================== #
 
 
 # ====================================================================================== #
@@ -10,9 +11,11 @@ declare -gx LC_CTYPE='UTF-8' # SYS #
 declare -gx LC_ALL="en_US.UTF-8" # SYS #
 declare -gx LANG="en_US.UTF-8" # SYS #
 declare -gx LANGUAGE="en:ru" # SYS #
+declare -gx ARCH="$(uname -m)" # SYS #
 declare -gx EOL='\n' # SYS #
 declare -gx XDG_CACHE_HOME="$HOME/Library/Caches" # SYS #
 declare -gx XDG_CONFIG_HOME="$HOME/.config" # SYS #
+declare -gx BACKUP_DIR="$HOME/Documents/backup" # SYS #
 
 eval `/usr/libexec/path_helper -s`
 path+=(
@@ -29,14 +32,22 @@ declare -gx HOMEBREW_NO_ANALYTICS=1
 declare -gx HOMEBREW_NO_INSTALL_CLEANUP=1
 declare -gx HOMEBREW_NO_EMOJI=1
 declare -gx HOMEBREW_GITHUB_API_TOKEN="$(security 2>&1 find-internet-password -ws github.com)"
-declare -gx HOMEBREW_PREFIX="$([[ $(uname -m) == 'arm64' ]] && echo '/opt/homebrew' || echo '/usr/local')"
-declare -gx HOMEBREW_REPOSITORY="$([[ $(uname -m) == 'arm64' ]] && echo $HOMEBREW_PREFIX || echo $HOMEBREW_PREFIX/Homebrew)"
+declare -gx HOMEBREW_PREFIX="$([[ $ARCH == 'arm64' ]] && echo '/opt/homebrew' || echo '/usr/local')"
+declare -gx HOMEBREW_REPOSITORY="$([[ $(uname -m) == 'arm64' ]] && echo $HOMEBREW_PREFIX || echo ${HOMEBREW_PREFIX}/Homebrew)"
 declare -gx HOMEBREW_CELLAR="$HOMEBREW_PREFIX/Cellar"
 declare -gx HOMEBREW_CASKROOM="$HOMEBREW_PREFIX/Caskroom"
 # ====================================================================================== #
 
 # ====================================================================================== #
-#                               GnuPG settings                                           #
+#                               NeoFetch Settings                                        #
+# ====================================================================================== #
+if [[ -n "$SSH_TTY" ]] && (( $+commands[neofetch] )); then
+  neofetch
+fi
+# ====================================================================================== #
+
+# ====================================================================================== #
+#                               GnuPG Settings                                           #
 # ====================================================================================== #
 declare -gx GNUPGHOME="$XDG_CONFIG_HOME/pgp" # SYS #
 declare -gx GPG_TTY=$(tty)
@@ -97,7 +108,8 @@ fi
 # ====================================================================================== #
 #                               thefuck settings                                         #
 # ====================================================================================== #
-if (( $+commands[thefuck] )); then
+if [[ -f "$XDG_CONFIG_HOME/thefuck/env/bin/thefuck" ]]; then
+  alias thefuck="$XDG_CONFIG_HOME/thefuck/env/bin/thefuck"
   eval "$(thefuck --alias)"
 fi
 # ====================================================================================== #

@@ -1,0 +1,12 @@
+.DS_Store
+.localized
+.Spotlight-V100
+.Trash
+.Trashes
+.background
+.TemporaryItems
+.fseventsd
+.VolumeIcon.icns
+._*
+.com.apple.timemachine.*
+.FBC*

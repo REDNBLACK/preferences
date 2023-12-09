@@ -197,6 +197,7 @@ zinit snippet OMZP::colored-man-pages # Adds colors to man pages
 
   # The list of segments shown on the left. Fill it with the most important segments.
   declare -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=()
+  [[ "$TERM_PROGRAM" != 'iTerm.app' ]] && POWERLEVEL9K_LEFT_PROMPT_ELEMENTS+=prompt_char
 
   # The list of segments shown on the right. Fill it with less important segments.
   # Right prompt on the last prompt line (where you are typing your commands) gets
@@ -233,6 +234,21 @@ zinit snippet OMZP::colored-man-pages # Adds colors to man pages
   # Add an empty line before each prompt.
   declare -g POWERLEVEL9K_PROMPT_ADD_NEWLINE=false
 
+  # Magenta prompt symbol if the last command succeeded.
+  typeset -g POWERLEVEL9K_PROMPT_CHAR_OK_{VIINS,VICMD,VIVIS}_FOREGROUND=$green
+  # Red prompt symbol if the last command failed.
+  typeset -g POWERLEVEL9K_PROMPT_CHAR_ERROR_{VIINS,VICMD,VIVIS}_FOREGROUND=$red
+  # Default prompt symbol.
+  typeset -g POWERLEVEL9K_PROMPT_CHAR_{OK,ERROR}_VIINS_CONTENT_EXPANSION='❯'
+  # Prompt symbol in command vi mode.
+  typeset -g POWERLEVEL9K_PROMPT_CHAR_{OK,ERROR}_VICMD_CONTENT_EXPANSION='❮'
+  # Prompt symbol in visual vi mode is the same as in command mode.
+  typeset -g POWERLEVEL9K_PROMPT_CHAR_{OK,ERROR}_VIVIS_CONTENT_EXPANSION='❮'
+  # Prompt symbol in overwrite vi mode is the same as in command mode.
+  typeset -g POWERLEVEL9K_PROMPT_CHAR_OVERWRITE_STATE=false
+
+  # no surrounding whitespace
+  typeset -g POWERLEVEL9K_LEFT_{LEFT,RIGHT}_WHITESPACE=
   # Separator between same-color segments on the left.
   declare -g POWERLEVEL9K_LEFT_SUBSEGMENT_SEPARATOR='\uE0B1'
   # Separator between same-color segments on the right.
@@ -241,12 +257,10 @@ zinit snippet OMZP::colored-man-pages # Adds colors to man pages
   declare -g POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR='\uE0B0'
   # Separator between different-color segments on the right.
   declare -g POWERLEVEL9K_RIGHT_SEGMENT_SEPARATOR='\uE0B2'
-  # The right end of left prompt.
-  declare -g POWERLEVEL9K_LEFT_PROMPT_LAST_SEGMENT_END_SYMBOL='\uE0B0'
+  # The left and right end of left prompt.
+  declare -g POWERLEVEL9K_LEFT_PROMPT_{FIRST,LAST}_SEGMENT_END_SYMBOL=''
   # The left end of right prompt.
   declare -g POWERLEVEL9K_RIGHT_PROMPT_FIRST_SEGMENT_START_SYMBOL='\uE0B2'
-  # The left end of left prompt.
-  declare -g POWERLEVEL9K_LEFT_PROMPT_FIRST_SEGMENT_START_SYMBOL=''
   # The right end of right prompt.
   declare -g POWERLEVEL9K_RIGHT_PROMPT_LAST_SEGMENT_END_SYMBOL=''
   # Left prompt terminator for lines without any segments.

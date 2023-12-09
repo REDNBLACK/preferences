@@ -1,8 +1,12 @@
 # ====================================================================================== #
 #                                 functions                                              #
 # ====================================================================================== #
+# Scripting Handbook:                                                                    #
+# https://zdharma-continuum.github.io/zinit/wiki/zsh-native-scripting-handbook/          #
+# ====================================================================================== #
 # - show                   = formatted print                                             #
 # - mkd                    = mkdir + cd or mkdir only if dir not exists                  #
+# - notify                 = send push notification using ShellFish                      #
 # - vpn                    = connect to Cisco AnyConnect or OpenConnect VPN              #
 # - dns                    = reload dns, make domain alias for localhost with port       #
 # - upgrade                = update manager                                              #
@@ -101,6 +105,40 @@ EOF
     fi
   fi
 }
+
+# Send Push Notification via ShellFish
+# security add-internet-password -l ShellFish -r htps -s secureshellfish.app -a %user% -j %iv% -w %key%
+function notify() {
+  local usage=$(cat <<EOF
+${fg_bold[blue]}Usage:${reset_color} notify [options…] <title> <body> ... ${fg[cyan]}Send Push notification via ShellFish${reset_color}
+
+${fg_bold[blue]}Options:${reset_color}
+  ${fg_bold[yellow]}--shortcut NameOfShortcut${reset_color}                 ${fg[blue]}Shortcut to run when notification opened${reset_color}
+  ${fg_bold[yellow]}--url https://url.to.open/${reset_color}                 ${fg[blue]}URL to open when notification opened${reset_color}
+  ${fg_bold[yellow]}--help${reset_color}             ${fg[blue]}Show help (this message) and exit${reset_color}
+EOF
+)
+
+  if [[ $# -eq 0 ]]; then
+    echo $usage
+    return 0
+  fi
+
+  local raw=$(security 2>&1 find-internet-password -gl "ShellFish" | tr $EOL ' ')
+  local host=$(sed -nE 's:.*"srvr"<blob>="([^"]*)".*:\1:p' <<< $raw)
+  local user=$(sed -nE 's:.*"acct"<blob>="([^"]*)".*:\1:p' <<< $raw)
+  local key=$(sed -nE 's:.*password\: "([^"]*)".*:\1:p' <<< $raw)
+  local iv=$(sed -nE 's:.*"icmt"<blob>="([^"]*)".*:\1:p' <<< $raw)
+
+  local plain=$(
+  echo Secure ShellFish Notify 2.0
+  for var in "$@"; do echo -ne "$var" | base64; done
+  )
+  local base64=$(echo "$plain" | openssl enc -aes-256-cbc -base64 -K $key -iv $iv)
+
+  curl -sS -X POST -H 'Content-Type: text/plain' --data "$base64" "https://$host/push/?user=$user&mutable"
+}
+
 
 # Manage connection to Cisco AnyConnect VPN
 function vpn() {
@@ -445,11 +483,33 @@ EOF
       show -l $label "Downloading $(basename $dest | cut -d. -f1)..."
       curl -sSL $uri -o $dest --create-dirs
     ;;
-    (uid)
+    (uid)            # Get current user UID
       scutil <<< 'show State:/Users/ConsoleUser' | awk '/UID/ { print $3 }'
     ;;
+    (zsh-cache)      # Reset ZSH cache
+      zinit delete -y DF::core::aliases
+      zinit delete -y DF::core::functions
+    ;;
+    (anti-dot)       # Remove all .DS_Store files
+      local mode="$2" # [usr\sys|mnt]: Default usr + sys
+
+      if [ $mode == "usr" ]; then
+        # TODO
+      elif [ $mode == "sys" ]; then
+        # TODO
+      elif [ $mode == "mnt" ]; then
+        # TODO
+        # dot_clean -m /Volumes/${VOLUME}
+      fi
+
+      find / \
+          -type d \( -path /System -o -path /Volumes/com.apple.TimeMachine.localsnapshots -o -path '/Library/Caches/com.apple.*' -o -path /private/var -o -path /private/etc -o -path /dev/fd -o -path /usr/sbin/authserver \) -prune -o \
+          -type f \( -path /Applications/.DS_Store \) -prune -o \
+          -name '.DS_Store' -type f \
+          -exec zsh -c 'printf "Removed .DS_Store: %d\n" $#; rm "$@"' _ {} +
+    ;;
     (respring)
-      sudo rm -rf /Library/Caches/com.apple.iconservices.store && sudo killall Dock && sudo killall Finder
+      sudo rm -rf /Library/Caches/com.apple.iconservices.store && sudo killall {Dock,Finder}
     ;;
     (security)
       local mode=$2

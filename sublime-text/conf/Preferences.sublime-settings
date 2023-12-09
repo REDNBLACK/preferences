@@ -103,4 +103,5 @@
 	"ui_separator": true,
 	"ui_wide_scrollbars": true,
 	"use_tab_stops": true,
+	"index_files": true,
 }
