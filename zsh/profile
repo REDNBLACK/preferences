@@ -17,11 +17,8 @@ declare -gx XDG_CACHE_HOME="$HOME/Library/Caches" # SYS #
 declare -gx XDG_CONFIG_HOME="$HOME/.config" # SYS #
 declare -gx BACKUP_DIR="$HOME/Documents/backup" # SYS #
 
+# Set PATH
 eval `/usr/libexec/path_helper -s`
-path+=(
-  "/Library/Developer/CommandLineTools/usr/bin"
-  "/opt/homebrew/bin"
-)
 # ====================================================================================== #
 
 
@@ -33,7 +30,7 @@ declare -gx HOMEBREW_NO_INSTALL_CLEANUP=1
 declare -gx HOMEBREW_NO_EMOJI=1
 declare -gx HOMEBREW_GITHUB_API_TOKEN="$(security 2>&1 find-internet-password -ws github.com)"
 declare -gx HOMEBREW_PREFIX="$([[ $ARCH == 'arm64' ]] && echo '/opt/homebrew' || echo '/usr/local')"
-declare -gx HOMEBREW_REPOSITORY="$([[ $(uname -m) == 'arm64' ]] && echo $HOMEBREW_PREFIX || echo ${HOMEBREW_PREFIX}/Homebrew)"
+declare -gx HOMEBREW_REPOSITORY="$([[ $ARCH == 'arm64' ]] && echo $HOMEBREW_PREFIX || echo ${HOMEBREW_PREFIX}/Homebrew)"
 declare -gx HOMEBREW_CELLAR="$HOMEBREW_PREFIX/Cellar"
 declare -gx HOMEBREW_CASKROOM="$HOMEBREW_PREFIX/Caskroom"
 # ====================================================================================== #
@@ -41,6 +38,7 @@ declare -gx HOMEBREW_CASKROOM="$HOMEBREW_PREFIX/Caskroom"
 # ====================================================================================== #
 #                               NeoFetch Settings                                        #
 # ====================================================================================== #
+# Automatically show when connected via SSH
 if [[ -n "$SSH_TTY" ]] && (( $+commands[neofetch] )); then
   neofetch
 fi
@@ -77,7 +75,11 @@ declare -gx KUBECONFIG="$XDG_CONFIG_HOME/k8s" # SYS #
 #                               LOLCat settings                                          #
 # ====================================================================================== #
 if (( $+commands[lolcat] )); then
-  alias lolcat='lolcat -f 0.23'
+  if ${commands[lolcat]} --version | grep 'jaseg' -q; then
+    alias lolcat="${commands[lolcat]} -h 0.7 -v 1.0" # jaseg/lolcat (C)
+  else
+    alias lolcat="${commands[lolcat]} -f 0.23"       # ur0/lolcat (Rust)
+  fi
 else
   alias lolcat='cat'
 fi

@@ -55,6 +55,7 @@ My shell and programms settings
     brew install zsh # ⚠️ Command may be skipped in case of actual preinstalled zsh version
     ln -fs $DOTPREFSDIR/zsh ~/.config/zsh
     echo "export ZDOTDIR=$HOME/.config/zsh" | sudo tee -a /etc/zshenv > /dev/null
+    echo "export PATH=$(brew shellenv | sed -nE 's:^export PATH="([^"$]*).*".*$:\1:p'):/Library/Developer/CommandLineTools/usr/bin:\$PATH" | sudo tee -a /etc/zshenv > /dev/null
 
     # Set as default shell ⚠️ Command may be skipped in case of actual preinstalled zsh version
     which zsh | sudo tee -a /etc/shells > /dev/null
@@ -274,7 +275,7 @@ My shell and programms settings
 7. Setup Node.js [n](https://github.com/tj/n) [[:octocat:](https://github.com/tj/n)] & [pnpm](https://pnpm.io) [[:octocat:](https://github.com/pnpm/pnpm)]
 
     ```zsh
-    curl -L https://raw.githubusercontent.com/mklement0/n-install/stable/bin/n-install | bash -s -- -n -y latest
+    curl -L https://raw.githubusercontent.com/mklement0/n-install/stable/bin/n-install | bash -s -- -n -y lts
     corepack enable
     ```
 8. Setup [RapidAPI](https://paw.cloud) & [grpcurl](https://github.com/fullstorydev/grpcurl) & [ngrok](https://ngrok.com)

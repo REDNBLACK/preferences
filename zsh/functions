@@ -493,14 +493,14 @@ EOF
     (anti-dot)       # Remove all .DS_Store files
       local mode="$2" # [usr\sys|mnt]: Default usr + sys
 
-      if [ $mode == "usr" ]; then
+      #if [ -$mode == "usr" ]; then
         # TODO
-      elif [ $mode == "sys" ]; then
+      #elif [ $mode == "sys" ]; then
         # TODO
-      elif [ $mode == "mnt" ]; then
+      #elif [ $mode == "mnt" ]; then
         # TODO
         # dot_clean -m /Volumes/${VOLUME}
-      fi
+      #fi
 
       find / \
           -type d \( -path /System -o -path /Volumes/com.apple.TimeMachine.localsnapshots -o -path '/Library/Caches/com.apple.*' -o -path /private/var -o -path /private/etc -o -path /dev/fd -o -path /usr/sbin/authserver \) -prune -o \
