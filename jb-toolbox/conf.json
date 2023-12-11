@@ -1,14 +1,6 @@
 {
     "autostart": false,
     "channel_rollback_max_history": 1,
-    "ordering": {
-        "local": [
-            {
-                "application_id": "IDEA-U",
-                "channel_id": "ch-0"
-            }
-        ]
-    },
     "proxy": {
         "type": "system",
         "enabled": false

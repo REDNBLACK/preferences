@@ -1,0 +1,4 @@
+[
+  { "keys": ["option+m"], "command": "markdown_preview", "args": {"target": "browser", "parser":"markdown"} },
+  { "keys": ["shift", "shift"], "command": "show_overlay", "args": {"overlay": "command_palette"} }
+]

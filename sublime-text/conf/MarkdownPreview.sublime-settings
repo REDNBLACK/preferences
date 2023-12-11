@@ -1,0 +1,7 @@
+{
+  "enabled_parsers": ["markdown"],
+  "pygments_style": "monokai",
+  "css": {
+    "markdown": ["default", "res://User/MarkdownPreview.css"],
+  }
+}
