@@ -44,7 +44,7 @@
                         "columns": [
                             {
                                 "kind": 1,
-                                "width": 358
+                                "width": 355
                             },
                             {
                                 "kind": 2,
@@ -110,7 +110,7 @@
     "externalTools": {
         "tools_v1": [
             {
-                "title": "Open System Terminal Here",
+                "title": "Open iTerm Here",
                 "path": "/Applications/iTerm.app",
                 "parameters": "%r",
                 "shortcut": "⌘0",
@@ -143,12 +143,24 @@
     },
     "hotkeyOverrides_v1": {
         "menu.nimble_commander.quit": "",
+        "menu.view.switch_dual_single_mode": "",
+        "menu.view.toggle_layout_1": "",
+        "menu.view.toggle_layout_2": "",
+        "menu.view.toggle_layout_3": "",
+        "menu.view.toggle_layout_4": "",
         "menu.view.sorting_view_hidden": "",
+        "menu.view.show_terminal": "",
+        "menu.go.left_panel": "⌥1",
+        "menu.go.right_panel": "⌥2",
         "menu.go.root": "⌘.",
+        "menu.command.internal_viewer": "⌥3",
+        "menu.command.external_editor": "⌥4",
         "menu.command.move_to": "^",
         "menu.command.rename_in_place": "⌘\\r",
+        "menu.command.create_directory": "⌥7",
         "menu.command.delete": "",
         "menu.command.delete_permanently": "⇧⌘\b",
+        "menu.window.minimize": "",
         "viewer.show_settings": "⌘,"
     }
 }

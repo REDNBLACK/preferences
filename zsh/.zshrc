@@ -449,7 +449,7 @@ declare -gx ZSH_AUTOSUGGEST_STRATEGY=(
 declare -gx ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 
 # Ignore history suggestions that match a pattern
-declare -gx ZSH_AUTOSUGGEST_HISTORY_IGNORE="vpn *"
+declare -gx ZSH_AUTOSUGGEST_HISTORY_IGNORE="(l|l *|ls|ls *|cd|cd ..*|cd -|z *|vpn *|pwd|exit)"
 
 # Load
 zinit ice wait lucid atload"_zsh_autosuggest_start"
