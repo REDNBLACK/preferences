@@ -4,21 +4,31 @@ class VideoToolbox < Formula
   version "1.0.0"
 
   resource "ffmpeg" do
-    version "112061-g654e4b00e2"
+    version "112969-g5475f665f6"
     url "https://evermeet.cx/ffmpeg/ffmpeg-#{version}.zip"
-    sha256 "de002f07a22cfb8a979b045fb6e069a981c9e69bc9fb1b174481c708201774df"
+    sha256 "7893851ac916135f3b3b0da43366ed9257b235f57e41b21c635073ae7f51c820"
   end
 
   resource "mkvtoolnix" do
-    version "79.0"
+    version "81.0"
     url "https://mkvtoolnix.download/macos/MKVToolNix-#{version}.dmg"
-    sha256 "93f69fb341f5384475b2c4ded26f2dc990f273a4e95cbca5729a9b87d967be18"
+    sha256 "ac80111db885d10258f4e4cd7382033f9f54db3f578b808cc66298bff201a951"
   end
 
   resource "subler" do
     version "1.7.5"
     url "https://bitbucket.org/galad87/subler/downloads/Subler-#{version}.zip"
     sha256 "3596dad190deae9dfcdd6bac68a477def27df407e97f6870553b4640c08fd0b6"
+  end
+
+  def caveats
+    <<~EOS
+      Subler .app file will be placed into:
+        "#{prefix}"
+
+      To launch Subler, execute in Terminal:
+        #{bin/"Subler"}
+    EOS
   end
 
   def install
@@ -37,9 +47,9 @@ class VideoToolbox < Formula
     end
 
     resource("subler").stage do
-      libexec.mkpath
       Pathname.glob("../*.app") do |app|
-        mv app.realpath, libexec/"#{app.basename(".app")}.app"
+        prefix.install app
+        bin.write_exec_script prefix/app.basename/"Contents/MacOS"/app.stem
       end
     end
   end
