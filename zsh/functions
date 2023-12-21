@@ -25,6 +25,7 @@ ${fg_bold[blue]}Options:${reset_color}
   ${fg_bold[yellow]}-e${reset_color}                 ${fg[blue]}Set message level to Error${reset_color}
   ${fg_bold[yellow]}-d${reset_color}                 ${fg[blue]}Set message level to Debug${reset_color}
   ${fg_bold[yellow]}-n <times>${reset_color}         ${fg[blue]}Prepend NewLine Symbol for <times>${reset_color}
+  ${fg_bold[yellow]}-n ±<times>${reset_color}        ${fg[blue]}Append NewLine Symbol for <times>${reset_color}
   ${fg_bold[yellow]}-l <label>${reset_color}         ${fg[blue]}Prepend label before message (always shown after message level, if set)${reset_color}
   ${fg_bold[yellow]}--help${reset_color}             ${fg[blue]}Show help (this message) and exit${reset_color}
 
@@ -34,25 +35,29 @@ ${fg_bold[blue]}Examples:${reset_color}
   show ${fg_bold[yellow]}-d${reset_color} "Debugging" "Here" ${fg[blue]}Show debug message${reset_color}
 EOF
 )
-  local label=$([ ! -z "$label" ] && echo "[${label#-l}] " || echo '')
-  prefix() { for ((i = 0; i < $((${newline#-n})); i++)); do echo; done }
 
   if [[ ${#help} = 1 ]]; then
     echo $usage
-  elif [[ ${#error} = 1 ]]; then
-    prefix
-    echo -e $fg_bold[red]"[Error]"${label}"$@"$reset_color
-  elif [[ ${#debug} = 1 ]]; then
-    prefix
-    echo -e $fg_bold[yellow]"[Debug]"${label}${EOL}"$@"$reset_color
-  else
-    prefix
-    if [[ ${#rainbow} = 1 ]]; then
-      echo -n ${label}"$@" | lolcat -F
-    else
-      echo -e $fg_bold[blue]${label}"$@"$reset_color
-    fi
+    return 0
   fi
+
+  declare -A opts=(
+    [label]=$([ ! -z "$label" ] && echo "[${label#-l}] " || echo '')
+    [caret]=${(pl:$((${${newline#-n}#±}))::\n:)}
+    [mode]=$([[ "$newline" == *'±'* ]]; echo $?)
+  )
+
+  [[ ${opts[mode]} == 1 ]] && echo -n ${opts[caret]}
+  if [[ ${#error} = 1 ]]; then
+    echo -e $fg_bold[red]"[Error]"${opts[label]}"$@"$reset_color
+  elif [[ ${#debug} = 1 ]]; then
+    echo -e $fg_bold[yellow]"[Debug]"${opts[label]}${EOL}"$@"$reset_color
+  elif [[ ${#rainbow} = 1 ]]; then
+    echo -n ${opts[label]}"$@" | lolcat -F # Or -f for lolcat-c!!!
+  else
+    echo -e $fg_bold[blue]${opts[label]}"$@"$reset_color
+  fi
+  [[ ${opts[mode]} == 0 ]] && echo -n ${opts[caret]}
 }
 
 # Docker images start/stop
@@ -91,7 +96,10 @@ EOF
 
   if [[ ${#help} = 1 ]]; then
     echo $usage
-  elif [[ $# -lt 1 ]]; then
+    return 0
+  fi
+
+  if [[ $# -lt 1 ]]; then
     show -e "Path to dir not passed!"
   else
     if [[ ${#exists} = 1 ]]; then
@@ -376,48 +384,70 @@ function dns() {
 
 # Update/upgrade homebrew, homebrew cask, MAS and system
 function upgrade() {
-  show -l 'Brew Formula' -n 1
-  brew update 2>&1 | lolcat
-  brew upgrade --display-times --formula 2>&1 | lolcat
-  brew cleanup formula --prune 1 -s 2>&1 | lolcat
+  @packages() {
+    show -l 'Brew - Formulaes' -n 1
+    brew update 2>&1 | lolcat
+    brew upgrade --display-times --formula 2>&1 | lolcat
+    brew cleanup formula --prune 1 -s 2>&1 | lolcat
 
-  show -l 'Brew Cask' -n 1
-  if (( $+commands[mas] )); then
-    local mas='--include-mas';
-  fi
-  brew cu -a -y $mas --no-brew-update --no-quarantine --cleanup 2>&1 | lolcat
-
-  show -l 'Apps Icons' -n 1
-  for icon in $DOTPREFSDIR/macOS/icons/*.icns; do
-    local app_name=${$(basename $icon)%.*}
-    local app_path=$(internal app-installed "$app_name" 1)
-    local app_installed="$([[ ! -z "$app_path" ]] && echo 1 || echo 0)"
-    local app_custom_icon="$([[ -f "$app_path"/$'Icon\r' ]] && echo 1 || echo 0)"
-
-    show -r "$app_name [$app_installed-$app_custom_icon] $app_path$EOL"
-
-    if (( $app_installed == 1 )) && (( $app_custom_icon == 0 )); then
-      sudo osascript <<EOF > /dev/null || die
-    use framework "Cocoa"
-    set imageData to (current application's NSImage's alloc()'s initWithContentsOfFile:"$icon")
-    (current application's NSWorkspace's sharedWorkspace()'s setIcon:imageData forFile:"$app_path" options:2)
-EOF
-      sudo touch "$app_path"
+    show -l 'Brew - Casks' -n 1
+    if (( $+commands[mas] )); then
+      local mas='--include-mas'
     fi
-  done
-  internal respring
+    brew cu -a -y $mas --no-brew-update --no-quarantine --cleanup 2>&1 | lolcat
 
-  show -l 'System' -n 1
-  softwareupdate -ia 2>&1 | lolcat
+    if (( $+commands[n] )); then
+      show -l 'Node' -n 1
+      (( $+commands[n-update] )) && n-update -y
+      [[ "$(n ls)" != *"$(n --lts)"* ]] && { n lts && n prune }
+      (( $+commands[corepack] )) && corepack enable npm pnpm
+    fi
+  }
 
-  show -l 'ZInit' -n 1
-  zinit self-update 2>&1 | lolcat
-  zinit update -q --plugins 2>&1 | lolcat
+  @icons() {
+    show -l 'Apps Icons' -n 1
+    for icon in $DOTPREFSDIR/macOS/icons/*.icns; do
+      local name=${$(basename $icon)%.*}
+      local dir=$(internal app-installed "$name" 1)
 
-  if (( $+commands[tldr] )); then
-    show -l 'TLDR' -n 2
-    tldr -u 2>&1 | lolcat
-  fi
+      local info='NOT INSTALLED'
+      if [[ -f "$dir"/$'Icon\r' ]]; then
+        local info='CUSTOM ICON'
+      elif [[ ! -z "$dir" ]]; then
+        local info='NO ICON'
+      fi
+
+      show -l "${info}" -r "${name}$EOL" # "${dir}"
+
+      if [[ $info == 'NO ICON' ]]; then
+        sudo osascript <<EOF> /dev/null || die
+        use framework "Cocoa"
+        set imageData to (current application's NSImage's alloc()'s initWithContentsOfFile:"$icon")
+        (current application's NSWorkspace's sharedWorkspace()'s setIcon:imageData forFile:"$dir" options:2)
+EOF
+        sudo touch "$dir"
+      fi
+    done
+    internal respring
+  }
+
+  @scripts() {
+    show -l 'Scripts - ZInit' -n 1
+    zinit self-update 2>&1 | lolcat
+    zinit update -q --plugins 2>&1 | lolcat
+
+    if (( $+commands[tldr] )); then
+      show -l 'Scripts - TLDR' -n 2
+      tldr -u 2>&1 | lolcat
+    fi
+  }
+
+  @os() {
+    show -l 'OS' -n 1
+    softwareupdate -ia 2>&1 | lolcat
+  }
+
+  @packages && @icons && @scripts && @os
 }
 
 function internal() {
@@ -491,6 +521,7 @@ EOF
     (uncache)      # Reset ZSH functions cache and exit
       zinit delete -y DF::core::aliases
       zinit delete -y DF::core::functions
+      zinit delete -y romkatv/powerlevel10k
       exit 0
     ;;
     (die-dot)       # Remove all .DS_Store files

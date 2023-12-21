@@ -3,7 +3,7 @@ index ae4d5d1..e3b92af 100644
 --- a/git.rb
 +++ b/git.rb
 @@ -22,9 +22,6 @@ class Git < Formula
-     sha256 x86_64_linux:   "90ebffb7885c78afb540c6d36cfdf80b65b62db3288f204eb4975ea20e7c1fc0"
+     sha256 x86_64_linux:   "82fd41404f35e23d7c10efcd9c7dbad28febf07e0b94828c59a96f24aa935d2e"
    end
  
 -  depends_on "gettext"

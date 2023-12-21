@@ -276,7 +276,7 @@ My shell and programms settings
 
     ```zsh
     curl -L https://raw.githubusercontent.com/mklement0/n-install/stable/bin/n-install | bash -s -- -n -y lts
-    corepack enable
+    corepack enable npm pnpm
     ```
 8. Setup [RapidAPI](https://paw.cloud) & [grpcurl](https://github.com/fullstorydev/grpcurl) & [ngrok](https://ngrok.com)
 
