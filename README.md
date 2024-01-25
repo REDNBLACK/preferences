@@ -25,7 +25,7 @@ My shell and programms settings
     ```zsh
     bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     brew analytics off
-    brew tap {homebrew/cask-versions,buo/cask-upgrade}
+    brew tap {homebrew/cask-versions,homebrew/bundle,buo/cask-upgrade}
     brew install mas
 
     # Symlink custom Formulaes, Casks and Patches
