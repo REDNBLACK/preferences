@@ -120,12 +120,25 @@ My shell and programms settings
     ```
 
 ##### Security
-1. [💰] Setup [Strongbox](https://strongboxsafe.com) [[:octocat:](https://github.com/strongbox-password-safe)]
+1. Setup Yubikey [Manager](https://developers.yubico.com/yubikey-manager-qt/) [[:octocat:](https://github.com/Yubico/yubikey-manager-qt)] + [Authenticator](https://developers.yubico.com/yubioath-flutter/) [[:octocat:](https://github.com/Yubico/yubioath-flutter)]
+
+    ```zsh
+    brew install --cask yubico-{yubikey-manager,authenticator}
+
+    # Add Manager CLI to Path
+    cat > ${HOMEBREW_PREFIX}/bin/ykman <<EOF
+    #!/bin/bash
+    export PYTHONHOME=""
+    exec '/Applications/$(brew info yubico-yubikey-manager --json=v2 | jq -r '.casks[].name | .[0]').app/Contents/MacOS/ykman' "\$@"
+    EOF
+    chmod +x ${HOMEBREW_PREFIX}/bin/ykman
+    ```
+2. [💰] Setup [Strongbox](https://strongboxsafe.com) [[:octocat:](https://github.com/strongbox-password-safe)]
 
     ```zsh
     mas install 1481853033
     ```
-2. Setup [GPG Suite](https://gpgtools.org) [[:octocat:](https://github.com/GPGTools)]
+3. Setup [GPG Suite](https://gpgtools.org) [[:octocat:](https://github.com/GPGTools)]
 
     ```zsh
     brew install --cask gpg-suite-no-mail
@@ -152,49 +165,51 @@ My shell and programms settings
     # Remove bloat
     sudo rm -rf /Library/PreferencePanes/GPGPreferences.prefPane && sudo rm -f /Library/LaunchAgents/org.gpgtools.{updater,macgpg2.fix,macgpg2.updater,Libmacgpg.xpc}.plist
     ```
-3. Setup [DNS over HTTPS/TLS](https://github.com/paulmillr/encrypted-dns)
-    * Set var `config` to config name from [repo](https://github.com/paulmillr/encrypted-dns/tree/master/profiles) (for example `cloudflare-https`)
-    *
-        ```zsh
-        curl -LSs -o 'DoH.mobileconfig' "https://raw.githubusercontent.com/paulmillr/encrypted-dns/master/profiles/${config}.mobileconfig" && \
-        open -a ProfileHelper DoH.mobileconfig && \
-        open "x-apple.systempreferences:com.apple.preferences.configurationprofiles" && \
-        rm DoH.mobileconfig
-        ```
-    * In the Profiles window press 'Install...'
-4. [🆓] Setup [NextDNS](https://nextdns.io) [[:octocat:](https://github.com/nextdns)]
-    * Set vars `id` - to your configuration id, `name` - to device name and `model` - to one of values from [here](https://apple.nextdns.io) (for example `Apple MacBookPro11,1`)
-    *
-        ```zsh
-        curl -GLSs -o 'NextDNS.mobileconfig' 'https://api.nextdns.io/apple/profile' \
-          -d "configuration=${id}" \
-          --data-urlencode "device_name=${name}" \
-          --data-urlencode "device_model=${model}" \
-          -d "sign=${sign:-0}" \
-          -d "trust_ca=${trust:-0}" \
-          -d "bootstrap_ips=${bootstrap:-0}" \
-          -d "prohibit_disablement=${supervised:-0}" && \
-        open -a ProfileHelper NextDNS.mobileconfig && \
-        open "x-apple.systempreferences:com.apple.preferences.configurationprofiles" && \
-        rm NextDNS.mobileconfig
-        ```
-    * In the Profiles window press 'Install...'
-    * OR
+4. Setup secure DNS over HTTPS/TLS/QUIC
+    * Popular [DNS over HTTPS/TLS](https://github.com/paulmillr/encrypted-dns)
+        1. Set var `config` to config name from [repo](https://github.com/paulmillr/encrypted-dns/tree/master/profiles) (for example `cloudflare-https`)
+        2.
+            ```zsh
+            curl -LSs -o 'DoH.mobileconfig' "https://raw.githubusercontent.com/paulmillr/encrypted-dns/master/profiles/${config}.mobileconfig" && \
+            open -a ProfileHelper DoH.mobileconfig && \
+            open "x-apple.systempreferences:com.apple.preferences.configurationprofiles" && \
+            rm DoH.mobileconfig
+            ```
+        3. In the Profiles window press 'Install...'
+    * [🆓] [NextDNS](https://nextdns.io) [[:octocat:](https://github.com/nextdns)]
+        1. Set vars `id` - to your configuration id, `name` - to device name and `model` - to one of values from [here](https://apple.nextdns.io) (for example `Apple MacBookPro11,1`)
+        2.
+            ```zsh
+            curl -GLSs -o 'NextDNS.mobileconfig' 'https://api.nextdns.io/apple/profile' \
+              -d "configuration=${id}" \
+              --data-urlencode "device_name=${name}" \
+              --data-urlencode "device_model=${model}" \
+              -d "sign=${sign:-0}" \
+              -d "trust_ca=${trust:-0}" \
+              -d "bootstrap_ips=${bootstrap:-0}" \
+              -d "prohibit_disablement=${supervised:-0}" && \
+            open -a ProfileHelper NextDNS.mobileconfig && \
+            open "x-apple.systempreferences:com.apple.preferences.configurationprofiles" && \
+            rm NextDNS.mobileconfig
+            ```
+        3. In the Profiles window press 'Install...'
+
+        OR
         ```zsh
         brew install nextdns/tap/nextdns
         ```
-4. Setup [Orbot](https://orbot.app) [[:octocat:](hhttps://github.com/guardianproject/orbot-apple)]
+5. Setup [Orbot](https://orbot.app) [[:octocat:](hhttps://github.com/guardianproject/orbot-apple)]
 
     ```zsh
     mas install 1609461599
     ```
-5. [🆓] Setup [Lantern](https://lantern.io) [[:octocat:](https://github.com/getlantern)]
+6. [🆓] Setup [Lantern](https://lantern.io) [[:octocat:](https://github.com/getlantern)]
 
     ```zsh
     brew install --cask lantern
     cp -f $DOTPREFSDIR/lantern/settings.yaml ~/Library/Application\ Support/Lantern/settings.yaml
     ```
-6. Setup misc
+7. Setup misc
 
     ```zsh
     # Enable sudo auth via Touch ID (⚠️ Must be done after every system update)
