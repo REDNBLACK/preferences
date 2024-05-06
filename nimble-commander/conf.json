@@ -1,0 +1,166 @@
+{
+    "general": {
+        "theme": "Dark",
+        "notifications": {}
+    },
+    "filePanel": {
+        "general": {
+            "fileSizeFormat": 2,
+            "selectionSizeFormat": 3
+        },
+        "presentation": {},
+        "quickSearch": {},
+        "spotlight": {},
+        "operations": {},
+        "layout": {
+            "layouts_v1": [
+                {
+                    "title": "Short",
+                    "brief": {
+                        "mode": 1,
+                        "fixed_mode_width": 150,
+                        "fixed_amount_value": 3,
+                        "dynamic_width_min": 140,
+                        "dynamic_width_max": 300,
+                        "dynamic_width_equal": false,
+                        "icon_scale": 1
+                    }
+                },
+                {
+                    "title": "Medium",
+                    "brief": {
+                        "mode": 2,
+                        "fixed_mode_width": 150,
+                        "fixed_amount_value": 3,
+                        "dynamic_width_min": 140,
+                        "dynamic_width_max": 300,
+                        "dynamic_width_equal": false,
+                        "icon_scale": 1
+                    }
+                },
+                {
+                    "title": "Full",
+                    "list": {
+                        "columns": [
+                            {
+                                "kind": 1,
+                                "width": 355
+                            },
+                            {
+                                "kind": 2,
+                                "width": 75
+                            },
+                            {
+                                "kind": 3,
+                                "width": 90
+                            },
+                            {
+                                "kind": 5,
+                                "width": 90
+                            }
+                        ],
+                        "icon_scale": 1
+                    }
+                },
+                {
+                    "title": "Wide",
+                    "list": {
+                        "columns": [
+                            {
+                                "kind": 1
+                            },
+                            {
+                                "kind": 2
+                            }
+                        ],
+                        "icon_scale": 1
+                    }
+                },
+                {
+                    "title": "Custom Layout V",
+                    "disabled": null
+                },
+                {
+                    "title": "Custom Layout VI",
+                    "disabled": null
+                },
+                {
+                    "title": "Custom Layout VII",
+                    "disabled": null
+                },
+                {
+                    "title": "Custom Layout VIII",
+                    "disabled": null
+                },
+                {
+                    "title": "Custom Layout IX",
+                    "disabled": null
+                },
+                {
+                    "title": "Custom Layout X",
+                    "disabled": null
+                }
+            ]
+        }
+    },
+    "viewer": {
+        "defaultEncoding": "ENCODING_UTF8"
+    },
+    "terminal": {},
+    "externalTools": {
+        "tools_v1": [
+            {
+                "title": "Open iTerm Here",
+                "path": "/Applications/iTerm.app",
+                "parameters": "%r",
+                "shortcut": "⌘0",
+                "startup": 0
+            },
+            {
+                "title": "XCode Merge",
+                "path": "/usr/bin/opendiff",
+                "parameters": "%p %-p",
+                "shortcut": "",
+                "startup": 0
+            }
+        ]
+    },
+    "externalEditors": {
+        "editors_v1": [
+            {
+                "name": "Sublime Text.app",
+                "path": "/Applications/Sublime Text.app",
+                "args": "",
+                "mask": "*",
+                "maxFileSize": 0,
+                "onlyFiles": true,
+                "openInTerminal": false
+            }
+        ]
+    },
+    "themes": {
+        "automaticSwitching": {}
+    },
+    "hotkeyOverrides_v1": {
+        "menu.nimble_commander.quit": "",
+        "menu.view.switch_dual_single_mode": "",
+        "menu.view.toggle_layout_1": "",
+        "menu.view.toggle_layout_2": "",
+        "menu.view.toggle_layout_3": "",
+        "menu.view.toggle_layout_4": "",
+        "menu.view.sorting_view_hidden": "",
+        "menu.view.show_terminal": "",
+        "menu.go.left_panel": "⌥1",
+        "menu.go.right_panel": "⌥2",
+        "menu.go.root": "⌘.",
+        "menu.command.internal_viewer": "⌥3",
+        "menu.command.external_editor": "⌥4",
+        "menu.command.move_to": "^",
+        "menu.command.rename_in_place": "⌘\\r",
+        "menu.command.create_directory": "⌥7",
+        "menu.command.delete": "",
+        "menu.command.delete_permanently": "⇧⌘\b",
+        "menu.window.minimize": "",
+        "viewer.show_settings": "⌘,"
+    }
+}

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>BTTAllowDowngrades</key>
+	<false/>
+	<key>BTTBSTInstalled</key>
+	<false/>
+	<key>BTTConvertedDevices</key>
+	<true/>
+	<key>BTTDSVGO</key>
+	<true/>
+	<key>BTTLastClamshellState</key>
+	<false/>
+	<key>BTTLastViewMode</key>
+	<integer>1</integer>
+	<key>BTTMigratedToSQLLite</key>
+	<true/>
+	<key>BTTRemoteEnabled</key>
+	<false/>
+	<key>BTTSettingsToOpen</key>
+	<string>BTTSettingsSimple</string>
+	<key>BTTShowControlStrip</key>
+	<false/>
+	<key>BTTTouchBarHapticFeedback</key>
+	<integer>4</integer>
+	<key>BTTTouchBarHapticGlobal</key>
+	<true/>
+	<key>BTTTouchBarVisible</key>
+	<false/>
+	<key>BTTUpdatedToBTRCapable</key>
+	<true/>
+	<key>BTTWasDisabledBeforeSleep</key>
+	<false/>
+	<key>alreadyAskedForInitialWindowSnappingSettings</key>
+	<true/>
+	<key>checkForCrashreports</key>
+	<false/>
+	<key>launchOnStartup</key>
+	<true/>
+  <key>v054DefaultsChanged</key>
+	<true/>
+	<key>showPrefsAtNextLaunch</key>
+	<false/>
+	<key>showicon</key>
+	<false/>
+	<key>tpThreeFingerDoubleTapDelay</key>
+	<real>0.5</real>
+	<key>twoFingerDoubleTapDelay</key>
+	<real>0.5</real>
+	<key>SUHasLaunchedBefore</key>
+	<true/>
+	<key>SUEnableAutomaticChecks</key>
+	<false/>
+	<key>SUEnableSystemProfiling</key>
+	<false/>
+	<key>SUAllowsAutomaticUpdates</key>
+	<false/>
+	<key>SUAutomaticallyUpdate</key>
+	<false/>
+	<key>SUSendProfileInfo</key>
+	<false/>
+</dict>
+</plist>

@@ -1,0 +1,8 @@
+# NPM Properties
+cache=${XDG_CACHE_HOME}/node/npm
+# PNPM Properties
+store-dir=${XDG_CACHE_HOME}/node/pnpm/store
+cache-dir=${XDG_CACHE_HOME}/node/pnpm
+state-dir=${XDG_CACHE_HOME}/node/pnpm
+global-dir=${XDG_CACHE_HOME}/node/pnpm/global
+global-bin-dir=${XDG_CONFIG_HOME}/n/bin

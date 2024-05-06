@@ -1,0 +1,117 @@
+# ====================================================================================== #
+#                                profile                                                 #
+# ====================================================================================== #
+# ====================================================================================== #
+
+
+# ====================================================================================== #
+#                                Global settings                                         #
+# ====================================================================================== #
+declare -gx LC_CTYPE='UTF-8' # SYS #
+declare -gx LC_ALL="en_US.UTF-8" # SYS #
+declare -gx LANG="en_US.UTF-8" # SYS #
+declare -gx LANGUAGE="en:ru" # SYS #
+declare -gx ARCH="$(uname -m)" # SYS #
+declare -gx EOL='\n' # SYS #
+declare -gx XDG_CACHE_HOME="$HOME/Library/Caches" # SYS #
+declare -gx XDG_CONFIG_HOME="$HOME/.config" # SYS #
+declare -gx BACKUP_DIR="$HOME/Documents/backup" # SYS #
+
+# Set PATH
+eval `/usr/libexec/path_helper -s`
+# ====================================================================================== #
+
+
+# ====================================================================================== #
+#                               Homebrew settings                                        #
+# ====================================================================================== #
+declare -gx HOMEBREW_NO_ANALYTICS=1
+declare -gx HOMEBREW_NO_INSTALL_CLEANUP=1
+declare -gx HOMEBREW_NO_EMOJI=1
+declare -gx HOMEBREW_GITHUB_API_TOKEN="$(security 2>&1 find-internet-password -ws github.com)"
+declare -gx HOMEBREW_PREFIX="$([[ $ARCH == 'arm64' ]] && echo '/opt/homebrew' || echo '/usr/local')"
+declare -gx HOMEBREW_REPOSITORY="$([[ $ARCH == 'arm64' ]] && echo $HOMEBREW_PREFIX || echo ${HOMEBREW_PREFIX}/Homebrew)"
+declare -gx HOMEBREW_CELLAR="$HOMEBREW_PREFIX/Cellar"
+declare -gx HOMEBREW_CASKROOM="$HOMEBREW_PREFIX/Caskroom"
+# ====================================================================================== #
+
+# ====================================================================================== #
+#                               NeoFetch Settings                                        #
+# ====================================================================================== #
+# Automatically show when connected via SSH
+if [[ -n "$SSH_TTY" ]] && (( $+commands[neofetch] )); then
+  neofetch
+fi
+# ====================================================================================== #
+
+# ====================================================================================== #
+#                               GnuPG Settings                                           #
+# ====================================================================================== #
+declare -gx GNUPGHOME="$XDG_CONFIG_HOME/pgp" # SYS #
+declare -gx GPG_TTY=$(tty)
+if (( $+commands[gpgconf] )); then
+  alias pinentry=`gpgconf gpg-agent | grep pinentry | cut -d ':' -f3`
+
+  if [ `gpgconf --list-options gpg-agent | grep 'enable-ssh-support' | tail -c 2` = "1" ]; then
+    unset SSH_AGENT_PID
+    if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
+      declare -gx SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+    fi
+    gpgconf --reload gpg-agent
+  fi
+fi
+# ====================================================================================== #
+
+
+# ====================================================================================== #
+#                               Docker & K8S                                             #
+# ====================================================================================== #
+declare -gx DOCKER_CONFIG="$XDG_CONFIG_HOME/docker" # SYS #
+declare -gx KUBECONFIG="$XDG_CONFIG_HOME/k8s" # SYS #
+# ====================================================================================== #
+
+
+# ====================================================================================== #
+#                               LOLCat settings                                          #
+# ====================================================================================== #
+if (( $+commands[lolcat] )); then
+  if ${commands[lolcat]} --version | grep 'jaseg' -q; then
+    alias lolcat="${commands[lolcat]} -h 0.7 -v 1.0" # jaseg/lolcat (C)
+  else
+    alias lolcat="${commands[lolcat]} -f 0.23"       # ur0/lolcat (Rust)
+  fi
+else
+  alias lolcat='cat'
+fi
+# ====================================================================================== #
+
+
+# ====================================================================================== #
+#                               TLDR settings                                            #
+# ====================================================================================== #
+declare -gx TEALDEER_CONFIG_DIR="$XDG_CONFIG_HOME/tldr"
+if [[ ! -e "$TEALDEER_CONFIG_DIR/config.toml" ]]; then
+  mkdir -p $TEALDEER_CONFIG_DIR
+  cat > "$TEALDEER_CONFIG_DIR/config.toml" <<EOF
+[display]
+compact = false
+use_pager = false
+
+[updates]
+auto_update = false
+
+[directories]
+custom_pages_dir = "$TEALDEER_CONFIG_DIR/pages/"
+EOF
+fi
+# ====================================================================================== #
+
+
+# ====================================================================================== #
+#                               thefuck settings                                         #
+# ====================================================================================== #
+if [[ -f "$XDG_CONFIG_HOME/thefuck/env/bin/thefuck" ]]; then
+  alias thefuck="$XDG_CONFIG_HOME/thefuck/env/bin/thefuck"
+  eval "$(thefuck --alias)"
+fi
+# ====================================================================================== #

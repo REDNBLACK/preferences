@@ -1,0 +1,47 @@
+@media (prefers-color-scheme: dark) {
+  /* Body - True Black */
+  body {
+    background-color: #000000 !important; 
+  }
+
+  /* All text - White */
+  .markdown-body {
+    color: #ffffff;
+  }
+
+  /* Pre Blocks */
+  .markdown-body code:not(.highlight):not(.codehilite), .markdown-body samp {
+    background-color: rgb(26, 30, 37);
+  }
+
+  /* TOC */
+  .markdown-body .toc {
+    line-height: 1.0;
+    padding-top: 10px;
+    border: 1px solid #1d2629;
+    border-radius: 4px;
+  }
+  .markdown-body .toc a { color: #4183c4; }
+
+  /* Simple Links */
+  .markdown-body a {
+    color: #61187c;
+  }
+
+  /* H1-H6 */
+  .markdown-body h1 { color: #ff6666; }
+  .markdown-body h2 { color: #ffad66; }
+  .markdown-body h3 { color: #ffd137; }
+  .markdown-body h4 { color: #87d96c; }
+  .markdown-body h5 { color: #73d0ff; }
+  .markdown-body h6 { color: #dfbfff; }
+
+  /* </hr> */
+  .markdown-body hr { height: 1px }
+
+  /* Table Cells */
+  .markdown-body table th,
+  .markdown-body table td {
+    color: #000000 !important;
+  }
+}
