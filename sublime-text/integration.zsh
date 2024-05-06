@@ -12,13 +12,8 @@ if ! internal app-installed 'Sublime Text'; then
 fi
 
 () {
-  local bin='/usr/local/bin/subl'
+  local bin="$([[ $ARCH == 'arm64' ]] && echo '/opt/homebrew' || echo '/usr/local')/bin/subl"
   local pkg=~/Library/Application\ Support/Sublime\ Text/Installed\ Packages/Package\ Control.sublime-package
-
-  # Create symlink if not set or broken
-  if [[ ! -L $bin || ! -e $bin ]]; then
-    ln -fs '/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl' $bin
-  fi
 
   # Set as default editor
   if [[ -e $bin ]]; then

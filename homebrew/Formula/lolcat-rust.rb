@@ -1,6 +1,6 @@
 class LolcatRust < Formula
-  version "1.5.0"
-  sha256 "fd83a337ae5c3027e60ae508331d2f328a833ec12bf9279ce89e9df99ab126bd"
+  version "1.5.2"
+  sha256 "a62dfd4031bdba4dad0a73e5d79a2b40b4d37057e1ce4bf9160c496cf771ab5f"
 
   url "https://github.com/ur0/lolcat/archive/refs/heads/master.tar.gz"
   desc "Fastest and concurrency safe lolcat implementation in Rust"
