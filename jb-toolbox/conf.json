@@ -1,0 +1,23 @@
+{
+    "autostart": false,
+    "channel_rollback_max_history": 1,
+    "proxy": {
+        "type": "system",
+        "enabled": false
+    },
+    "shell_scripts": {
+        "enabled": false,
+        "location": "/usr/local/bin"
+    },
+    "tools": {
+        "localize_tools": true
+    },
+    "update": {
+        "filter": {
+            "quality_filter": {
+                "order_value": 10000
+            }
+        },
+        "install_automatically": false
+    }
+}

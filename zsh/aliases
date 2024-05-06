@@ -1,0 +1,40 @@
+# ====================================================================================== #
+#                                aliases                                                 #
+# ====================================================================================== #
+
+alias stfu="osascript -e 'set volume output muted true'"
+alias afk="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
+alias lsregister="/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister"
+
+# Easier navigation: .., ..., ...., ....., ~ and -
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias ~="cd ~" # `cd` is probably faster to type though
+alias -- -="cd -"
+
+# Weather
+alias weather="curl wttr.in"
+
+# Shortcuts
+alias d="cd ~/Documents"
+alias dl="cd ~/Downloads"
+alias w="cd ~/Work"
+alias pref="cd $DOTPREFSDIR"
+alias h="history"
+alias j="jobs"
+
+# Kill all the tabs in Chrome to free up memory
+alias chromekill="ps ux | grep '[C]hrome Helper --type=renderer' | grep -v extension-process | tr -s ' ' | cut -d ' ' -f2 | xargs kill"
+
+# Always enable colored output
+alias grep='grep --color=auto'
+alias duh="du -d 1 -h"
+alias dua="du -ah"
+if (( $+commands[eza] )); then
+  alias ls='eza --long --header --classify --group-directories-first --icons --all --git'
+else
+  export LSCOLORS='Gxfxcxdxbxegedabagacad'
+  alias ls="ls -lah"
+fi

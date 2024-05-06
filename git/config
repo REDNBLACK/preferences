@@ -1,0 +1,23 @@
+[user]
+	name = REDNBLACK
+	email = boris.p@protonmail.com
+	signingkey = 80CBC40B
+[credential]
+	helper = osxkeychain
+[gpg]
+	program = /usr/local/bin/gpg
+[core]
+	autocrlf = input
+[push]
+	default = simple
+[color]
+	ui = true
+[alias]
+	tags = tag -l
+	branches = branch -a
+	remotes = remote -v
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

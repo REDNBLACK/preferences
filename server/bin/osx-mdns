@@ -1,0 +1,112 @@
+#!/bin/zsh
+#############
+### Usage ###
+#############
+#
+# Add address for multicast (Reverse proxied status.f0w.local via nginx)
+# defaults write /Library/Preferences/osx.mdns.plist bind --add-key "status.f0w" 192.168.50.2:80
+#
+# Reload
+# sudo launchctl bootout system /Library/LaunchDaemons/osx.mdns.agent.plist && sudo launchctl bootstrap system /Library/LaunchDaemons/osx.mdns.agent.plist
+#############
+declare -A opts=([prog]='OSX mDNS' [cfg]='/Library/Preferences/osx.mdns.plist' [log]='/Library/Logs/osx.mdns.log' [sep]=' = ')
+declare -A binds=()
+
+config() {
+  if (( $+commands[jq] )); then
+    local parser="plutil -convert json -o - ${opts[cfg]} | jq -r '.bind | to_entries | .[] | [.key,.value] | join(\"${opts[sep]}\")'"
+  else
+    log "jq not found, fallback to sed"
+    local parser="defaults read ${opts[cfg]} 'bind' | sed -e '/^[[:blank:]{}]$/d' | sed -E 's/\"(.*)\";$/\1/' | tr -d '\"'"
+  fi
+
+  eval ${parser} | while IFS=${opts[sep]} read -r k v; do
+    # log "($k): [$v]"
+    binds[$k]="$v"
+  done
+}
+
+log() {
+  echo "`date -Iseconds` ${opts[prog]} $1"
+}
+
+multicast() {
+  local name="$1"
+  local ip="${2%:*}"
+  local port="${2#*:}"
+
+  dns-sd -P $name _mdns._tcp . $port "$name.local" $ip 2>&1 &
+  binds[${name}]=$!
+}
+
+dns() {
+  declare -A file=(
+    [firewall]='/etc/pf.conf'
+    [hosts]='/etc/hosts'
+    [redirect]='/etc/pf.anchors/domain.alias'
+  )
+
+  inject() {
+    local opts=($2 $3)
+    if [ "$1" = 'delete' ]; then; opts[2]=(); fi
+    sudo sed -i '' -n ${opts[@]/#/-e } $4
+  }
+
+  case $1 in
+    (reload)   # Reset DNS Cache
+      sudo killall -HUP mDNSResponder
+    ;;
+    (firewall) # Manipulate Firewall settings
+      local mode="$2"
+
+      output=("${(@f)$(sudo pfctl -q $mode -f ${file[firewall]} 2>&1)}")
+      printf '%s\n' ${output[@]:3} && if [ $mode = '-d' ]; then; sleep 3; fi
+    ;;
+    (alias)    # Alias localhost with port to domain
+      declare -A addr=([base]='127.0.0.' [domain]="$2" [port]="$3")
+      addr[all]="$(sed -nE 's#^'${addr[base]}'([0-9]+)[[:space:]]+(.+)$#\2=\1#p' ${file[hosts]})"
+      addr[local]="${addr[base]}${$([[ "${addr[all]}" =~ ${addr[domain]}=([0-9]+) ]] && echo "${match[1]}" || echo "$(echo ${addr[all]} | cut -d'=' -f2 | sort -n | tail -1 | awk '{print $1 + 1}')")}"
+
+      declare -A cmd=(
+        [expr]="rdr pass on lo0 inet proto tcp from any to ${addr[local]} port 80 -> ${addr[base]}1 port ${addr[port]}"
+        [anchor]='rdr-anchor "domain.alias"'
+        [load]='load anchor "domain.alias" from'
+      )
+
+      # log "${addr[all]}\n${addr[local]}\n${addr[port]}"
+
+      ## Create or update redirect
+      [ ! -e $file[redirect] ] && sudo tee $file[redirect] <<< "# Domain Redirect Aliases ruleset" > /dev/null
+      inject 'both' '/^.*'${addr[local]}' port 80.*$/!p' '$a\'$'\n'${cmd[expr]} ${file[redirect]}
+
+      # ## Configure and load redirect
+      inject 'both' '/^'${cmd[anchor]}'$/!p' '/rdr-anchor "com.apple\/\*"/a\'$'\n'${cmd[anchor]} ${file[firewall]}
+      inject 'both' '/^'${cmd[load]}' "'$(sed 's:/:\\/:g' <<< ${file[redirect]})'"/!p' '$a\'$'\n'${cmd[load]}' "'${file[redirect]}'"' ${file[firewall]}
+      dns firewall -n && dns firewall -d && dns firewall -e
+
+      # ## Create or update domain -> ip mapping in hosts and reload DNS
+      inject 'both' '/^'${addr[base]}'[0-9]* '${addr[domain]}'/!p' '$a\'$'\n'${addr[local]}' '${addr[domain]} ${file[hosts]}
+      dns reload
+
+      log "Start apps at ${addr[local]}:${addr[port]} and view them at http://${addr[domain]}/"
+    ;;
+  esac
+}
+
+main() {
+  log "Starting $binds"
+  for name hostname in ${(kv)binds}; multicast $name $hostname
+  for pid in ${binds[*]}; wait $pid
+}
+
+cleanup() {
+  log "Killing $binds"
+  for pid in ${binds[*]}; kill -9 $pid > /dev/null 2>&1
+  unset binds opts
+  exit 0
+}
+
+exec &>> ${opts[log]}
+trap cleanup SIGINT SIGTERM SIGHUP SIGQUIT
+config load
+main

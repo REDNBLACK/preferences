@@ -1,0 +1,56 @@
+{
+    "displayAvailableTools": true,
+    "firstRunDate": "2020-06-18T02:32:48.505+03:00",
+    "selectedMainPageTab": "Tools",
+    "acceptedLicenseAgreementHashes": [
+    ],
+    "lastStartedVersion": "2.1.1.18388",
+    "lastShownWhatsNewVersion": "1.28.1.15219",
+    "toolFreshness": {
+        "Aqua": {
+            "freshness": "Revealed",
+            "until": "2023-01-21T00:00:00Z"
+        },
+        "DataSpell": {
+            "freshness": "Revealed",
+            "until": "2021-12-13T00:00:00Z"
+        },
+        "Fleet": {
+            "freshness": "Installed",
+            "until": "2022-12-22T00:00:00Z"
+        },
+        "Space": {
+            "freshness": "Revealed",
+            "until": "2022-10-29T00:00:00Z"
+        },
+        "Writerside": {
+            "freshness": "Revealed",
+            "until": "2024-01-09T00:00:00Z"
+        },
+        "CLion-Nova": {
+            "freshness": "Revealed",
+            "until": "2024-01-09T00:00:00Z"
+        },
+        "RustRover": {
+            "freshness": "Revealed",
+            "until": "2024-01-09T00:00:00Z"
+        }
+    },
+    "dataloreConnected": false,
+    "skipUpdatePreviewFeedUntil": 1702336526938,
+    "addedServiceNameToAccountTokens": false,
+    "onboarding": {
+        "currentTechnicalStep": 3,
+        "processedInformationalSteps": [
+            0,
+            2,
+            3,
+            4,
+            1
+        ]
+    },
+    "displayProjectLists": {
+    },
+    "displayAvailableServices": true,
+    "preferredKeychain": "macos-system"
+}

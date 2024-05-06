@@ -1,0 +1,683 @@
+# ====================================================================================== #
+#                                 functions                                              #
+# ====================================================================================== #
+# Scripting Handbook:                                                                    #
+# https://zdharma-continuum.github.io/zinit/wiki/zsh-native-scripting-handbook/          #
+# ====================================================================================== #
+# - show                   = formatted print                                             #
+# - mkd                    = mkdir + cd or mkdir only if dir not exists                  #
+# - notify                 = send push notification using ShellFish                      #
+# - vpn                    = connect to Cisco AnyConnect or OpenConnect VPN              #
+# - dns                    = reload dns, make domain alias for localhost with port       #
+# - upgrade                = update manager                                              #
+# - internal               = internal tools                                              #
+# ====================================================================================== #
+
+# Print formatted info/error/debug
+function show() {
+  zparseopts -D -E -F - l::=label n::=newline r=rainbow e=error d=debug h=help -help=help
+
+  local usage=$(cat <<EOF
+${fg_bold[blue]}Usage:${reset_color} show [options…] <text> ${fg[cyan]}Pretty printing and show${reset_color}
+
+${fg_bold[blue]}Options:${reset_color}
+  ${fg_bold[yellow]}-r${reset_color}                 ${fg[blue]}Show message text with rainbow color${reset_color}
+  ${fg_bold[yellow]}-e${reset_color}                 ${fg[blue]}Set message level to Error${reset_color}
+  ${fg_bold[yellow]}-d${reset_color}                 ${fg[blue]}Set message level to Debug${reset_color}
+  ${fg_bold[yellow]}-n <times>${reset_color}         ${fg[blue]}Prepend NewLine Symbol for <times>${reset_color}
+  ${fg_bold[yellow]}-n ±<times>${reset_color}        ${fg[blue]}Append NewLine Symbol for <times>${reset_color}
+  ${fg_bold[yellow]}-l <label>${reset_color}         ${fg[blue]}Prepend label before message (always shown after message level, if set)${reset_color}
+  ${fg_bold[yellow]}--help${reset_color}             ${fg[blue]}Show help (this message) and exit${reset_color}
+
+${fg_bold[blue]}Examples:${reset_color}
+  show "Hello there" ${fg_bold[yellow]}-l${reset_color} "Me" ${fg[blue]}Show info message with label${reset_color} ${fg_bold[yellow]}Me${reset_color}
+  show ${fg_bold[yellow]}-e${reset_color} "Oh god, failure"  ${fg[blue]}Show error message${reset_color}
+  show ${fg_bold[yellow]}-d${reset_color} "Debugging" "Here" ${fg[blue]}Show debug message${reset_color}
+EOF
+)
+
+  if [[ ${#help} = 1 ]]; then
+    echo $usage
+    return 0
+  fi
+
+  declare -A opts=(
+    [label]=$([ ! -z "$label" ] && echo "[${label#-l}] " || echo '')
+    [caret]=${(pl:$((${${newline#-n}#±}))::\n:)}
+    [mode]=$([[ "$newline" == *'±'* ]]; echo $?)
+  )
+
+  [[ ${opts[mode]} == 1 ]] && echo -n ${opts[caret]}
+  if [[ ${#error} = 1 ]]; then
+    echo -e $fg_bold[red]"[Error]"${opts[label]}"$@"$reset_color
+  elif [[ ${#debug} = 1 ]]; then
+    echo -e $fg_bold[yellow]"[Debug]"${opts[label]}${EOL}"$@"$reset_color
+  elif [[ ${#rainbow} = 1 ]]; then
+    echo -n ${opts[label]}"$@" | lolcat -F # Or -f for lolcat-c!!!
+  else
+    echo -e $fg_bold[blue]${opts[label]}"$@"$reset_color
+  fi
+  [[ ${opts[mode]} == 0 ]] && echo -n ${opts[caret]}
+}
+
+# Docker images start/stop
+# Usage start_docker_image $name $volume_dir $image $port[]
+# function start_docker_image() {
+#   name=$1
+#   volume_dir=$2
+#   image=$3
+#   args=("$@")
+#   args_num=${#args[@]}
+#   if [ "$(docker ps -q -f name=$name)" ]; then
+#     docker rm -f $name
+#   else
+#     docker run -d for ((i=2;i<$args_num;i++)); do echo -p ${args[${i}]} done -v $HOME/.docker/$name:$volume_dir --name $name $image
+#   fi
+# }
+
+# Advanced `mkdir`
+function mkd() {
+  zparseopts -D -E -F - e=exists s=silent h=help -help=help
+
+  local usage=$(cat <<EOF
+${fg_bold[blue]}Usage:${reset_color} mkd [options…] <path to dir> ${fg[cyan]}Advanced mkdir${reset_color}
+
+${fg_bold[blue]}Options:${reset_color}
+  ${fg_bold[yellow]}-e${reset_color}                 ${fg[blue]}Create directory only if not exists (disables cd inside)${reset_color}
+  ${fg_bold[yellow]}-s${reset_color}                 ${fg[blue]}Do not print message when creating directory with ${fg_bold[yellow]}-e${reset_color} ${fg[blue]}flag${reset_color}
+  ${fg_bold[yellow]}--help${reset_color}             ${fg[blue]}Show help (this message) and exit${reset_color}
+
+${fg_bold[blue]}Examples:${reset_color}
+  mkd ${fg_bold[yellow]}-e${reset_color} a/new/dir     ${fg[blue]}Create dir if not exists, showing message on launch${reset_color}
+  mkd ${fg_bold[yellow]}-e${reset_color} ${fg_bold[yellow]}-s${reset_color} a/new/dir  ${fg[blue]}Create dir if not exists, silently${reset_color}
+  mkd a/new/dir        ${fg[blue]}Create dir and then cd inside of it${reset_color}
+EOF
+)
+
+  if [[ ${#help} = 1 ]]; then
+    echo $usage
+    return 0
+  fi
+
+  if [[ $# -lt 1 ]]; then
+    show -e "Path to dir not passed!"
+  else
+    if [[ ${#exists} = 1 ]]; then
+      if [[ ! -e "$@" ]]; then
+        [[ ${#silent} = 1 ]] || show "Creating directory $@..."
+        mkdir -p "$@"
+      fi
+    else
+      mkdir -p "$@" && cd "$_"
+    fi
+  fi
+}
+
+# Send Push Notification via ShellFish
+function notify() {
+  local usage=$(cat <<EOF
+${fg_bold[blue]}Usage:${reset_color} notify [options…] <title> <body> ... ${fg[cyan]}Send Push notification via ShellFish${reset_color}
+
+${fg_bold[blue]}Options:${reset_color}
+  ${fg_bold[yellow]}--shortcut NameOfShortcut${reset_color}                 ${fg[blue]}Shortcut to run when notification opened${reset_color}
+  ${fg_bold[yellow]}--url https://url.to.open/${reset_color}                 ${fg[blue]}URL to open when notification opened${reset_color}
+  ${fg_bold[yellow]}--help${reset_color}             ${fg[blue]}Show help (this message) and exit${reset_color}
+
+${fg_bold[blue]}Setup:${reset_color}
+  ${fg[blue]}Store your ShellFish connection credentials to macOS Keychain by executing${reset_color} ${fg[cyan]}(required step in order for this program to work):${reset_color}
+      security add-internet-password ${fg_bold[yellow]}-l${reset_color} ShellFish ${fg_bold[yellow]}-r${reset_color} htps ${fg_bold[yellow]}-s${reset_color} secureshellfish.app ${fg_bold[yellow]}-a${reset_color} %user% ${fg_bold[yellow]}-j${reset_color} %iv% ${fg_bold[yellow]}-w${reset_color} %key%
+EOF
+)
+
+  if [[ $# -eq 0 ]]; then
+    echo $usage
+    return 0
+  fi
+
+  local raw=$(security 2>&1 find-internet-password -gl "ShellFish" | tr $EOL ' ')
+  local host=$(sed -nE 's:.*"srvr"<blob>="([^"]*)".*:\1:p' <<< $raw)
+  local user=$(sed -nE 's:.*"acct"<blob>="([^"]*)".*:\1:p' <<< $raw)
+  local key=$(sed -nE 's:.*password\: "([^"]*)".*:\1:p' <<< $raw)
+  local iv=$(sed -nE 's:.*"icmt"<blob>="([^"]*)".*:\1:p' <<< $raw)
+
+  local plain=$(
+  echo Secure ShellFish Notify 2.0
+  for var in "$@"; do echo -ne "$var" | base64; done
+  )
+  local base64=$(echo "$plain" | openssl enc -aes-256-cbc -base64 -K $key -iv $iv)
+
+  curl -sS -X POST -H 'Content-Type: text/plain' --data "$base64" "https://$host/push/?user=$user&mutable"
+}
+
+
+# Manage connection to Cisco AnyConnect VPN
+function vpn() {
+  zparseopts -D -E -F - kc::=keychain -keychain::=keychain s=secure -secure=secure a=auto -auto=auto f=force -force=force h=help -help=help
+
+  declare -A opts=(
+    [label]='VPN'
+    [pkg]='com.cisco.anyconnect'
+    [bin]='/opt/cisco/anyconnect/bin'
+    [apps]='/Applications/Cisco'
+    [agents]='/Library/LaunchAgents'
+    [daemons]='/Library/LaunchDaemons'
+    [totp]="$1"
+    [secure]=${#secure}
+    [force]=${#force}
+    [auto]=${#auto}
+    [keychain]=${${keychain#(--keychain|-kc)}:-"CiscoVPN"}
+    [type]=$([ ${#secure} = 0 ] && echo 'OpenConnect' || echo 'Cisco AnyConnect')
+  )
+  declare -A X=(
+    [bins]="${opts[bin]}/vpnagentd|${opts[bin]}/aciseposture|openconnect"
+    [agent]="${opts[daemons]}/${opts[pkg]}.vpnagentd.plist"
+    [ise]="${opts[agents]}/${opts[pkg]}.aciseposture.plist"
+    [notify]="${opts[agents]}/${opts[pkg]}.notification.plist"
+    [gui]="${opts[agents]}/${opts[pkg]}.gui.plist"
+    [cli]="${opts[bin]}/vpn"
+    [app]="${opts[apps]}/Cisco AnyConnect Secure Mobility Client.app"
+    [filter]="${opts[apps]}/Cisco AnyConnect Socket Filter.app"
+    [ext]="${opts[pkg]}.macos.acsockext"
+    [team]='DE8Y96K9QP' # Or execute `systemextensionsctl list | grep activated | grep ${X[ext]} | awk '{print $3}'`
+  )
+
+  local usage=$(cat <<EOF
+${fg_bold[blue]}Usage:${reset_color} vpn [options…] <TOTP> ${fg[cyan]}Manage connection to Cisco AnyConnect based VPN${reset_color}
+
+${fg_bold[blue]}Options:${reset_color}
+  ${fg_bold[yellow]}--secure${reset_color}           ${fg[blue]}Connect to VPN using native Cisco AnyConnect client${reset_color} ${fg[cyan]}(without flag OpenConnect client will be used)${reset_color}
+  ${fg_bold[yellow]}--keychain${reset_color} <entry> ${fg[blue]}Name of KeyChain entry to use for connection${reset_color} ${fg[cyan]}(CiscoVPN entry will be used if not set)${reset_color}
+  ${fg_bold[yellow]}--auto${reset_color}             ${fg[blue]}Automatically retrieve TOTP for VPN${reset_color} ${fg[cyan]}(Requires installed macos-totp-cli)${reset_color}
+  ${fg_bold[yellow]}--force${reset_color}            ${fg[blue]}Forcefully Unload and Disable Cisco Kernel Network Extensions${reset_color}
+  ${fg_bold[yellow]}--help${reset_color}             ${fg[blue]}Show help (this message) and exit${reset_color}
+
+${fg_bold[blue]}Setup:${reset_color}
+  ${fg[blue]}Store your VPN connection credentials to secure macOS KeyChain by executing${reset_color} ${fg[cyan]}(required step in order for this program to work):${reset_color}
+      security add-internet-password ${fg_bold[yellow]}-l${reset_color} CiscoVPN ${fg_bold[yellow]}-r${reset_color} htps ${fg_bold[yellow]}-s${reset_color} %HOST% ${fg_bold[yellow]}-a${reset_color} %GROUP%/%USER% ${fg_bold[yellow]}-w${reset_color} %PASSWORD%
+  ${fg[blue]}Store your VPN connection TOTP secret to secure macOS KeyChain by executing${reset_color} ${fg[cyan]}(OPTIONALLY, if simnalamburt/macos-totp-cli installed):${reset_color}
+      totp add CiscoVPN
+      %TOTP Secret%
+  ${fg[blue]}Install manually if you want to use native client:${reset_color}
+      cisco-any-connect.pkg
+  ${fg[blue]}...or execute this if you prefer openconnect$reset_color ${fg[cyan]}(depends on gmp bdw-gc libffi libtool libunistring pkg-config guile libidn2 libtasn1 nettle p11-kit libevent unbound gnutls stoken):${reset_color}
+      brew install openconnect
+
+${fg_bold[blue]}Examples:${reset_color}
+  vpn ${fg_bold[yellow]}--keychain${reset_color} SuperVPN ${fg_bold[yellow]}--secure${reset_color} 133742   ${fg[blue]}Connect via native client using 'SuperVPN' KeyChain entry${reset_color}
+  vpn 800855                                ${fg[blue]}Connect via openconnect using default KeyChain entry 'CiscoVPN'${reset_color}
+  vpn                                       ${fg[blue]}Disconnect and gracefully close all Cisco VPN daemons and workers${reset_color}
+EOF
+)
+
+  if [ ${#help} = 1 ]; then
+    echo $usage
+  else
+    # show -l $opts[label] -d "    '$keychain' '$secure' ${opts[type]} '$stopped'$EOL    '$totp'"
+
+    otp() {
+      if [ ${opts[auto]} = 0 ] && [ "${opts[totp]}" = '' ]; then
+        echo 0   # Nothing Passed
+      elif [ ${opts[auto]} = 1 ]; then
+        if (( $+commands[totp] )); then echo 1 # Passed --auto
+        else                            echo 2 # Passed --auto, but TOTP CLI not installed
+        fi
+      elif [ -n "${opts[totp]}" ]; then echo 1 # Passed TOTP directly
+      fi
+    }
+
+    start() {
+      local raw=$(security 2>&1 find-internet-password -gl ${opts[keychain]} | tr $EOL ' ')
+      local host=$(sed -nE 's:.*"srvr"<blob>="([^"]*)".*:\1:p' <<< $raw)
+      local acc=(${(Oas:/:)$(sed -nE 's:.*"acct"<blob>="([^"]*)".*:\1:p' <<< $raw)})
+      local pass=$(sed -nE 's:.*password\: "([^"]*)".*:\1:p' <<< $raw)
+      local totp=$([ ${opts[auto]} = 1 ] && totp get ${opts[keychain]} || echo ${opts[totp]})
+
+      # show -l $opts[label] -d "    '$host'$EOL    [${#acc[@]}]: '$acc'$EOL    '$pass'"
+
+      if [ ${opts[secure]} = 0 ]; then
+        ####################
+        #   OpenConnect    #
+        ####################
+        local args=(
+          '--background'
+          "--user=${acc[1]}"
+          '--passwd-on-stdin'
+        )
+        if [ ! -z ${acc[2]} ]; then
+          args+=("--authgroup=${acc[2]}")
+        fi
+
+        printf '%s\n' $pass $totp | sudo openconnect $args $host
+      else
+        ####################
+        # Cisco AnyConnect #
+        ####################
+        local args=()
+        if [ ! -z ${acc[2]} ]; then
+          ## Group always "0" for Cisco native client
+          args+=("0" ${acc[1]})
+        else
+          args+=(${acc[1]})
+        fi
+
+        @assert sudo launchctl bootstrap system ${X[agent]}
+        printf '%s\n' $args $pass $totp | ${X[cli]} -s connect $host
+        @assert sudo launchctl bootstrap system ${X[ise]}
+      fi
+    }
+
+    stop() {
+      ####################
+      #   OpenConnect    #
+      ####################
+      sudo pkill -2 'openconnect' 2>&1
+
+      ####################
+      # Cisco AnyConnect #
+      ####################
+      ## Kill GUI & CLI
+      sudo launchctl bootout system ${X[gui]} ${X[notify]} > /dev/null 2>&1
+      sudo pkill -2 -f ${X[app]} ${X[cli]} 2>&1
+      sudo rm -f ${X[gui]} ${X[notify]} 2>&1
+      @loop 5 'Timeout waiting for GUI to stop' pgrep -f ${X[app]}
+
+      ## Kill Daemons
+      sudo launchctl bootout system ${X[agent]} ${X[ise]} > /dev/null 2>&1
+      @loop 10 'Timeout waiting for Daemons to stop' pgrep -f ${X[bins]}
+
+      ## Disable and Remove System Extensions
+      sudo pkill -9 -f ${opts[bin]} 2>&1
+      if [ ${opts[force]} = 1 ]; then
+        # Temporary allow system extensions to be uninstalled without password prompt
+        local prev=`internal security`
+        [ $prev = 'authenticate-admin-nonshared' ] && internal security 'allow'
+
+        # Deactivate and remove Cisco System Extensions
+        sudo "${X[filter]}/Contents/MacOS/Cisco AnyConnect Socket Filter" -deactivateExt
+        # Same, but when SIP disabled or in later macOS versions)
+        # sudo systemextensionsctl uninstall ${X[team]} ${X[ext]}
+
+        # Revert back System Extensions Security
+        [ $prev != 'allow' ] && internal security $prev
+      fi
+    }
+
+    local stopped=$([ -z "$(pgrep -f ${X[bins]})" ] && echo 1 || echo 0)
+    local twofa=`otp`
+
+    if [ $stopped = 1 ] && [ $twofa = 0 ]; then
+      show -l $opts[label] -e 'TOTP is empty!'
+    elif [ $stopped = 1 ] && [[ $twofa = 1 ]]; then
+      show -l $opts[label] "Launching ${opts[type]}..."
+      start
+    elif [ $stopped = 0 ] && [ $twofa = 0 ]; then
+      show -l $opts[label] 'Closing...'
+      stop $opts[force]
+    elif [ $stopped = 0 ] && [ $twofa = 1 ]; then
+      show -l $opts[label] "Restarting ${opts[type]}..."
+      stop $opts[force]
+      start
+    elif [ $twofa = 2 ]; then
+      show -l $opts[label] -e 'Usage of flag -auto requires TOTP CLI. Install via `brew install simnalamburt/x/totp`'
+    fi
+  fi
+}
+
+# Manage DNS
+function dns() {
+  local usage="Try me"
+  declare -A file=(
+    [firewall]='/etc/pf.conf'
+    [hosts]='/etc/hosts'
+    [redirect]='/etc/pf.anchors/domain.alias'
+  )
+
+  inject() {
+    local opts=($2 $3)
+    if [ "$1" = 'delete' ]; then; opts[2]=(); fi
+    sudo sed -i '' -n ${opts[@]/#/-e } $4
+  }
+
+  case $1 in
+    (reload)   # Reset DNS Cache
+      sudo killall -HUP mDNSResponder
+    ;;
+    (firewall) # Manipulate Firewall settings
+      local mode="$2"
+
+      output=("${(@f)$(sudo pfctl -q $mode -f ${file[firewall]} 2>&1)}")
+      printf '%s\n' ${output[@]:3} && if [ $mode = '-d' ]; then; sleep 3; fi
+    ;;
+    (alias)    # Alias localhost with port to domain
+      # /System/Library/LaunchDaemons/com.apple.pfctl.plist - <string>-e</string>
+      declare -A addr=([base]='127.0.0.' [domain]="$2" [port]="$3")
+      addr[all]="$(sed -nE 's#^'${addr[base]}'([0-9]+)[[:space:]]+(.+)$#\2=\1#p' ${file[hosts]})"
+      addr[local]="${addr[base]}${$([[ "${addr[all]}" =~ ${addr[domain]}=([0-9]+) ]] && echo "${match[1]}" || echo "$(echo ${addr[all]} | cut -d'=' -f2 | sort -n | tail -1 | awk '{print $1 + 1}')")}"
+
+      declare -A cmd=(
+        [expr]="rdr pass on lo0 inet proto tcp from any to ${addr[local]} port 80 -> ${addr[base]}1 port ${addr[port]}"
+        [anchor]='rdr-anchor "domain.alias"'
+        [load]='load anchor "domain.alias" from'
+      )
+
+      show -d "${addr[all]}\n${addr[local]}"
+
+      ## Create or update redirect
+      [ ! -e $file[redirect] ] && sudo tee $file[redirect] <<< "# Domain Redirect Aliases ruleset" > /dev/null
+      inject 'both' '/^.*'${addr[local]}' port 80.*$/!p' '$a\'$'\n'${cmd[expr]} ${file[redirect]}
+
+      ## Configure and load redirect
+      inject 'both' '/^'${cmd[anchor]}'$/!p' '/rdr-anchor "com.apple\/\*"/a\'$'\n'${cmd[anchor]} ${file[firewall]}
+      inject 'both' '/^'${cmd[load]}' "'$(sed 's:/:\\/:g' <<< ${file[redirect]})'"/!p' '$a\'$'\n'${cmd[load]}' "'${file[redirect]}'"' ${file[firewall]}
+      dns firewall -n && dns firewall -d && dns firewall -e
+
+      ## Create or update domain -> ip mapping in hosts and reload DNS
+      inject 'both' '/^'${addr[base]}'[0-9]* '${addr[domain]}'/!p' '$a\'$'\n'${addr[local]}' '${addr[domain]} ${file[hosts]}
+      dns reload
+
+      show -l 'DNS' "Start apps at ${addr[local]}:${addr[port]} and view them at http://${addr[domain]}/"
+    ;;
+    (-h | --help) echo $usage ;;
+    (*)           show -e 'Wrong arguments, see --help'
+  esac
+}
+
+# Update/upgrade homebrew, homebrew cask, MAS and system
+function upgrade() {
+  @packages() {
+    show -l 'Brew - Formulaes' -n 1
+    brew update 2>&1 | lolcat
+    brew upgrade --display-times --formula 2>&1 | lolcat
+    brew cleanup formula --prune 1 -s 2>&1 | lolcat
+
+    show -l 'Brew - Casks' -n 1
+    if (( $+commands[mas] )); then
+      local mas='--include-mas'
+    fi
+    brew cu -a -y $mas --no-brew-update --no-quarantine --cleanup 2>&1 | lolcat
+
+    if (( $+commands[n] )); then
+      show -l 'Node' -n 1
+      (( $+commands[n-update] )) && n-update -y
+      [[ "$(n ls)" != *"$(n --lts)"* ]] && { n lts && n prune }
+      (( $+commands[corepack] )) && corepack enable npm pnpm
+    fi
+  }
+
+  @icons() {
+    show -l 'Apps Icons' -n 1
+    for icon in $DOTPREFSDIR/macOS/icons/*.icns; do
+      local name=${$(basename $icon)%.*}
+      local dir=$(internal app-installed "$name" 1)
+
+      local info='NOT INSTALLED'
+      if [[ -f "$dir"/$'Icon\r' ]]; then
+        local info='CUSTOM ICON'
+      elif [[ ! -z "$dir" ]]; then
+        local info='NO ICON'
+      fi
+
+      show -l "${info}" -r "${name}$EOL" # "${dir}"
+
+      if [[ $info == 'NO ICON' ]]; then
+        sudo osascript <<EOF> /dev/null || die
+        use framework "Cocoa"
+        set imageData to (current application's NSImage's alloc()'s initWithContentsOfFile:"$icon")
+        (current application's NSWorkspace's sharedWorkspace()'s setIcon:imageData forFile:"$dir" options:2)
+EOF
+        sudo touch "$dir"
+      fi
+    done
+    internal respring
+  }
+
+  @scripts() {
+    show -l 'Scripts - ZInit' -n 1
+    zinit self-update 2>&1 | lolcat
+    zinit update -q --plugins 2>&1 | lolcat
+
+    if (( $+commands[tldr] )); then
+      show -l 'Scripts - TLDR' -n 2
+      tldr -u 2>&1 | lolcat
+    fi
+  }
+
+  @os() {
+    show -l 'OS' -n 1
+    softwareupdate -ia 2>&1 | lolcat
+  }
+
+  @packages && @icons && @scripts && @os
+}
+
+function internal() {
+  local baseDir="$ZSH_CACHE_DIR/osx"
+  local usage=$(cat <<EOF
+${fg_bold[blue]}Usage:${reset_color} internal <command> ${fg[cyan]}Execute internal helper function${reset_color}
+
+${fg_bold[blue]}Commands:${reset_color}
+  ${fg_bold[yellow]}uid${reset_color}      ${fg[blue]}Get current user UID${reset_color}
+  ${fg_bold[yellow]}respring${reset_color} ${fg[blue]}Reset icon cache, reload Dock and Finder${reset_color}
+  ${fg_bold[yellow]}app-installed <app-name>${reset_color}      ${fg[blue]}Check if macOS app installed in Applications folder${reset_color}
+  ${fg_bold[yellow]}set-file-assoc <app-name> <handler> <path to file w/ assoc>${reset_color}      ${fg[blue]}Set files association for app${reset_color}
+  ${fg_bold[yellow]}download <uri> <save path> <app-name>${reset_color}      ${fg[blue]}Download and save file to directory${reset_color}
+  ${fg_bold[yellow]}security <mode?>${reset_color}      ${fg[blue]}Get Current or Set New com.apple.system-extensions.admin Mode${reset_color}
+  ${fg_bold[yellow]}env-sync status|install|remove${reset_color}   ${fg[blue]}Show Current Status; Install and Load; or Remove and Stop Env Synchronisation${reset_color}
+
+${fg_bold[blue]}Examples:${reset_color}
+  internal --init  ${fg[blue]}Do something${reset_color}
+EOF
+)
+
+  case $1 in
+    (app-installed)  # Check if Mac App installed
+      local app=$2
+      local return_path="$3"
+
+      if [[ "$return_path" -ge 1 ]]; then
+        local result=(/Applications/**/"$app".app/(N))
+        if [[ ${#result} -eq 1 ]]; then
+          echo "$result[1]"
+        else
+          result=(~/Applications/**/"$app".app/(N))
+          if [[ ${#result} -eq 1 ]]; then
+            echo "$result[1]"
+          else
+            return 1
+          fi
+        fi
+      else
+        if [[ ! -d ~/Applications/"$app".app && ! -d /Applications/"$app".app ]]; then
+          return 1
+        fi
+        return 0
+      fi
+    ;;
+    (set-file-assoc) # Set files association
+      local label=$2
+      local handler=$3
+      local file=$4
+
+      if [[ ! -r "$file"  ]]; then
+        show -e "Can't read file $file"
+      elif (( !$+commands[duti] )); then
+        show -e 'duti required to set files association'
+      else
+        show -l $label 'Setting file associations...'
+        cat "$file" | awk -v "handler=$handler" '{print handler, $1, "all"}' | duti -v
+      fi
+    ;;
+    (download)       # Download and save file
+      local uri=$2
+      local dest=$3
+      local label=$4
+
+      show -l $label "Downloading $(basename $dest | cut -d. -f1)..."
+      curl -sSL $uri -o $dest --create-dirs
+    ;;
+    (uid)            # Get current user UID
+      scutil <<< 'show State:/Users/ConsoleUser' | awk '/UID/ { print $3 }'
+    ;;
+    (uncache)      # Reset ZSH functions cache and exit
+      zinit delete -y DF::core::aliases
+      zinit delete -y DF::core::functions
+      zinit delete -y romkatv/powerlevel10k
+      exit 0
+    ;;
+    (die-dot)       # Remove all .DS_Store files
+      local mode="$2" # [usr\sys|mnt]: Default usr + sys
+
+      #if [ -$mode == "usr" ]; then
+        # TODO
+      #elif [ $mode == "sys" ]; then
+        # TODO
+      #elif [ $mode == "mnt" ]; then
+        # TODO
+        # dot_clean -m /Volumes/${VOLUME}
+      #fi
+
+      find / \
+          -type d \( -path /System -o -path /Volumes/com.apple.TimeMachine.localsnapshots -o -path '/Library/Caches/com.apple.*' -o -path /private/var -o -path /private/etc -o -path /dev/fd -o -path /usr/sbin/authserver \) -prune -o \
+          -type f \( -path /Applications/.DS_Store \) -prune -o \
+          -name '.DS_Store' -type f \
+          -exec zsh -c 'printf "Removed .DS_Store: %d\n" $#; rm "$@"' _ {} +
+    ;;
+    (respring)
+      sudo rm -rf /Library/Caches/com.apple.iconservices.store && sudo killall {Dock,Finder}
+    ;;
+    (security)
+      local mode=$2
+      local cmd=(
+        security
+        authorizationdb
+        "$([ -z $mode ] && echo 'read' || echo 'write')"
+        com.apple.system-extensions.admin
+        $mode
+      )
+
+      if [ -z $mode ]; then
+        ${cmd[@]} > /dev/null 2>&1 | plutil -extract "rule.0" raw -
+      else
+        ${cmd[@]} > /dev/null 2>&1 || show -l "AuthDB" -e "Failed to update com.apple.system-extensions.admin with $mode mode, code $?"
+      fi
+    ;;
+    (env-sync)       # Generate and Manage autolaunch script for sync between console ENV and launchctl ENV
+      mkd -e -s $baseDir
+
+      declare -A opts=(
+        [label]='OSX Env Sync'
+        [pkg]='osx.env.sync'
+        [agent]=~/Library/LaunchAgents/osx.env.sync.plist
+        [script]="$baseDir/OSX Env Sync"
+        [log]="$baseDir/sync.log"
+        [uid]=$(internal uid)
+      )
+      local files=("$ZDOTDIR/profile")
+
+      check() {
+        [ -f ${opts[script]} ] && echo 1 || echo 0
+        [ -f ${opts[agent]} ] && echo 1 || echo 0
+        launchctl print gui/${opts[uid]}/${opts[pkg]} > /dev/null 2>&1 && echo 1 || echo 0
+      }
+
+      make() {
+        local sep='±'
+        declare -A data=()
+        sed -E -n 's/^declare -gx ([^ =]+)=(.+) +# +SYS +#$/\1'$sep'\2/p' ${files[1]} | while IFS=$sep read -r k v
+        do
+          show -l $opts[label] -d "[$k] -> ($v)"
+          data[$k]="$(eval echo -e \"$v\")"
+        done
+
+        cat > ${opts[script]} <<EOF
+#!/bin/bash
+
+LOG="${opts[log]}"
+touch \$LOG
+function LOG(){
+  echo "[\`date -u '+%Y-%m-%dT%H:%M:%SZ'\`] [\$1] \$2" >> \$LOG
+}
+
+case \$1 in
+  (load)
+    LOG 'INFO' 'Loading...'
+$(for k v in ${(@kv)data}; do
+  echo "    launchctl setenv $k $v; LOG 'DEBUG' 'Set $k -> $v'"
+done)
+    LOG 'INFO' 'Finished Loading'
+  ;;
+  (unload)
+    LOG 'INFO' 'Unloading...'
+$(for k in ${(k)data}; do
+  echo "    launchctl unsetenv $k; LOG 'DEBUG' 'Unset $k'"
+done)
+    LOG 'INFO' 'Finished Unloading'
+  ;;
+  (*) LOG 'ERROR' "Wrong mode \$1"
+esac
+EOF
+        chmod +x ${opts[script]}
+
+        /usr/libexec/PlistBuddy \
+          -c "Add Label string ${opts[pkg]}" \
+          -c 'Add ProgramArguments array' \
+          -c "Add ProgramArguments:0 string ${opts[script]}" \
+          -c 'Add ProgramArguments:1 string load' \
+          -c 'Add RunAtLoad bool true' \
+          ${opts[agent]} > /dev/null
+
+        launchctl bootstrap gui/${opts[uid]} ${opts[agent]}
+      }
+
+      destroy() {
+        launchctl bootout gui/${opts[uid]} ${opts[agent]} > /dev/null 2>&1
+        [ -x ${opts[script]} ] && . ${opts[script]} unload
+        rm -f ${opts[agent]} ${opts[script]}
+      }
+
+      case $2 in
+        (status)
+          local info=($(check))
+          show -l $opts[label] "Binary: ${info[1]}, Agent: ${info[2]}, Loaded: ${info[3]}"
+        ;;
+        (install)  # Generate script and load to LaunchAgents
+          local info=($(check))
+          if [ ${info[1]} = 1 ] || [ ${info[2]} = 1 ] || [ ${info[3]} = 1 ]; then
+            show -l $opts[label] -e 'LaunchAgent already installed and running, run uninstall before proceeding'
+          else
+            show -l $opts[label] 'Installing...'
+            make
+            show -l $opts[label] 'Sucessfully Installed'
+          fi
+        ;;
+        (remove) # Unload script from LaunchAgents and remove all generated files
+          destroy
+          show -l $opts[label] 'Sucessfully Uninstalled'
+        ;;
+        (-h | --help) echo $usage ;;
+        (*)           show -e "Wrong command \`internal env-sync $2\`, see --help"
+      esac
+    ;;
+    (-h | --help) echo $usage ;;
+    (*)           show -e 'Wrong arguments, see --help'
+  esac
+}
+
+function @assert() {
+  "$@" 2>&1 | {
+    read -d "\0" err
+    [ -z "$err" ] || show -l 'Assert' -e $err
+  }
+  unset err
+}
+
+function @loop() {
+  declare -i sec=$1; shift
+  local msg="$1";    shift
+
+  while [ -n "`$@`" ];
+  do ((sec--)); sleep 1;
+    # show -l 'Loop' -d "$sec"
+    [ $sec -eq 0 ] && { show -l 'Loop' -e $msg; break }
+  done
+}

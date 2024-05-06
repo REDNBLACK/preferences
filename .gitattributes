@@ -1,0 +1,2 @@
+protonmail-bridge/bin/bridge filter=lfs diff=lfs merge=lfs -text
+*.icns filter=lfs diff=lfs merge=lfs -text

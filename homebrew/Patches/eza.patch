@@ -1,0 +1,34 @@
+diff --git a/eza.rb b/eza.rb
+index 4d93c44..6a58846 100644
+--- a/eza.rb
++++ b/eza.rb
+@@ -15,29 +15,11 @@ class Eza < Formula
+     sha256 cellar: :any_skip_relocation, x86_64_linux:   "7c0d2be0f44223e886a14cc49ae8693d8163619d674012b991caa7f2a2693495"
+   end
+ 
+-  depends_on "pandoc" => :build
+   depends_on "pkg-config" => :build
+   depends_on "rust" => :build
+-  depends_on "libgit2"
+ 
+   def install
+     system "cargo", "install", *std_cargo_args
+-
+-    bash_completion.install "completions/bash/eza"
+-    fish_completion.install "completions/fish/eza.fish"
+-    zsh_completion.install  "completions/zsh/_eza"
+-
+-    args = %w[
+-      --standalone
+-      --from=markdown
+-      --to=man
+-    ]
+-    system "pandoc", *args, "man/eza.1.md", "-o", "eza.1"
+-    system "pandoc", *args, "man/eza_colors.5.md", "-o", "eza_colors.5"
+-    system "pandoc", *args, "man/eza_colors-explanation.5.md", "-o", "eza_colors-explanation.5"
+-
+-    man1.install buildpath.glob("*.1")
+-    man5.install buildpath.glob("*.5")
+   end
+ 
+   test do

@@ -1,0 +1,13 @@
+com.apple.alias-file
+com.apple.alias-record
+com.apple.bookmark
+com.apple.bundle
+com.apple.mount-point
+com.apple.terminal.session
+com.apple.terminal.settings
+public.directory
+public.symlink
+com.apple.terminal.shell-script
+ssh
+telnet
+x-man-page
