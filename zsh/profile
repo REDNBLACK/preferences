@@ -64,10 +64,10 @@ fi
 
 
 # ====================================================================================== #
-#                               Docker & K8S                                             #
+#            Docker & K8S (Doesn't Fucking Work)                                         #
 # ====================================================================================== #
-declare -gx DOCKER_CONFIG="$XDG_CONFIG_HOME/docker" # SYS #
-declare -gx KUBECONFIG="$XDG_CONFIG_HOME/k8s" # SYS #
+# declare -gx DOCKER_CONFIG="$XDG_CONFIG_HOME/docker" # SYS #
+# declare -gx KUBECONFIG="$XDG_CONFIG_HOME/k8s" # SYS #
 # ====================================================================================== #
 
 
