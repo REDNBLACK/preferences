@@ -441,6 +441,7 @@ EOF
 
     ```zsh
     brew install --cask wifi-explorer
+    defaults import com.intuitibits.wifiexplorerpro3 $DOTPREFSDIR/wifi-explorer/conf.plist
     ```
 
 ##### Social
