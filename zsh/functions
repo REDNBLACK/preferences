@@ -382,6 +382,22 @@ function dns() {
   esac
 }
 
+# Set Folder/Application Icon to Custom *.icns
+function iconize() {
+  local icon="$1"
+  local dir="$2"
+
+  if [[ -e $dir ]]; then
+    sudo osascript <<EOF> /dev/null || die
+    use framework "Cocoa"
+    set imageData to (current application's NSImage's alloc()'s initWithContentsOfFile:"$icon")
+    (current application's NSWorkspace's sharedWorkspace()'s setIcon:imageData forFile:"$dir" options:2)
+EOF
+    sudo touch "$dir"
+    show -l 'Icon' "Successfully Installed for $dir"
+  fi
+}
+
 # Update/upgrade homebrew, homebrew cask, MAS and system
 function upgrade() {
   @packages() {
@@ -420,14 +436,19 @@ function upgrade() {
       show -l "${info}" -r "${name}$EOL" # "${dir}"
 
       if [[ $info == 'NO ICON' ]]; then
-        sudo osascript <<EOF> /dev/null || die
-        use framework "Cocoa"
-        set imageData to (current application's NSImage's alloc()'s initWithContentsOfFile:"$icon")
-        (current application's NSWorkspace's sharedWorkspace()'s setIcon:imageData forFile:"$dir" options:2)
-EOF
-        sudo touch "$dir"
+        iconize $icon $dir
       fi
     done
+
+    show -l 'Directories Icons' -n 1
+    local at="$DOTPREFSDIR/macOS/folders"
+
+    iconize "$at/Preferences.icns" ${DOTPREFSDIR}
+    iconize "$at/DotConfig.icns" ~/.config
+    iconize "$at/DotDocker.icns" ~/.docker
+    iconize "$at/Backup.icns" ~/Documents/backup
+    iconize "$at/Developer.icns" ~/Documents/dev
+
     internal respring
   }
 
