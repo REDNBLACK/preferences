@@ -53,7 +53,7 @@ EOF
   elif [[ ${#debug} = 1 ]]; then
     echo -e $fg_bold[yellow]"[Debug]"${opts[label]}${EOL}"$@"$reset_color
   elif [[ ${#rainbow} = 1 ]]; then
-    echo -n ${opts[label]}"$@" | lolcat -F # Or -f for lolcat-c!!!
+    echo -n ${opts[label]}"$@" | lolcat -f # Or -F for lolcat-rust!!!
   else
     echo -e $fg_bold[blue]${opts[label]}"$@"$reset_color
   fi

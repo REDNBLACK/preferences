@@ -76,7 +76,7 @@ fi
 # ====================================================================================== #
 if (( $+commands[lolcat] )); then
   if ${commands[lolcat]} --version | grep 'jaseg' -q; then
-    alias lolcat="${commands[lolcat]} -h 0.7 -v 1.0" # jaseg/lolcat (C)
+    alias lolcat="${commands[lolcat]} -h 0.23 -v 4.5 -b" # jaseg/lolcat (C)
   else
     alias lolcat="${commands[lolcat]} -f 0.23"       # ur0/lolcat (Rust)
   fi
