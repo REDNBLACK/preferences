@@ -17,15 +17,24 @@ My shell and programms settings
 
     ```zsh
     git clone --depth=1 --shallow-submodules --recurse-submodules --remote-submodules https://github.com/REDNBLACK/preferences.git Preferences
+    mkdir -p ~/.config/
     echo "export DOTPREFSDIR=$(cd Preferences && pwd)" | sudo tee -a /etc/zshenv > /dev/null
     exec zsh
     ```
 3. Setup [Homebrew](https://brew.sh) [[:octocat:](https://github.com/Homebrew)] & [mas-cli](https://github.com/mas-cli/mas) & [cask-upgrade](https://github.com/buo/homebrew-cask-upgrade)
 
     ```zsh
+    # Prepare System
+    [[ "$(uname -m)" == "arm64" ]] && sudo softwareupdate --install-rosetta --agree-to-license
+
+    # Install Homebrew
     bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    eval $(/opt/homebrew/bin/brew shellenv)
     brew analytics off
-    brew tap {homebrew/cask-versions,homebrew/bundle,buo/cask-upgrade}
+
+    # Install Essential Modules
+    brew tap homebrew/cask-versions
+    brew tap buo/cask-upgrade
     brew install mas
 
     # Symlink custom Formulaes, Casks and Patches
@@ -42,7 +51,7 @@ My shell and programms settings
     ln -fs $DOTPREFSDIR/git ~/.config/git
 
     # After generation of Personal Access Token (Classic)
-    security add-internet-password -l GitHub -s github.com -r htps -a %GitHub Account Name% -w %GitHub Account Token%
+    security add-internet-password -l 'GitHub Token (%GitHub Account Name%)' -s github.com -r htps -a %GitHub Account Name% -w '%GitHub Account Token%'
     ```
 5. Setup [Fira Code (+Nerd)](https://github.com/tonsky/FiraCode) & [Meslo Nerd](https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/Meslo)
 
@@ -55,7 +64,7 @@ My shell and programms settings
     brew install zsh # ⚠️ Command may be skipped in case of actual preinstalled zsh version
     ln -fs $DOTPREFSDIR/zsh ~/.config/zsh
     echo "export ZDOTDIR=$HOME/.config/zsh" | sudo tee -a /etc/zshenv > /dev/null
-    echo "export PATH=$(brew shellenv | sed -nE 's:^export PATH="([^"$]*).*".*$:\1:p'):/Library/Developer/CommandLineTools/usr/bin:\$PATH" | sudo tee -a /etc/zshenv > /dev/null
+    echo "export PATH=${HOMEBREW_PREFIX}bin:${HOMEBREW_PREFIX}sbin:/Library/Developer/CommandLineTools/usr/bin:\$PATH" | sudo tee -a /etc/zshenv > /dev/null
 
     # Set as default shell ⚠️ Command may be skipped in case of actual preinstalled zsh version
     which zsh | sudo tee -a /etc/shells > /dev/null
@@ -69,14 +78,11 @@ My shell and programms settings
     ```zsh
     brew install --cask iterm2
 
-    # Variant 1
-    ln -fs $DOTPREFSDIR/iterm2/com.googlecode.iterm2.plist ~/Library/Preferences/com.googlecode.iterm2.plist
-
-    # Variant 2
+    # Import Settings
     defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool YES
     defaults write com.googlecode.iterm2 PrefsCustomFolder "$DOTPREFSDIR/iterm2"
 
-    # Set files association
+    # Set files association (⚠️ MUST START iTERM2 AT THIS STEP!!!)
     internal set-file-assoc iTerm com.googlecode.iterm2 $DOTPREFSDIR/iterm2/file-assoc.list
     ```
 8. Setup Tools
@@ -103,7 +109,7 @@ My shell and programms settings
         ```zsh
         brew install tealdeer
         ```
-    * Set files association [`dute`](https://github.com/moretension/duti), [`swiftdefaultappsprefpane`](https://github.com/Lord-Kamina/SwiftDefaultApps)
+    * Set files association [`duti`](https://github.com/moretension/duti), [`swiftdefaultappsprefpane`](https://github.com/Lord-Kamina/SwiftDefaultApps)
         ```zsh
         brew install duti swiftdefaultappsprefpane
         ```
@@ -129,10 +135,10 @@ My shell and programms settings
 
     # Add Manager CLI to Path
     cat > ${HOMEBREW_PREFIX}/bin/ykman <<EOF
-    #!/bin/bash
-    export PYTHONHOME=""
-    exec '/Applications/$(brew info yubico-yubikey-manager --json=v2 | jq -r '.casks[].name | .[0]').app/Contents/MacOS/ykman' "\$@"
-    EOF
+#!/bin/bash
+export PYTHONHOME=""
+exec '/Applications/$(brew info yubico-yubikey-manager --json=v2 | jaq -r '.casks[].name | .[0]').app/Contents/MacOS/ykman' "\$@"
+EOF
     chmod +x ${HOMEBREW_PREFIX}/bin/ykman
     ```
 2. [💰] Setup [Strongbox](https://strongboxsafe.com) [[:octocat:](https://github.com/strongbox-password-safe)]
@@ -206,11 +212,14 @@ My shell and programms settings
     ```zsh
     mas install 1609461599
     ```
-6. [🆓] Setup [Lantern](https://lantern.io) [[:octocat:](https://github.com/getlantern)]
+6. [💰] Setup [AdGuard VPN](https://adguard-vpn.com)
 
     ```zsh
-    brew install --cask lantern
-    cp -f $DOTPREFSDIR/lantern/settings.yaml ~/Library/Application\ Support/Lantern/settings.yaml
+    brew install --cask adguard-vpn
+    defaults import com.adguard.mac.vpn $DOTPREFSDIR/adguard/conf.plist
+
+    # Add NextDNS as QUIC DNS
+    defaults write com.adguard.mac.vpn 'dns-servers-settings' -data $(jaq -n --arg profile "%NextDNS Profile%" --arg device "%Device Name%" '{"selectedServer": {"uid": "42B5EEE1-2255-4B6F-96EA-54953B75807B", "name": "NextDNS [QUIC] (\($profile))", "address": "quic://\($device)-\($profile).dns.nextdns.io"}} | .servers = [.selectedServer]' | xxd -u -p - | tr -d '\n')
     ```
 7. Setup misc
 
@@ -221,11 +230,17 @@ My shell and programms settings
     # Allow applications downloaded from anywhere (⚠️ Must be done after every system update)
     sudo spctl --master-disable
 
+    # Add Terminal to Developer Tools, so any processes run by it to be excluded from Gatekeeper
+    sudo spctl developer-mode enable-terminal
+
     # Disable annoying root password request on every LaunchAgent launch (⚠️ Must be done after every system update)
     security authorizationdb write com.apple.system-extensions.admin allow
 
     # Disable library validation (⚠️ USE YOUR BRAIN, also must be done after every system update)
     sudo defaults write /Library/Preferences/com.apple.security.libraryvalidation.plist DisableLibraryValidation -bool true
+
+    # Disable the “Are you sure you want to open this application?” dialog
+    defaults write com.apple.LaunchServices LSQuarantine -bool false
 
     # Cleanup conflicting configs for bash/zsh (⚠️ Must be done after every system update)
     sudo rm -f /etc/zshrc_Apple_Terminal /etc/zshrc /etc/zprofile /etc/bashrc_Apple_Terminal /etc/bashrc /etc/profile
@@ -268,12 +283,12 @@ My shell and programms settings
     brew install helm
 
     # After generation of Access Token
-    security add-internet-password -l Docker\ Hub -s docker.com -r htps -a %Docker Account Name% -w %Docker Account Token%
+    security add-internet-password -l 'Docker Token (%Docker Account Name%)' -s docker.com -r htps -a %Docker Account Name% -w '%Docker Account Token%'
     ```
 4. Setup Java [Eclipse Temurin](https://adoptium.net/) [[:octocat:](https://github.com/adoptium)] & [GraalVM](https://graalvm.org) [[:octocat:](https://github.com/graalvm)] & [JMC](https://oracle.com/java/technologies/jdk-mission-control.html) [[:octocat:](https://github.com/openjdk/jmc)] & [sbt](https://scala-sbt.org) [[:octocat:](https://github.com/sbt/sbt)]
 
     ```zsh
-    brew install --cask temurin{8,17} graalvm-jdk
+    brew install --cask temurin@{8,17} graalvm-jdk
     brew install --cask openjdk-jmc
     brew install sbt
 
@@ -307,31 +322,43 @@ My shell and programms settings
 9. Setup [Postgres App](http://postgresapp.com) [[:octocat:](https://github.com/PostgresApp/PostgresApp)]
 
     ```zsh
-    brew install --cask postgres
+    brew install --cask postgres-unofficial
+    ```
+10. Setup [Hex Fiend](https://ridiculousfish.com/hexfiend)
+
+    ```zsh
+    brew install --cask hex-fiend
     ```
 
 ##### Productivity
-1. Setup [Apple Configurator 2](https://support.apple.com/guide/apple-configurator-2/welcome/mac)
+1. Setup [Obsidian](https://obsidian.md)
+
+    ```zsh
+    brew install --cask obsidian
+    ```
+2. [🆓] Setup [Raycast](https://raycast.com)
+
+    ```zsh
+    brew install --cask raycast
+    ```
+3. Setup [Apple Configurator 2](https://support.apple.com/guide/apple-configurator-2/welcome/mac)
 
     ```zsh
     mas install 1037126344
     ```
-2. Setup [Cheatsheet](https://cheatsheetapp.com/CheatSheet)
+4. Setup [Cheatsheet](https://cheatsheetapp.com/CheatSheet)
 
     ```zsh
     brew install --cask cheatsheet
     defaults import com.mediaatelier.CheatSheet $DOTPREFSDIR/cheatsheet/conf.plist
     ```
-3. [💰] Setup [BetterTouchTool](https://folivora.ai)
+
+5. [💰] Setup [DevUtils](https://devutils.com)
 
     ```zsh
-    brew install --cask bettertouchtool
-    defaults import com.hegenberg.BetterTouchTool $DOTPREFSDIR/btt/conf.plist
-
-    # Install license
-    cp -f "**Path to license.bettertouchtool file**" ~/Library/Application\ Support/BetterTouchTool/bettertouchtool.bttlicense
+    brew install --cask devutils
     ```
-4. Setup [Touchbar Nyan Cat](https://github.com/avatsaev/touchbar_nyancat)
+6. Setup [Touchbar Nyan Cat](https://github.com/avatsaev/touchbar_nyancat)
 
     ```zsh
     brew install --cask touchbar-nyancat
@@ -351,6 +378,10 @@ My shell and programms settings
 
     # Install license
     cp -f "**Path to License.nimblecommanderlicense file**" ~/Library/Application\ Support/Nimble\ Commander/registration.nimblecommanderlicense
+
+    # Import Remote Fileshares
+    ln -fs $DOTPREFSDIR/nimble-commander/network.json ~/Library/Application\ Support/Nimble\ Commander/Config/NetworkConnections.json
+    cp -f "**SSH Keys for SFTP**" ~/Library/Application\ Support/Nimble\ Commander/Keys
     ```
 2. Setup [Keka](https://keka.io) [[:octocat:](https://github.com/aonez/Keka)]
 

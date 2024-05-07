@@ -129,6 +129,7 @@ public.ini
 .bat
 .cfg
 .cmd
+.md
 .conf
 .default
 .groovy
