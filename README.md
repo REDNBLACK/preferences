@@ -137,7 +137,7 @@ My shell and programms settings
     cat > ${HOMEBREW_PREFIX}/bin/ykman <<EOF
 #!/bin/bash
 export PYTHONHOME=""
-exec '/Applications/$(brew info yubico-yubikey-manager --json=v2 | jaq -r '.casks[].name | .[0]').app/Contents/MacOS/ykman' "\$@"
+exec '/Applications/$(brew info yubico-yubikey-manager --json=v2 | jq -r '.casks[].name | .[0]').app/Contents/MacOS/ykman' "\$@"
 EOF
     chmod +x ${HOMEBREW_PREFIX}/bin/ykman
     ```
@@ -219,7 +219,7 @@ EOF
     defaults import com.adguard.mac.vpn $DOTPREFSDIR/adguard/conf.plist
 
     # Add NextDNS as QUIC DNS
-    defaults write com.adguard.mac.vpn 'dns-servers-settings' -data $(jaq -n --arg profile "%NextDNS Profile%" --arg device "%Device Name%" '{"selectedServer": {"uid": "42B5EEE1-2255-4B6F-96EA-54953B75807B", "name": "NextDNS [QUIC] (\($profile))", "address": "quic://\($device)-\($profile).dns.nextdns.io"}} | .servers = [.selectedServer]' | xxd -u -p - | tr -d '\n')
+    defaults write com.adguard.mac.vpn 'dns-servers-settings' -data $(jq -n --arg profile "%NextDNS Profile%" --arg device "%Device Name%" '{"selectedServer": {"uid": "42B5EEE1-2255-4B6F-96EA-54953B75807B", "name": "NextDNS [QUIC] (\($profile))", "address": "quic://\($device)-\($profile).dns.nextdns.io"}} | .servers = [.selectedServer]' | xxd -u -p - | tr -d '\n')
     ```
 7. Setup misc
 
