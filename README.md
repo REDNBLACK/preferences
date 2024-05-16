@@ -56,7 +56,7 @@ My shell and programms settings
 5. Setup [Fira Code (+Nerd)](https://github.com/tonsky/FiraCode) & [Meslo Nerd](https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/Meslo)
 
     ```zsh
-    brew install --cask homebrew/cask-fonts/font-{fira-code,fira-code-nerd-font,meslo-lg-nerd-font}
+    brew install --cask font-{fira-code,fira-code-nerd-font,meslo-lg-nerd-font}
     ```
 6. Setup [zsh](http://zsh.org) [[:octocat:](https://github.com/zsh-users)] & [zinit](https://zdharma.github.io/zinit/wiki/) [[:octocat:](https://github.com/zdharma/zinit)] & [PowerLevel10K](https://github.com/romkatv/powerlevel10k) & [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) & [zsh-fast-syntax-highlighting](https://github.com/zdharma/fast-syntax-highlighting)
 
