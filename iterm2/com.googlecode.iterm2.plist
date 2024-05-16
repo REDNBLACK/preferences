@@ -16,6 +16,8 @@
 	<true/>
 	<key>AutoHideTmuxClientSession</key>
 	<false/>
+	<key>BadgeFont</key>
+	<string>MesloLGLDZ Nerd Font Propo</string>
 	<key>BootstrapDaemon</key>
 	<false/>
 	<key>BracketedPasteMode</key>
@@ -739,19 +741,19 @@
 			<key>Horizontal Spacing</key>
 			<real>1</real>
 			<key>HotKey Activated By Modifier</key>
-			<false/>
+			<true/>
 			<key>HotKey Alternate Shortcuts</key>
 			<array/>
 			<key>HotKey Characters</key>
-			<string>`</string>
+			<string></string>
 			<key>HotKey Characters Ignoring Modifiers</key>
-			<string>`</string>
+			<string></string>
 			<key>HotKey Key Code</key>
-			<integer>50</integer>
-			<key>HotKey Modifier Activation</key>
 			<integer>0</integer>
+			<key>HotKey Modifier Activation</key>
+			<integer>2</integer>
 			<key>HotKey Modifier Flags</key>
-			<integer>1048576</integer>
+			<integer>0</integer>
 			<key>HotKey Window Animates</key>
 			<false/>
 			<key>HotKey Window AutoHides</key>
@@ -1086,7 +1088,7 @@
 			<key>Non-ASCII Anti Aliased</key>
 			<true/>
 			<key>Normal Font</key>
-			<string>FiraCodeNFM-Ret 12</string>
+			<string>FiraCodeNFP-Reg 12</string>
 			<key>Open Toolbelt</key>
 			<false/>
 			<key>Option Key Sends</key>
@@ -1252,7 +1254,7 @@
 					<key>auto-rainbow style</key>
 					<integer>0</integer>
 					<key>font</key>
-					<string>MesloLGMDZNFM-Bold 12</string>
+					<string>MesloLGMDZNFM-Regular 13</string>
 					<key>remove empty components</key>
 					<true/>
 				</dict>
@@ -1309,7 +1311,7 @@
 								<key>auto-rainbow style</key>
 								<integer>0</integer>
 								<key>font</key>
-								<string>MesloLGMDZNFM-Bold 12</string>
+								<string>MesloLGMDZNFM-Regular 13</string>
 								<key>remove empty components</key>
 								<true/>
 							</dict>
@@ -1366,7 +1368,7 @@
 								<key>auto-rainbow style</key>
 								<integer>0</integer>
 								<key>font</key>
-								<string>MesloLGMDZNFM-Bold 12</string>
+								<string>MesloLGMDZNFM-Regular 13</string>
 								<key>remove empty components</key>
 								<true/>
 							</dict>
@@ -1423,7 +1425,7 @@
 								<key>auto-rainbow style</key>
 								<integer>0</integer>
 								<key>font</key>
-								<string>MesloLGMDZNFM-Bold 12</string>
+								<string>MesloLGMDZNFM-Regular 13</string>
 								<key>remove empty components</key>
 								<true/>
 							</dict>
@@ -1480,7 +1482,7 @@
 								<key>auto-rainbow style</key>
 								<integer>0</integer>
 								<key>font</key>
-								<string>MesloLGMDZNFM-Bold 12</string>
+								<string>MesloLGMDZNFM-Regular 13</string>
 								<key>remove empty components</key>
 								<true/>
 							</dict>
@@ -1537,7 +1539,7 @@
 								<key>auto-rainbow style</key>
 								<integer>0</integer>
 								<key>font</key>
-								<string>MesloLGMDZNFM-Bold 12</string>
+								<string>MesloLGMDZNFM-Regular 13</string>
 								<key>remove empty components</key>
 								<true/>
 							</dict>
@@ -1573,7 +1575,7 @@
 								<key>auto-rainbow style</key>
 								<integer>0</integer>
 								<key>font</key>
-								<string>MesloLGMDZNFM-Bold 12</string>
+								<string>MesloLGMDZNFM-Regular 13</string>
 								<key>remove empty components</key>
 								<true/>
 							</dict>
@@ -1615,7 +1617,7 @@
 								<key>auto-rainbow style</key>
 								<integer>0</integer>
 								<key>font</key>
-								<string>MesloLGMDZNFM-Bold 12</string>
+								<string>MesloLGMDZNFM-Regular 13</string>
 								<key>remove empty components</key>
 								<true/>
 							</dict>
@@ -1651,7 +1653,7 @@
 								<key>auto-rainbow style</key>
 								<integer>0</integer>
 								<key>font</key>
-								<string>MesloLGMDZNFM-Bold 12</string>
+								<string>MesloLGMDZNFM-Regular 13</string>
 								<key>remove empty components</key>
 								<true/>
 							</dict>
@@ -1687,7 +1689,7 @@
 								<key>auto-rainbow style</key>
 								<integer>0</integer>
 								<key>font</key>
-								<string>MesloLGMDZNFM-Bold 12</string>
+								<string>MesloLGMDZNFM-Regular 13</string>
 								<key>remove empty components</key>
 								<true/>
 							</dict>
@@ -1725,7 +1727,7 @@
 								<key>auto-rainbow style</key>
 								<integer>0</integer>
 								<key>font</key>
-								<string>MesloLGMDZNFM-Bold 12</string>
+								<string>MesloLGMDZNFM-Regular 13</string>
 								<key>remove empty components</key>
 								<true/>
 							</dict>
@@ -1857,6 +1859,8 @@
 	<true/>
 	<key>PromptOnQuit</key>
 	<true/>
+	<key>PromptOnQuitEvenIfThereAreNoWindows</key>
+	<false/>
 	<key>QuitWhenAllWindowsClosed</key>
 	<true/>
 	<key>RightCommand</key>
@@ -1925,6 +1929,8 @@
 	<integer>0</integer>
 	<key>WordCharacters</key>
 	<string>/-+\~_.</string>
+	<key>disableMetalWhenUnplugged</key>
+	<false/>
 	<key>findIgnoreCase_iTerm</key>
 	<true/>
 	<key>findMode_iTerm</key>
