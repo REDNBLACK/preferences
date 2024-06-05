@@ -341,24 +341,19 @@ EOF
     ```zsh
     brew install --cask raycast
     ```
-3. Setup [Apple Configurator 2](https://support.apple.com/guide/apple-configurator-2/welcome/mac)
-
-    ```zsh
-    mas install 1037126344
-    ```
-4. Setup [Cheatsheet](https://cheatsheetapp.com/CheatSheet)
+3. Setup [Cheatsheet](https://cheatsheetapp.com/CheatSheet)
 
     ```zsh
     brew install --cask cheatsheet
     defaults import com.mediaatelier.CheatSheet $DOTPREFSDIR/cheatsheet/conf.plist
     ```
 
-5. [💰] Setup [DevUtils](https://devutils.com)
+4. [💰] Setup [DevUtils](https://devutils.com)
 
     ```zsh
     brew install --cask devutils
     ```
-6. Setup [Touchbar Nyan Cat](https://github.com/avatsaev/touchbar_nyancat)
+5. Setup [Touchbar Nyan Cat](https://github.com/avatsaev/touchbar_nyancat)
 
     ```zsh
     brew install --cask touchbar-nyancat
@@ -501,7 +496,17 @@ EOF
     ```zsh
     brew install --cask sideloadly
     ```
-2. [💰] Setup [WALTR PRO](https://softorino.com/waltr)
+2. Setup [Apple Configurator 2](https://support.apple.com/guide/apple-configurator-2/welcome/mac)
+
+    ```zsh
+    mas install 1037126344
+    ```
+3. Setup [iMazing](https://imazing.com)
+
+    ```zsh
+    brew install --cask imazing imazing-profile-editor
+    ```
+4. [💰] Setup [WALTR PRO](https://softorino.com/waltr)
 
     ```zsh
     brew install --cask waltr-pro

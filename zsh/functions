@@ -6,7 +6,7 @@
 # ====================================================================================== #
 # - show                   = formatted print                                             #
 # - mkd                    = mkdir + cd or mkdir only if dir not exists                  #
-# - notify                 = send push notification using ShellFish                      #
+# - notify                 = send push notification using Pushover                       #
 # - vpn                    = connect to Cisco AnyConnect or OpenConnect VPN              #
 # - dns                    = reload dns, make domain alias for localhost with port       #
 # - upgrade                = update manager                                              #
@@ -113,42 +113,98 @@ EOF
   fi
 }
 
-# Send Push Notification via ShellFish
+join_by() {
+  local separator="$1"
+  shift
+  local first="$1"
+  shift
+  printf "%s" "$first" "${@/#/$separator}"
+}
+
+# Send Push via Pushover
 function notify() {
+  local app_token device app_name title url priority timestamp ttl sound html mono verbose help label="Pushover"
+  zparseopts -D -F -K -- {t,-token}:=app_token {d,-device}:=device {a,-app}:=app_name {l,-title}:=title {u,-url}:=url {p,-priority}:=priority {ts,-timestamp}:=timestamp -ttl:=ttl -sound:=sound -html=html -mono=mono {vv,-verbose}=verbose {h,-help}=help || return 1
+
   local usage=$(cat <<EOF
-${fg_bold[blue]}Usage:${reset_color} notify [options…] <title> <body> ... ${fg[cyan]}Send Push notification via ShellFish${reset_color}
+${fg_bold[blue]}Usage:${reset_color} notify [options…] -t %app token% <message> ${fg[cyan]}Send Push Notification via Pushover${reset_color}
 
 ${fg_bold[blue]}Options:${reset_color}
-  ${fg_bold[yellow]}--shortcut NameOfShortcut${reset_color}                 ${fg[blue]}Shortcut to run when notification opened${reset_color}
-  ${fg_bold[yellow]}--url https://url.to.open/${reset_color}                 ${fg[blue]}URL to open when notification opened${reset_color}
-  ${fg_bold[yellow]}--help${reset_color}             ${fg[blue]}Show help (this message) and exit${reset_color}
+  ${fg_bold[yellow]}--device Device(s)${reset_color}                 ${fg[blue]}...${reset_color}
+  ${fg_bold[yellow]}--app App Name${reset_color}                 ${fg[blue]}...${reset_color}
+  ${fg_bold[yellow]}--title Title for Push${reset_color}             ${fg[blue]}...${reset_color}
+  ${fg_bold[yellow]}--url URL to Open${reset_color}             ${fg[blue]}...${reset_color}
+  ${fg_bold[yellow]}--priority Push Priority (-2..2)${reset_color}             ${fg[blue]}...${reset_color}
 
 ${fg_bold[blue]}Setup:${reset_color}
-  ${fg[blue]}Store your ShellFish connection credentials to macOS Keychain by executing${reset_color} ${fg[cyan]}(required step in order for this program to work):${reset_color}
-      security add-internet-password ${fg_bold[yellow]}-l${reset_color} ShellFish ${fg_bold[yellow]}-r${reset_color} htps ${fg_bold[yellow]}-s${reset_color} secureshellfish.app ${fg_bold[yellow]}-a${reset_color} %user% ${fg_bold[yellow]}-j${reset_color} %iv% ${fg_bold[yellow]}-w${reset_color} %key%
+  ${fg[blue]}Store your Pushover connection credentials to macOS System Keychain by executing${reset_color} ${fg[cyan]}(required step in order for this program to work):${reset_color}
+      sudo security add-internet-password ${fg_bold[yellow]}-l${reset_color} Pushover ${fg_bold[yellow]}-r${reset_color} htps ${fg_bold[yellow]}-s${reset_color} api.pushover.net ${fg_bold[yellow]}-a${reset_color} %EMAIL% ${fg_bold[yellow]}-w${reset_color} %USER_KEY or GROUP_KEY% '/Library/Keychains/System.keychain'
 EOF
 )
 
+  # Validate Passed Args
   if [[ $# -eq 0 ]]; then
     echo $usage
     return 0
   fi
+  if [ -z "${app_token}" ] || [ -z "${@}" ]; then
+    show -l ${label} -e 'Required Positional Arg(s) is empty!'
+    return 0
+  fi
+  if [[ ${#html} = 1 ]] && [[ ${#mono} = 1 ]]; then
+    show -l ${label} -e 'Both mono & html Args Set to 1!'
+    return 0
+  fi
 
-  local raw=$(security 2>&1 find-internet-password -gl "ShellFish" | tr $EOL ' ')
-  local host=$(sed -nE 's:.*"srvr"<blob>="([^"]*)".*:\1:p' <<< $raw)
-  local user=$(sed -nE 's:.*"acct"<blob>="([^"]*)".*:\1:p' <<< $raw)
-  local key=$(sed -nE 's:.*password\: "([^"]*)".*:\1:p' <<< $raw)
-  local iv=$(sed -nE 's:.*"icmt"<blob>="([^"]*)".*:\1:p' <<< $raw)
-
-  local plain=$(
-  echo Secure ShellFish Notify 2.0
-  for var in "$@"; do echo -ne "$var" | base64; done
+  # Extract Pushover Credetials from macOS Keychain
+  local raw=$(security 2>&1 find-internet-password -gl ${label} | tr $EOL ' ')
+  declare -A push=(
+    [ptcl]=$(echo $raw | sed -nE 's:.*"ptcl"<uint32>="([^"]*)".*:\1:p' | sed 's:htps:https:g')
+    [host]=$(sed -nE 's:.*"srvr"<blob>="([^"]*)".*:\1:p' <<< $raw)
+    [key]=$(sed -nE 's:.*password\: "([^"]*)".*:\1:p' <<< $raw)
   )
-  local base64=$(echo "$plain" | openssl enc -aes-256-cbc -base64 -K $key -iv $iv)
 
-  curl -sS -X POST -H 'Content-Type: text/plain' --data "$base64" "https://$host/push/?user=$user&mutable"
+  # Make JSON Request
+  local json=$(jq -n --arg message ${@} '$ARGS.named')
+  if [[ -n "${device[-1]}" ]]; then
+    json=$(jq --arg device "${device[-1]}" '. += $ARGS.named' <<< $json)
+  fi
+  if [[ -n "${app_name[-1]}" ]] || [[ -n "${title[-1]}" ]]; then
+    json=$(jq --arg title "$(join_by ' - ' ${app_name[-1]} ${title[-1]})" '. += $ARGS.named' <<< $json)
+  fi
+  if [[ -n "${url[-1]}" ]]; then
+    json=$(jq --arg url "${url[-1]}" '. += $ARGS.named' <<< $json)
+  fi
+  if [[ "${priority[-1]}" -ge -2 ]] && [[ "${priority[-1]}" -le 1 ]] && [[ "${priority[-1]}" -ne 0 ]]; then
+    json=$(jq --arg priority "${priority[-1]}" '. += $ARGS.named' <<< $json)
+  fi
+  if [[ "${priority[-1]}" -eq 2 ]]; then
+    show -l ${label} '[WARN] Ignoring Priority 2'
+  fi
+  if [[ -n "${timestamp[-1]}" ]] && [[ "${timestamp[-1]}" -ge 0 ]]; then
+    json=$(jq --arg timestamp "${timestamp[-1]}" '. += $ARGS.named' <<< $json)
+  fi
+  if [[ "${ttl[-1]}" -ge 1 ]]; then
+    json=$(jq --arg ttl "${ttl[-1]}" '. += $ARGS.named' <<< $json)
+  fi
+  if [[ -n "${sound[-1]}" ]]; then
+    json=$(jq --arg sound "${sound[-1]}" '. += $ARGS.named' <<< $json)
+  fi
+  if [[ ${#html} = 1 ]]; then
+    json=$(jq --arg html "1" '. += $ARGS.named' <<< $json)
+  fi
+  if [[ ${#mono} = 1 ]]; then
+    json=$(jq --arg monospace "1" '. += $ARGS.named' <<< $json)
+  fi
+
+  # Show Verbose Info if Enabled
+  if [[ ${#verbose} = 1 ]]; then
+    show -l ${label} -d "${json}"
+    show -l ${label} -d "${push[@]}"
+  fi
+
+  curl -sS -X POST "${push[ptcl]}://${push[host]}/1/messages.json?user=${push[key]}&token=${app_token[-1]}" -H 'Content-Type: application/json' -d $json
 }
-
 
 # Manage connection to Cisco AnyConnect VPN
 function vpn() {
