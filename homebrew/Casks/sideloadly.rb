@@ -1,6 +1,6 @@
 cask "sideloadly" do
-  version "0.50.1"
-  sha256 "37de6a5b627e433623d6d082c7a1fa3e0b9d3f3e54519fe69b56c4ca01725f3c"
+  version "0.55.1"
+  sha256 "22ee2e6e1933d27b1abaa78400b9c69eb17e627bfda9e0c2879d2d19d0b72746"
 
   url "https://sideloadly.io/SideloadlySetup.dmg"
   name "Sideloadly"
@@ -8,6 +8,11 @@ cask "sideloadly" do
   homepage "https://sideloadly.io"
 
   app "Sideloadly.app"
+
+  livecheck do
+    url :url
+    strategy :header_match
+  end
 
   uninstall launchctl: "io.sideloadly.daemon",
             quit:      [

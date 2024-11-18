@@ -1,6 +1,6 @@
 class LolcatC < Formula
-  version "1.4"
-  sha256 "6ea43ee2b2bb2f15fc91812b72ebcdaa883052853ed8f055b6f8b38637bda909"
+  version "1.5"
+  sha256 "2af79bed90e0bda52ae500d16e7e7022037fad10c487c317e7f0ff17ec4b14f5"
 
   url "https://github.com/jaseg/lolcat/archive/refs/tags/v#{version}.tar.gz"
   desc "Faster lolcat implementation in CLang"

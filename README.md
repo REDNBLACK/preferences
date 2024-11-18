@@ -506,7 +506,12 @@ EOF
     ```zsh
     brew install --cask imazing imazing-profile-editor
     ```
-4. [💰] Setup [WALTR PRO](https://softorino.com/waltr)
+4. Setup [IPAEdit](https://github.com/ethandgoodhart/IPAEdit)
+
+    ```zsh
+    brew install --cask ipa-edit
+    ```
+5. [💰] Setup [WALTR PRO](https://softorino.com/waltr)
 
     ```zsh
     brew install --cask waltr-pro

@@ -1,6 +1,6 @@
 cask "ktalk" do
-  version "2.10.0"
-  sha256 "54bf74a0e0063295bde6533e621e4e120adb2f5f9acba65b5153e21bcb4f067b"
+  version "2.13.0"
+  sha256 "24aef3978fa5bdf7822a585584bb6423527297ae84b3fc5970379fd51b3e16cd"
 
   url "https://app.ktalk.ru/system/dist/download/mac"
   name "Kontur Talk"
@@ -8,7 +8,7 @@ cask "ktalk" do
   homepage "https://ktalk.ru/"
 
   livecheck do
-    url "https://app.ktalk.ru/system/dist/download/mac"
+    url :url
     strategy :header_match
   end
 

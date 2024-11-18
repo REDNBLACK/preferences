@@ -69,7 +69,7 @@
 		"coverage"
 	],
 	"font_face": "FiraCode Nerd Font Retina",
-	"font_size": 11,
+	"font_size": 10,
 	"gutter": true,
 	"highlight_line": true,
 	"highlight_modified_tabs": true,
