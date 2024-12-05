@@ -458,10 +458,10 @@ EOF
     # Disable autostart
     rm -f ~/Library/LaunchAgents/krisp.plist
     ```
-4. [💰] Setup [Proton Mail - Bridge](https://proton.me/mail/bridge) Headless, with [patched hostname resolve](https://github.com/ProtonMail/proton-bridge/pull/270/commits/1e85c8d057b245f77d21ff7376621739b019832a) [[:octocat:](https://github.com/ProtonMail/proton-bridge)]
+4. [💰] Setup [Proton Mail](https://proton.me/mail/download)
 
     ```zsh
-    cd $DOTPREFSDIR/protonmail-bridge && ./install.zsh
+    brew install --cask proton-mail
     ```
 
 ##### Entertainment
