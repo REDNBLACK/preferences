@@ -4,21 +4,21 @@ class VideoToolbox < Formula
   version "1.0.0"
 
   resource "ffmpeg" do
-    version "112969-g5475f665f6"
+    version "117771-g07904231cb"
     url "https://evermeet.cx/ffmpeg/ffmpeg-#{version}.zip"
-    sha256 "7893851ac916135f3b3b0da43366ed9257b235f57e41b21c635073ae7f51c820"
+    sha256 "5a3e520646bc0c988309f394dca9cfd0c4222d15a3bdf7e93dd5569afd4364db"
   end
 
   resource "mkvtoolnix" do
-    version "81.0"
+    version "88.0"
     url "https://mkvtoolnix.download/macos/MKVToolNix-#{version}.dmg"
-    sha256 "ac80111db885d10258f4e4cd7382033f9f54db3f578b808cc66298bff201a951"
+    sha256 "cd34c72b47726bfbab2b7a5bd74ef5a3d4e8ce7f77b123312c9c222dfe2fe306"
   end
 
   resource "subler" do
-    version "1.7.5"
-    url "https://bitbucket.org/galad87/subler/downloads/Subler-#{version}.zip"
-    sha256 "3596dad190deae9dfcdd6bac68a477def27df407e97f6870553b4640c08fd0b6"
+    version "1.8.4"
+    url "https://github.com/SublerApp/Subler/releases/download/#{version}/Subler-#{version}.zip"
+    sha256 "849d56bc14a030e8dfb194b299c5a962b9bd31539436677fed66a77ffa946f2b"
   end
 
   def caveats
