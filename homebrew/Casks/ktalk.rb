@@ -1,6 +1,6 @@
 cask "ktalk" do
-  version "2.13.0"
-  sha256 "24aef3978fa5bdf7822a585584bb6423527297ae84b3fc5970379fd51b3e16cd"
+  version "3.1.0"
+  sha256 "dfb72c3efafc0ccb669fef45851b28c97c3a40780f4d1a67dc3003e4172cdef8"
 
   url "https://app.ktalk.ru/system/dist/download/mac"
   name "Kontur Talk"
