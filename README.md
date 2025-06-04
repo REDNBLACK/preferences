@@ -117,6 +117,10 @@ My shell and programms settings
         ```zsh
         brew install jaq yq
         ```
+    * [`afsctool` Apple File System Compression Tool](https://github.com/RJVB/afsctool)
+        ```zsh
+        brew install afsctool
+        ```
     * [Correct errors in previous commands](https://github.com/nvbn/thefuck) (depends on `python`)
         ```zsh
         brew install thefuck
@@ -227,7 +231,7 @@ EOF
     # Enable sudo auth via Touch ID (⚠️ Must be done after every system update)
     sudo sed -i '.old' -e '2s;^;auth       sufficient     pam_tid.so\n;' /etc/pam.d/sudo
 
-    # Allow applications downloaded from anywhere (⚠️ Must be done after every system update)
+    # Allow applications downloaded from anywhere (⚠️ Must be done after every system update, after executing go to `Privacy & Security` -> Change `Allow applications from` to `Anywhere`)
     sudo spctl --master-disable
 
     # Add Terminal to Developer Tools, so any processes run by it to be excluded from Gatekeeper
@@ -506,10 +510,11 @@ EOF
     ```zsh
     brew install --cask imazing imazing-profile-editor
     ```
-4. Setup [IPAEdit](https://github.com/ethandgoodhart/IPAEdit)
+4. Setup [IPAEdit](https://github.com/ethandgoodhart/IPAEdit) & [IPATool](https://github.com/majd/ipatool)
 
     ```zsh
     brew install --cask ipa-edit
+    brew install majd/repo/ipatool
     ```
 5. [💰] Setup [WALTR PRO](https://softorino.com/waltr)
 
