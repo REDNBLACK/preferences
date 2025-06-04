@@ -18,6 +18,9 @@ autoload -U colors && colors
 declare -gx ZSH_CACHE_DIR="$XDG_CACHE_HOME/zsh"
 [[ ! -d $ZSH_CACHE_DIR ]] && mkdir -p $ZSH_CACHE_DIR
 
+# Ignore Lines with Comments (# ...)
+setopt INTERACTIVE_COMMENTS
+
 # Correctly display UTF-8 with combining characters.
 setopt COMBINING_CHARS
 
@@ -424,7 +427,7 @@ declare -gx FAST_THEME_NAME="default"
 
 # Load
 zinit ice wait lucid atinit"ZINIT[COMPINIT_OPTS]=-C; zpcompinit; zpcdreplay"
-zinit $ZINIT[LOAD_MODE] zdharma-continuum/fast-syntax-highlighting
+zinit ${ZINIT[LOAD_MODE]} zdharma-continuum/fast-syntax-highlighting
 # ====================================================================================== #
 
 
@@ -467,6 +470,9 @@ zinit snippet OMZP::macos/_security
 
 zinit ice as"completion"
 zinit snippet OMZP::docker/completions/_docker
+
+zinit ice as"completion"
+zinit snippet ${HOME}/Library/Application\ Support/ScalaCLI/completions/zsh/_scala-cli
 
 zinit ice blockf atpull'zinit creinstall -q .'
 zinit $ZINIT[LOAD_MODE] zsh-users/zsh-completions
