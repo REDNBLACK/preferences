@@ -216,7 +216,7 @@ EOF
     ```zsh
     mas install 1609461599
     ```
-6. [💰] Setup [AdGuard VPN](https://adguard-vpn.com)
+6. [💰] Setup [Shadow Rocket](https://apps.apple.com/app/id932747118)
 
     ```zsh
     brew install --cask adguard-vpn
@@ -225,7 +225,12 @@ EOF
     # Add NextDNS as QUIC DNS
     defaults write com.adguard.mac.vpn 'dns-servers-settings' -data $(jq -n --arg profile "%NextDNS Profile%" --arg device "%Device Name%" '{"selectedServer": {"uid": "42B5EEE1-2255-4B6F-96EA-54953B75807B", "name": "NextDNS [QUIC] (\($profile))", "address": "quic://\($device)-\($profile).dns.nextdns.io"}} | .servers = [.selectedServer]' | xxd -u -p - | tr -d '\n')
     ```
-7. Setup misc
+7. Setup [QFlipper](https://docs.flipper.net/zero/qflipper)
+
+    ```zsh
+    brew install --cask qflipper
+    ```
+8. Setup misc
 
     ```zsh
     # Enable sudo auth via Touch ID (⚠️ Must be done after every system update)
@@ -289,11 +294,12 @@ EOF
     # After generation of Access Token
     security add-internet-password -l 'Docker Token (%Docker Account Name%)' -s docker.com -r htps -a %Docker Account Name% -w '%Docker Account Token%'
     ```
-4. Setup Java [Eclipse Temurin](https://adoptium.net/) [[:octocat:](https://github.com/adoptium)] & [GraalVM](https://graalvm.org) [[:octocat:](https://github.com/graalvm)] & [JMC](https://oracle.com/java/technologies/jdk-mission-control.html) [[:octocat:](https://github.com/openjdk/jmc)] & [sbt](https://scala-sbt.org) [[:octocat:](https://github.com/sbt/sbt)]
+4. Setup Java [Eclipse Temurin](https://adoptium.net/) [[:octocat:](https://github.com/adoptium)] & [GraalVM](https://graalvm.org) [[:octocat:](https://github.com/graalvm)] & [JMC](https://oracle.com/java/technologies/jdk-mission-control.html) [[:octocat:](https://github.com/openjdk/jmc)] & [Scala CLI](https://scala-cli.virtuslab.org) & [sbt](https://scala-sbt.org) [[:octocat:](https://github.com/sbt/sbt)]
 
     ```zsh
-    brew install --cask temurin@{8,17} graalvm-jdk
+    brew install --cask temurin@{17,21} graalvm-jdk
     brew install --cask openjdk-jmc
+    brew install scala-cli
     brew install sbt
 
     # Switch JDK version to `8` or `17` or `graal`
@@ -357,7 +363,12 @@ EOF
     ```zsh
     brew install --cask devutils
     ```
-5. Setup [Touchbar Nyan Cat](https://github.com/avatsaev/touchbar_nyancat)
+5. Setup [Beyond Compare](https://scootersoftware.com)
+
+    ```zsh
+    brew install --cask beyond-compare
+    ```
+6. Setup [Touchbar Nyan Cat](https://github.com/avatsaev/touchbar_nyancat)
 
     ```zsh
     brew install --cask touchbar-nyancat
@@ -368,7 +379,7 @@ EOF
 
     ```zsh
     brew install --cask nimble-commander
-    ln -fs $DOTPREFSDIR/nimble-commander/conf.json ~/Library/Application\ Support/Nimble\ Commander/Config/Config.json
+    ln -fs $DOTPREFSDIR/nimble-commander/Config.json ~/Library/Application\ Support/Nimble\ Commander/Config/Config.json
     defaults import info.filesmanager.Files $DOTPREFSDIR/nimble-commander/conf.plist
 
     # Set as default file viewer
@@ -379,7 +390,7 @@ EOF
     cp -f "**Path to License.nimblecommanderlicense file**" ~/Library/Application\ Support/Nimble\ Commander/registration.nimblecommanderlicense
 
     # Import Remote Fileshares
-    ln -fs $DOTPREFSDIR/nimble-commander/network.json ~/Library/Application\ Support/Nimble\ Commander/Config/NetworkConnections.json
+    ln -fs $DOTPREFSDIR/nimble-commander/NetworkConnections.json ~/Library/Application\ Support/Nimble\ Commander/Config/NetworkConnections.json
     cp -f "**SSH Keys for SFTP**" ~/Library/Application\ Support/Nimble\ Commander/Keys
     ```
 2. Setup [Keka](https://keka.io) [[:octocat:](https://github.com/aonez/Keka)]
@@ -442,12 +453,17 @@ EOF
     brew install --cask wifi-explorer
     defaults import com.intuitibits.wifiexplorerpro3 $DOTPREFSDIR/wifi-explorer/conf.plist
     ```
-
-##### Social
-1. Setup [Signal](https://signal.org) [[:octocat:](https://github.com/signalapp)]
+4. Setup [Packet Sender](https://packetsender.com)
 
     ```zsh
-    brew install --cask signal
+    brew install packetsender
+    ```
+
+##### Social
+1. Setup [Telegram](https://signal.org) [[:octocat:](https://github.com/telegramdesktop/tdesktop)]
+
+    ```zsh
+    brew install --cask telegram
     ```
 2. Setup [KTalk](https://kontur.ru/talk)
 
@@ -495,10 +511,11 @@ EOF
     ```
 
 ##### Mobile
-1. Setup [Sideloadly](https://sideloadly.io)
+1. Setup [Sideloadly](https://sideloadly.io) & [idevice_pair](https://github.com/jkcoxson/idevice_pair)
 
     ```zsh
     brew install --cask sideloadly
+    brew install --cask idevice-pair
     ```
 2. Setup [Apple Configurator 2](https://support.apple.com/guide/apple-configurator-2/welcome/mac)
 
@@ -510,13 +527,18 @@ EOF
     ```zsh
     brew install --cask imazing imazing-profile-editor
     ```
-4. Setup [IPAEdit](https://github.com/ethandgoodhart/IPAEdit) & [IPATool](https://github.com/majd/ipatool)
+4. Setup [OpenMTP](https://openmtp.ganeshrvel.com)
+
+    ```zsh
+    brew install --cask openmtp
+    ```
+5. Setup [IPAEdit](https://github.com/ethandgoodhart/IPAEdit) & [IPATool](https://github.com/majd/ipatool)
 
     ```zsh
     brew install --cask ipa-edit
     brew install majd/repo/ipatool
     ```
-5. [💰] Setup [WALTR PRO](https://softorino.com/waltr)
+6. [💰] Setup [WALTR PRO](https://softorino.com/waltr)
 
     ```zsh
     brew install --cask waltr-pro
