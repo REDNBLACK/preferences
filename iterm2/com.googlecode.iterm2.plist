@@ -2,8 +2,32 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>AIFeatureFunctionCalling</key>
+	<true/>
+	<key>AIFeatureHostedCodeInterpeter</key>
+	<true/>
+	<key>AIFeatureHostedFileSearch</key>
+	<true/>
+	<key>AIFeatureHostedWebSearch</key>
+	<true/>
+	<key>AIFeatureStreamingResponses</key>
+	<true/>
+	<key>AITermAPI</key>
+	<integer>2</integer>
+	<key>AIVectorStore</key>
+	<integer>0</integer>
 	<key>AdjustWindowForFontSizeChange</key>
 	<true/>
+	<key>AdvancedPasteWaitsForPromptByDefault</key>
+	<false/>
+	<key>AiMaxTokens</key>
+	<integer>400000</integer>
+	<key>AiModel</key>
+	<string>gpt-5.1</string>
+	<key>AiResponseMaxTokens</key>
+	<integer>128000</integer>
+	<key>AitermURL</key>
+	<string>https://api.openai.com/v1/responses</string>
 	<key>AllowClipboardAccess</key>
 	<false/>
 	<key>AllowDragOfTabIntoNewWindow</key>
@@ -21,7 +45,7 @@
 	<key>BootstrapDaemon</key>
 	<false/>
 	<key>BracketedPasteMode</key>
-	<true/>
+	<false/>
 	<key>CheckTestRelease</key>
 	<false/>
 	<key>ClosingHotkeySwitchesSpaces</key>
@@ -1254,6 +1278,66 @@
 									<key>Red Component</key>
 									<real>0.0</real>
 								</dict>
+							</dict>
+							<key>layout advanced configuration dictionary value</key>
+							<dict>
+								<key>algorithm</key>
+								<integer>1</integer>
+								<key>auto-rainbow style</key>
+								<integer>0</integer>
+								<key>font</key>
+								<string>MesloLGMDZNFM-Regular 13</string>
+								<key>remove empty components</key>
+								<true/>
+							</dict>
+						</dict>
+					</dict>
+					<dict>
+						<key>class</key>
+						<string>iTermStatusBarActionComponent</string>
+						<key>configuration</key>
+						<dict>
+							<key>knobs</key>
+							<dict>
+								<key>action</key>
+								<dict>
+									<key>action</key>
+									<integer>25</integer>
+									<key>applyMode</key>
+									<integer>0</integer>
+									<key>escaping</key>
+									<integer>1</integer>
+									<key>parameter</key>
+									<string>FlipperCLI.py
+/Users/rb/Preferences/iterm2/scripts/FlipperCLI.py</string>
+									<key>title</key>
+									<string>󱢴</string>
+									<key>version</key>
+									<integer>2</integer>
+								</dict>
+								<key>base: compression resistance</key>
+								<integer>1</integer>
+								<key>base: priority</key>
+								<real>5</real>
+								<key>maxwidth</key>
+								<real>+infinity</real>
+								<key>minwidth</key>
+								<string>0</string>
+								<key>shared background color</key>
+								<dict>
+									<key>Alpha Component</key>
+									<real>1</real>
+									<key>Blue Component</key>
+									<real>0.29807218909263611</real>
+									<key>Color Space</key>
+									<string>P3</string>
+									<key>Green Component</key>
+									<real>0.58773809671401978</real>
+									<key>Red Component</key>
+									<real>0.99337989091873169</real>
+								</dict>
+								<key>shared font</key>
+								<string>FiraCodeNFP-Reg 12</string>
 							</dict>
 							<key>layout advanced configuration dictionary value</key>
 							<dict>

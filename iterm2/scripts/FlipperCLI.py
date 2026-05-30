@@ -9,22 +9,23 @@ BASE = os.path.dirname(__file__)
 
 """Base Pane View Config"""
 class PaneViewConf(object):
-  title = " NO SLEEP"
-  icon  = None
-  badge = ''
-  color = iterm2.Color(129, 51, 129)
-  bg    = f"{BASE}/Caffeinate.png"
-  mut   = False
+  title = "󱢴  Flipper0"
+  icon  = f"{BASE}/Flipper.png"
+  badge = ''
+  color = iterm2.Color(255, 140, 55)
+  bg    = None
+  mut   = True
 
-def proc_running(proc_name):
-  """Find PID of Existing $proc_name Process, if Any"""
-  proc = subprocess.Popen(['pgrep', proc_name], stdout=subprocess.PIPE)
-  (out, err) = proc.communicate()
-  exit_code = proc.wait()
-  pid = out.decode('utf-8').rstrip()
-
-  print(f'[Process] Running PID: {pid}')
-  return pid
+def flipper_session():
+  """Check if Flipper Connected to PC and Available"""
+  comp = subprocess.run("ls /dev/cu.* | rg -oN 'cu.usbmodemflip_(.+)'", shell=True, capture_output=True)
+  if comp.returncode == 0:
+    sess = comp.stdout.decode('utf-8').rstrip()
+    print(f'[Flipper] Got Session: {sess}')
+    return sess
+  else:
+    print(f'[Flipper] No Session!')
+    return None
 
 async def main(connection):
   app  = await iterm2.async_get_app(connection)
@@ -50,7 +51,7 @@ async def main(connection):
     pane = await new_pane()
 
     async def customize_and_exec():
-     # Set Tab Style (+ Tab Icon)
+      # Set Tab Style (+ Tab Icon)
       change = iterm2.LocalWriteOnlyProfile()
       change.set_tab_color(PaneViewConf.color)
       change.set_use_tab_color(True)
@@ -96,24 +97,13 @@ async def main(connection):
   #######     Main Logic      ###
   ###############################
   if window is not None:
-    pid = proc_running('caffeinate')
-    if pid:
-      print(f'[Caffeinate] Already running: {pid}')
-
-      for window in app.windows:
-        for tab in window.tabs:
-          for session in tab.sessions:
-            found = await session.async_get_variable("jobName")
-            print(f'[Caffeinate] Found Process: {found}')
-
-            if found == "caffeinate":
-              print(f'[Caffeinate] Found is: {found} <-> {pid}')
-              await session.async_activate()
-              return
+    sess = flipper_session()
+    if sess:
+      await exec_in_new_pane(f"sudo cu -l /dev/{sess}")
     else:
-      caffeinate = await exec_in_new_pane("caffeinate -d")
+      await show_alert("Is Not Connected to PC!")
   else:
-    print("[Caffeinate] No Current Window!")
+    print("[Flipper] No Current Window!")
 
 
 iterm2.run_until_complete(main)
