@@ -161,33 +161,23 @@ EOF
     ```zsh
     mas install 1481853033
     ```
-3. Setup [GPG Suite](https://gpgtools.org) [[:octocat:](https://github.com/GPGTools)]
+3. Setup SSH and SSHD
 
     ```zsh
-    brew install --cask gpg-suite-no-mail
-    defaults write org.gpgtools.updater SUEnableAutomaticChecks -bool NO
-    defaults write org.gpgtools.gpgkeychain DoNotShowUploadDialogAgain -bool YES
-    defaults write org.gpgtools.common UseKeychain -bool YES
-
-    # Enable Touch ID
-    ln -fs $DOTPREFSDIR/pgp/gpg-agent.conf ~/.config/pgp/gpg-agent.conf
-    pkill -9 -f pinentry-swift 2> /dev/null || true && swiftc $DOTPREFSDIR/pgp/pinentry-swift.swift -enable-bare-slash-regex -o $HOMEBREW_PREFIX/bin/pinentry-swift
-
     # Secure SSH
     # sudo sed -i '' "s/^#?PrintLastLog yes$/^PrintLastLog no$/" /etc/ssh/sshd_config
     ln -fs $DOTPREFSDIR/pgp/ssh.conf ~/.config/ssh/client_config
     sudo sed -i '' -n -e '/^Include \/Users\/\*\*\/.*$/!p' -e '$a\'$'\n\\\n# Load Custom Config. DO NOT EDIT\\\nInclude /Users/**/.config/ssh/client_config' /etc/ssh/ssh_config
     sudo sed -i '' -n -e '/^Include \/Users\/\*\*\/.*$/!p' -e '$a\'$'\n\\\n# Load Custom Config. DO NOT EDIT\\\nInclude /Users/**/.config/ssh/daemon_config' /etc/ssh/sshd_config
+
     ## > Variant 1: Disabled Password Auth, Key Only
     ln -fs $DOTPREFSDIR/pgp/sshd-key.conf ~/.config/ssh/daemon_config
+    
     ## > Variant 2: Auth via Password + 2FA
     ln -fs $DOTPREFSDIR/pgp/sshd-otp.conf ~/.config/ssh/daemon_config
     brew install --ignore-dependencies google-authenticator-libpam
     google-authenticator -t -D -Cfq -w 17 -r 3 -R 30 -s ~/.config/ssh/google_authenticator
     sudo sed -i '.old' -e '6s;^;auth       required       /usr/local/opt/google-authenticator-libpam/lib/security/pam_google_authenticator.so secret=/Users/${USER}/.config/ssh/google_authenticator\n;' /etc/pam.d/sshd
-
-    # Remove bloat
-    sudo rm -rf /Library/PreferencePanes/GPGPreferences.prefPane && sudo rm -f /Library/LaunchAgents/org.gpgtools.{updater,macgpg2.fix,macgpg2.updater,Libmacgpg.xpc}.plist
     ```
 4. Setup secure DNS over HTTPS/TLS/QUIC
     * Popular [DNS over HTTPS/TLS](https://github.com/paulmillr/encrypted-dns)
