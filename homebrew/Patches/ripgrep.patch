@@ -1,0 +1,16 @@
+diff --git a/ripgrep.rb b/ripgrep.rb
+index a5e9b6e..3a4dc95 100644
+--- a/ripgrep.rb
++++ b/ripgrep.rb
+@@ -23,10 +23,9 @@ class Ripgrep < Formula
+   depends_on "asciidoctor" => :build
+   depends_on "pkgconf" => :build
+   depends_on "rust" => :build
+-  depends_on "pcre2"
+ 
+   def install
+-    system "cargo", "install", "--features", "pcre2", *std_cargo_args
++    system "cargo", "install", *std_cargo_args
+ 
+     generate_completions_from_executable(bin/"rg", "--generate", shell_parameter_format: "complete-")
+     (man1/"rg.1").write Utils.safe_popen_read(bin/"rg", "--generate", "man")

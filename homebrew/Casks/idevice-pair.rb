@@ -12,5 +12,5 @@ cask "idevice-pair" do
     strategy :github_latest
   end
 
-  app "idevice_pair.app"
+  app "idevice_pair.app", target: "iDevice Pair.app"
 end

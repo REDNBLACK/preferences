@@ -19,11 +19,9 @@ cask "flipper0-auth-companion" do
 
   uninstall quit: "com.flipper.authenticator.companion.app"
 
-  #xattr -d com.apple.quarantine "/Applications/Flipper Authenticator Companion.app"
-
   zap trash: [
-    "~/Library/Preferences/tk.zwander.samsungfirmwaredownloader.plist",
-    "~/Library/HTTPStorages/tk.zwander.samsungfirmwaredownloader",
-    "~/Library/HTTPStorages/tk.zwander.samsungfirmwaredownloader.binarycookies"
+    "~/Library/Application Support/flipper-authenticator-companion",
+    "~/Library/Caches/sideloadly",
+    "~/Library/Logs/flipper-authenticator-companion"
   ]
 end

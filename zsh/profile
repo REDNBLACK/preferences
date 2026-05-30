@@ -27,20 +27,22 @@ eval `/usr/libexec/path_helper -s`
 # ====================================================================================== #
 declare -gx HOMEBREW_NO_ANALYTICS=1
 declare -gx HOMEBREW_NO_INSTALL_CLEANUP=1
+declare -gx HOMEBREW_NO_AUTO_UPDATE=1
 declare -gx HOMEBREW_NO_EMOJI=1
 declare -gx HOMEBREW_GITHUB_API_TOKEN="$(security 2>&1 find-internet-password -ws github.com)"
 declare -gx HOMEBREW_PREFIX="$([[ $ARCH == 'arm64' ]] && echo '/opt/homebrew' || echo '/usr/local')"
 declare -gx HOMEBREW_REPOSITORY="$([[ $ARCH == 'arm64' ]] && echo $HOMEBREW_PREFIX || echo ${HOMEBREW_PREFIX}/Homebrew)"
 declare -gx HOMEBREW_CELLAR="$HOMEBREW_PREFIX/Cellar"
 declare -gx HOMEBREW_CASKROOM="$HOMEBREW_PREFIX/Caskroom"
+eval `brew shellenv`
 # ====================================================================================== #
 
 # ====================================================================================== #
-#                               NeoFetch Settings                                        #
+#                               FastFetch Settings                                       #
 # ====================================================================================== #
 # Automatically show when connected via SSH
-if [[ -n "$SSH_TTY" ]] && (( $+commands[neofetch] )); then
-  neofetch
+if [[ -n "$SSH_TTY" ]] && (( $+commands[fastfetch] )); then
+  fastfetch
 fi
 # ====================================================================================== #
 
@@ -98,10 +100,11 @@ fi
 # ====================================================================================== #
 #                               TLDR settings                                            #
 # ====================================================================================== #
-declare -gx TEALDEER_CONFIG_DIR="$XDG_CONFIG_HOME/tldr"
-if [[ ! -e "$TEALDEER_CONFIG_DIR/config.toml" ]]; then
-  mkdir -p $TEALDEER_CONFIG_DIR
-  cat > "$TEALDEER_CONFIG_DIR/config.toml" <<EOF
+if (( $+commands[tldr] )); then
+  declare -gx TEALDEER_CONFIG_DIR="$XDG_CONFIG_HOME/tldr"
+  if [[ ! -e "$TEALDEER_CONFIG_DIR/config.toml" ]]; then
+    mkdir -p $TEALDEER_CONFIG_DIR
+    cat > "$TEALDEER_CONFIG_DIR/config.toml" <<EOF
 [display]
 compact = false
 use_pager = false
@@ -112,6 +115,7 @@ auto_update = false
 [directories]
 custom_pages_dir = "$TEALDEER_CONFIG_DIR/pages/"
 EOF
+  fi
 fi
 # ====================================================================================== #
 

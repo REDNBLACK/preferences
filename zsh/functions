@@ -7,6 +7,7 @@
 # - show                   = formatted print                                             #
 # - mkd                    = mkdir + cd or mkdir only if dir not exists                  #
 # - notify                 = send push notification using Pushover                       #
+# - xrproxy                = manage macOS System Wide HTTP(S) and SOCKS Proxies          #
 # - vpn                    = connect to Cisco AnyConnect or OpenConnect VPN              #
 # - dns                    = reload dns, make domain alias for localhost with port       #
 # - upgrade                = update manager                                              #
@@ -204,6 +205,102 @@ EOF
   fi
 
   curl -sS -X POST "${push[ptcl]}://${push[host]}/1/messages.json?user=${push[key]}&token=${app_token[-1]}" -H 'Content-Type: application/json' -d $json
+}
+
+# Set global macOS HTTP + HTTPS + Socks Proxy
+function xrproxy() {
+  local usage=$(cat <<EOF
+${fg_bold[blue]}Usage:${reset_color}
+  xrproxy ${fg_bold[yellow]}%network interface%${reset_color} info ${fg[blue]}<web|secureweb|socksfirewall|empty>${reset_color} ${fg[cyan]}Get Info for Specific or All Proxies in macOS${reset_color}
+  xrproxy ${fg_bold[yellow]}%network interface%${reset_color} state ${fg[blue]}<on|off>${reset_color} ${fg[cyan]}Turn On/Off All Proxies in macOS${reset_color}
+  xrproxy ${fg_bold[yellow]}%network interface%${reset_color} configure ${fg[blue]}<host|ip>${reset_color} ${fg[blue]}<HTTP Proxy Port>${reset_color} ${fg[blue]}<SOCKS5 Proxy Port>${reset_color} ${fg[cyan]}Set Servers for All Proxies in macOS${reset_color}
+  xrproxy ${fg_bold[yellow]}%network interface%${reset_color} configure ${fg[cyan]}Reset Servers for All Proxies in macOS${reset_color}
+
+${fg_bold[blue]}Options:${reset_color}
+  ${fg_bold[yellow]}--compact Device(s)${reset_color}                 ${fg[blue]}...${reset_color}
+EOF
+)
+
+  if [[ $# -lt 2 ]] || [[ -z "$1" ]] || [[ -z "$2" ]]; then
+    echo $usage
+    return 0
+  fi
+
+  local iface=$1; shift
+  # local iface=`networksetup -listnetworkserviceorder | rg -o '(Hardware Port: (.*), Device: '$(route get example.com | rg -o 'interface: ([^ ]*)' -r '$1')')' -r '$2'`
+  local cmd_name=$1; shift
+
+  case "${cmd_name}" in
+    (info)  # System Proxy Info
+      local compact
+      zparseopts -D -F -K -- {c,-compact}=compact || return 1
+
+      pone() {
+        case "$1" in
+          web)           local ptpe="HTTP" ;;
+          secureweb)     local ptpe="HTTPS" ;;
+          socksfirewall) local ptpe="SOCKS5" ;;
+        esac
+
+        networksetup -get$1proxy ${iface} | jq -srR 'split("\n") | del(.[] | select(. == "")) | map(split(": ") | {key: .[0], value: .[1]}) | from_entries | .Status = (if .Enabled == "No" then "🚫" else "🟢" end) | .Network = "`\(.Server):\(.Port)`" | {'${ptpe}': .}'
+      }
+
+      if [[ "$#" -eq 1 ]]; then
+        pone "$1"
+      else
+        local raw="$(jq -n --jsonargs '$ARGS.positional' "$(pone 'web')" "$(pone 'secureweb')" "$(pone 'socksfirewall')" | jq 'add')"
+        if [[ ${#compact} = 1 ]]; then
+          jq -r 'to_entries | map("\(.value.Status) \(.key): \(.value.Network)") | join("\n")' <<< ${raw}
+        else
+          jq <<< ${raw}
+        fi
+      fi
+    ;;
+    (state) # System Proxy Set or Toggle State
+      local new_state="$1"
+
+      case "${new_state}" in
+        on|off)
+          sudo networksetup -setwebproxystate ${iface} "${new_state}" && \
+          sudo networksetup -setsecurewebproxystate ${iface} "${new_state}" && \
+          sudo networksetup -setsocksfirewallproxystate ${iface} "${new_state}"
+          ;;
+        *) show -l 'XRay Proxy' -e "Unknown or Empty State: `${new_state}`" ;;
+      esac
+    ;;
+    (configure) # System Proxy Set/Reset Server
+      local host=''
+      local http_port=''
+      local socks_port=''
+      local toggle='off'
+
+      if [ "$#" -ne 3 ]; then
+        show -l 'V2Ray Proxy' -r "Resetting Proxies…\n"
+      else
+        host="$1"
+        http_port="$2"
+        socks_port="$3"
+        toggle='on'
+
+        show -l 'V2Ray Proxy' -r "Setting Proxies -> H: ${host}, P1: ${http_port}, P2: ${socks_port}\n"
+      fi
+
+      local info_before="$(xrproxy ${iface} info)"
+
+      sudo networksetup -setwebproxy ${iface} "${host}" "${http_port}" off && \
+      sudo networksetup -setsecurewebproxy ${iface} "${host}" "${http_port}" off && \
+      sudo networksetup -setsocksfirewallproxy ${iface} "${host}" "${socks_port}" off
+
+      xrproxy "${iface}" state "${toggle}"
+
+      local info_after="$(xrproxy ${iface} info)"
+
+      jq -nr --argjson before "${info_before}" --argjson after "${info_after}" '$before | keys | .[] as $k | "======\($k)======\nStatus: \($before[$k].Status) -> \($after[$k].Status)\nNetwork: \($before[$k].Network) -> \($after[$k].Network)"'
+    ;;
+    (*)
+      show -e 'Wrong arguments'
+      echo $usage
+  esac
 }
 
 # Manage connection to Cisco AnyConnect VPN
@@ -466,7 +563,7 @@ function upgrade() {
     if (( $+commands[mas] )); then
       local mas='--include-mas'
     fi
-    brew cu -a -y $mas --no-brew-update --no-quarantine --cleanup 2>&1 | lolcat
+    brew cu -a -y $mas --no-brew-update --cleanup 2>&1 | lolcat
 
     if (( $+commands[n] )); then
       show -l 'Node' -n 1

@@ -471,8 +471,8 @@ zinit snippet OMZP::macos/_security
 zinit ice as"completion"
 zinit snippet OMZP::docker/completions/_docker
 
-zinit ice as"completion"
-zinit snippet ${HOME}/Library/Application\ Support/ScalaCLI/completions/zsh/_scala-cli
+# zinit ice as"completion"
+# zinit snippet ${HOME}/Library/Application\ Support/ScalaCLI/completions/zsh/_scala-cli
 
 zinit ice blockf atpull'zinit creinstall -q .'
 zinit $ZINIT[LOAD_MODE] zsh-users/zsh-completions

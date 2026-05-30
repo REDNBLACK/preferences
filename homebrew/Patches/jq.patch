@@ -1,8 +1,8 @@
-diff --git a/Users/rb/Desktop/jq-raw.rb b/Users/rb/Desktop/jq.rb
-index 2000d13..0cc23be 100644
---- a/Users/rb/Desktop/jq-raw.rb
-+++ b/Users/rb/Desktop/jq.rb
-@@ -30,13 +30,12 @@ class Jq < Formula
+diff --git a/jq.rb b/jq.rb
+index f45e82c..63d3a1b 100644
+--- a/jq.rb
++++ b/jq.rb
+@@ -29,13 +29,12 @@ class Jq < Formula
      depends_on "libtool" => :build
    end
  

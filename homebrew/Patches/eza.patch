@@ -1,17 +1,20 @@
 diff --git a/eza.rb b/eza.rb
-index 4d93c44..6a58846 100644
+index a3fcb20..2d9e644 100644
 --- a/eza.rb
 +++ b/eza.rb
-@@ -15,29 +15,11 @@ class Eza < Formula
-     sha256 cellar: :any_skip_relocation, x86_64_linux:   "7c0d2be0f44223e886a14cc49ae8693d8163619d674012b991caa7f2a2693495"
+@@ -14,31 +14,13 @@ class Eza < Formula
+     sha256 cellar: :any_skip_relocation, x86_64_linux:  "2bdf49feadb1e11bf7a5247cb64cf6a0efc6624ef7af0305f11e53bc0463bf77"
    end
  
 -  depends_on "pandoc" => :build
-   depends_on "pkg-config" => :build
+   depends_on "pkgconf" => :build
    depends_on "rust" => :build
 -  depends_on "libgit2"
  
    def install
+-    ENV["LIBGIT2_NO_VENDOR"] = "1"
++    ENV["LIBGIT2_NO_VENDOR"] = "0"
+ 
      system "cargo", "install", *std_cargo_args
 -
 -    bash_completion.install "completions/bash/eza"

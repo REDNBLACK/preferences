@@ -95,11 +95,16 @@ My shell and programms settings
         # Patch eza formula, removing libgit2, libssh2, openssl@3 dependencies and install
         brew patch rednblack/tap eza
         brew install rednblack/tap/eza --build-from-source
+        brew pin eza
         brew smartremove eza && rm -rf "$(brew --prefix)"/etc/{openssl@3,ca-certificates}
         ```
     * [`grep` modern alternative](https://github.com/BurntSushi/ripgrep) (depends on `pcre2`)
         ```zsh
-        brew install ripgrep
+        # Patch eza formula, removing pcre2 dependencies and install
+        brew patch rednblack/tap ripgrep
+        brew install rednblack/tap/ripgrep --build-from-source
+        brew pin ripgrep
+        brew smartremove ripgrep 
         ```
     * [`sponge` helps in fully reading `stdin` to temp files automatically](https://mbork.pl/2019-09-16_sponge_and_other_moreutils)
         ```zsh
@@ -115,6 +120,12 @@ My shell and programms settings
         ```
     * Process JSON, YAML, XML, CSV via CLI [`jaq` (jq на rust)](https://github.com/01mf02/jaq) & [`yq`](https://github.com/mikefarah/yq)
         ```zsh
+        # Patch jq formula, removing oniguruma dependencies and install
+        brew patch rednblack/tap jq
+        brew install rednblack/tap/jq --build-from-source
+        brew pin jq
+        brew smartremove jq
+        
         brew install jaq yq
         ```
     * [`afsctool` Apple File System Compression Tool](https://github.com/RJVB/afsctool)
@@ -225,10 +236,11 @@ EOF
     # Add NextDNS as QUIC DNS
     defaults write com.adguard.mac.vpn 'dns-servers-settings' -data $(jq -n --arg profile "%NextDNS Profile%" --arg device "%Device Name%" '{"selectedServer": {"uid": "42B5EEE1-2255-4B6F-96EA-54953B75807B", "name": "NextDNS [QUIC] (\($profile))", "address": "quic://\($device)-\($profile).dns.nextdns.io"}} | .servers = [.selectedServer]' | xxd -u -p - | tr -d '\n')
     ```
-7. Setup [QFlipper](https://docs.flipper.net/zero/qflipper)
+7. Setup [QFlipper](https://docs.flipper.net/zero/qflipper) & [Flipper0 Auth Companion](https://github.com/akopachov/flipper-zero_authenticator-companion)
 
     ```zsh
     brew install --cask qflipper
+    brew install --cask flipper0-auth-companion
     ```
 8. Setup misc
 
