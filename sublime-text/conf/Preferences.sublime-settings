@@ -76,6 +76,7 @@
 	"hot_exit": true,
 	"ignored_packages":
 	[
+		"A File Icon",
 		"Vintage",
 	],
 	"open_files_in_new_window": false,
@@ -104,4 +105,5 @@
 	"ui_wide_scrollbars": true,
 	"use_tab_stops": true,
 	"index_files": true,
+	"update_check": false,
 }
