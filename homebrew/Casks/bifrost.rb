@@ -1,14 +1,14 @@
 cask "bifrost" do
   arch arm: "aarch64", intel: "amd64"
 
-  version "1.20.4"
-  sha256 arm:   "5b5057da8703ee8ed7783f52c6099a906e2dfe7c5faefff827e47d49c0b2222b",
-         intel: "20f55617db449d7af7ca59ec06a266caa8ee67d159c984387f42edc79277c066"
+  version "2.1.2"
+  sha256 arm:   "480920afb2b67ff733c7c0c2f981430ff0b15d221150891e4a34a6fb4d9855a9",
+         intel: "6fbf20f84a2a271b07573c8ad23aa3df07b2e844a9a68e9db8bdc4f53ebf310a"
 
-  url "https://github.com/zacharee/SamloaderKotlin/releases/download/#{version}/bifrost-#{version}-mac-#{arch}.zip"
+  url "https://github.com/zacharee/Bifrost/releases/download/#{version}/bifrost-#{version}-mac-#{arch}.zip"
   name "Bifrost"
   desc "Samsung Firmware Downloader"
-  homepage "https://github.com/zacharee/SamloaderKotlin"
+  homepage "https://github.com/zacharee/Bifrost"
 
   livecheck do
     url :homepage
@@ -20,6 +20,7 @@ cask "bifrost" do
   uninstall quit: "Bifrost"
 
   zap trash: [
+    "~/Library/Application Support/Bifrost",
     "~/Library/Preferences/tk.zwander.samsungfirmwaredownloader.plist",
     "~/Library/Caches/tk.zwander.samsungfirmwaredownloader",
     "~/Library/HTTPStorages/tk.zwander.samsungfirmwaredownloader",

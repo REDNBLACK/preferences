@@ -53,10 +53,10 @@ My shell and programms settings
     # After generation of Personal Access Token (Classic)
     security add-internet-password -l 'GitHub Token (%GitHub Account Name%)' -s github.com -r htps -a %GitHub Account Name% -w '%GitHub Account Token%'
     ```
-5. Setup [Fira Code (+Nerd)](https://github.com/tonsky/FiraCode) & [Meslo Nerd](https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/Meslo)
+5. Setup [Fira Code (+Nerd)](https://github.com/tonsky/FiraCode) & [Meslo Nerd](https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/Meslo) & [Unbounded](https://unbounded.polkadot.network) & [Montserrat](https://github.com/JulietaUla/Montserrat)
 
     ```zsh
-    brew install --cask font-{fira-code,fira-code-nerd-font,meslo-lg-nerd-font}
+    brew install --cask font-{fira-code,fira-code-nerd-font,meslo-lg-nerd-font,unbounded,montserrat}
     ```
 6. Setup [zsh](http://zsh.org) [[:octocat:](https://github.com/zsh-users)] & [zinit](https://zdharma.github.io/zinit/wiki/) [[:octocat:](https://github.com/zdharma/zinit)] & [PowerLevel10K](https://github.com/romkatv/powerlevel10k) & [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) & [zsh-fast-syntax-highlighting](https://github.com/zdharma/fast-syntax-highlighting)
 
@@ -118,7 +118,7 @@ My shell and programms settings
         ```zsh
         brew install duti swiftdefaultappsprefpane
         ```
-    * Process JSON, YAML, XML, CSV via CLI [`jaq` (jq на rust)](https://github.com/01mf02/jaq) & [`yq`](https://github.com/mikefarah/yq)
+    * Process JSON, YAML, XML, CSV, HTML via CLI [`jq`](https://jqlang.org) & [`yq`](https://github.com/mikefarah/yq) & [`htmlq`](https://github.com/mgdm/htmlq)
         ```zsh
         # Patch jq formula, removing oniguruma dependencies and install
         brew patch rednblack/tap jq
@@ -126,7 +126,7 @@ My shell and programms settings
         brew pin jq
         brew smartremove jq
         
-        brew install jaq yq
+        brew install yq htmlq
         ```
     * [`afsctool` Apple File System Compression Tool](https://github.com/RJVB/afsctool)
         ```zsh
@@ -172,7 +172,7 @@ EOF
 
     ## > Variant 1: Disabled Password Auth, Key Only
     ln -fs $DOTPREFSDIR/pgp/sshd-key.conf ~/.config/ssh/daemon_config
-    
+
     ## > Variant 2: Auth via Password + 2FA
     ln -fs $DOTPREFSDIR/pgp/sshd-otp.conf ~/.config/ssh/daemon_config
     brew install --ignore-dependencies google-authenticator-libpam
@@ -212,19 +212,15 @@ EOF
         ```zsh
         brew install nextdns/tap/nextdns
         ```
-5. Setup [Orbot](https://orbot.app) [[:octocat:](hhttps://github.com/guardianproject/orbot-apple)]
+5. Setup [Throne](https://throneproj.github.io) [[:octocat:](https://github.com/throneproj/Throne)]
 
     ```zsh
-    mas install 1609461599
+    brew install --cask rednblack/tap/throne
     ```
 6. [💰] Setup [Shadow Rocket](https://apps.apple.com/app/id932747118)
 
     ```zsh
-    brew install --cask adguard-vpn
-    defaults import com.adguard.mac.vpn $DOTPREFSDIR/adguard/conf.plist
-
-    # Add NextDNS as QUIC DNS
-    defaults write com.adguard.mac.vpn 'dns-servers-settings' -data $(jq -n --arg profile "%NextDNS Profile%" --arg device "%Device Name%" '{"selectedServer": {"uid": "42B5EEE1-2255-4B6F-96EA-54953B75807B", "name": "NextDNS [QUIC] (\($profile))", "address": "quic://\($device)-\($profile).dns.nextdns.io"}} | .servers = [.selectedServer]' | xxd -u -p - | tr -d '\n')
+   mas install 932747118
     ```
 7. Setup [QFlipper](https://docs.flipper.net/zero/qflipper) & [Flipper0 Auth Companion](https://github.com/akopachov/flipper-zero_authenticator-companion)
 
@@ -258,17 +254,13 @@ EOF
     ```
 
 ##### Development
-1. [🆓] Setup [Sublime Text 4](https://sublimetext.com) [[:octocat:](https://github.com/SublimeText)]
+1. Setup [Zed](https://zed.dev) [[:octocat:](https://github.com/zed-industries/zed)]
 
     ```zsh
-    brew install --cask sublime-text
-    ln -fs $DOTPREFSDIR/sublime-text/conf ~/Library/Application\ Support/Sublime\ Text/Packages/User
-
-    # Install license
-    cp -f "**Path to License.sublime_license file**" ~/Library/Application\ Support/Sublime\ Text/Local/License.sublime_license
+    brew install --cask zed
 
     # Set files association
-    internal set-file-assoc SublimeText com.sublimetext.4 $DOTPREFSDIR/sublime-text/file-assoc.list
+    internal set-file-assoc Zed dev.zed.Zed ${DOTPREFSDIR}/zed/file-assoc.list
     ```
 2. [🆓] Setup [JetBrains Toolbox](https://jetbrains.com/toolbox-app) [[:octocat:](https://github.com/JetBrains)]
 
@@ -318,11 +310,12 @@ EOF
     ```zsh
     curl -L https://sh.rustup.rs | bash -s -- --profile default --default-toolchain nightly -y --no-modify-path
     ```
-7. Setup Node.js [n](https://github.com/tj/n) [[:octocat:](https://github.com/tj/n)] & [pnpm](https://pnpm.io) [[:octocat:](https://github.com/pnpm/pnpm)]
+7. Setup Node.js [n](https://github.com/tj/n) [[:octocat:](https://github.com/tj/n)] & [pnpm](https://pnpm.io) [[:octocat:](https://github.com/pnpm/pnpm)] & [bun](https://bun.com/docs) [[:octocat:](https://github.com/oven-sh/bun)]
 
     ```zsh
-    curl -L https://raw.githubusercontent.com/mklement0/n-install/stable/bin/n-install | bash -s -- -n -y lts
+    brew install n
     corepack enable npm pnpm
+    npm install -g bun@latest
     ```
 8. Setup [RapidAPI](https://paw.cloud) & [grpcurl](https://github.com/fullstorydev/grpcurl) & [ngrok](https://ngrok.com)
 
@@ -513,11 +506,10 @@ EOF
     ```
 
 ##### Mobile
-1. Setup [Sideloadly](https://sideloadly.io) & [idevice_pair](https://github.com/jkcoxson/idevice_pair)
+1. Setup [iLoader](https://github.com/nab13L/iloader)
 
     ```zsh
-    brew install --cask sideloadly
-    brew install --cask idevice-pair
+    brew install --cask iloader
     ```
 2. Setup [Apple Configurator 2](https://support.apple.com/guide/apple-configurator-2/welcome/mac)
 
